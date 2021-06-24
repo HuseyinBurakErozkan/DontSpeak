@@ -13,16 +13,21 @@ app.use(express.static('client/public'));
 require('./server/game')(app);
 require('./server/room')(app, io);
 
-
-io.on('connection', (socket) => {
-  console.log('A new user connected');
-  
-  socket.on('disconnect', () => {
-    console.log('User disconnected');
+io.on('connection', function(socket){
+  socket.on('message', function(msg){
+    io.sockets.emit('message', msg)
   });
-
 });
 
-server.listen(3000, () => {
+// io.on('connection', (socket) => {
+//   console.log('A new user connected');
+  
+//   socket.on('disconnect', () => {
+//     console.log('User disconnected');
+//   });
+
+// });
+
+exports.server = server.listen(3000, () => {
   console.log('listening on *:3000');
 });
