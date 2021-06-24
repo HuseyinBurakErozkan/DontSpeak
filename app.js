@@ -22,21 +22,38 @@ io.on('connection', (socket) => {
   socket.on("request create game", (name) => {
     
     // First check if the player has entered a name
-    if (name.replace(/\s/g, "") == "" || name === null || name === undefined) {
+    if (name === null || name === undefined || name.replace(/\s/g, "") == "") {
       io.to(socket.id).emit("error", "Please input a valid name");
       return;
     }
 
     var room = createRoom(socket, name);
-    //console.log("Room created. Id = " + room.id + ". Rooms length = " + getRoomsCount());
 
     // Respond with the room's id
     io.to(socket.id).emit("response room created", room.id);
   });
 
+
   socket.on("request join game", (name, id) => {
+    
+    // First check if the player has entered a name
+    if (name === null || name === undefined || name.replace(/\s/g, "") == "") {
+      io.to(socket.id).emit("error", "Please input a valid name");
+      return;
+    }
+    // Then check to ensure id has been added
+    if (id === null || id === undefined) {
+      io.to(socket.id).emit("error", "No room id was provided");
+      return;      
+    }
+    
     var room = getRoom(id);
+    attachPlayerInfo(socket, name);
+    room.addPlayer(socket);
+
+    io.to(socket.id).emit("response room joined", room.id);
   });
+
 
   socket.on("debug", () => {
     console.log(rooms);
