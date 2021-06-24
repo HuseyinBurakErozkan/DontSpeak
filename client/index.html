@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Taboo!</title>
+  </head>
+  <body>
+    <h1>Taboo</h1>
+    <!-- The initial menu is logically separated into 'screens' -->
+    <div class="screen-container">
+      <!-- Start screen -->
+      <div id="screen-start">
+        <button onClick="changeScreen(this, 'screen-create')">Create game</button>
+        <button onClick="changeScreen(this, 'screen-join')">Join game</button>
+      </div>
+      <!-- Create game screen -->
+      <div id="screen-create" hidden>
+        <form id="form-create" method="POST">
+          <input type="text" id="input-name-create" class="input-name-create" placeholder="Your name"/>
+          <br />
+          <input type="submit" value="New room">
+        </form>
+      </div>
+      <!-- Join game screen -->
+      <div id="screen-join" hidden>
+        <form id="form-join" method="POST">
+          <input type="number" id="input-room-number" placeholder="Room number (4 digits)" />
+          <br />
+          <input type="text" id="input-name-join" placeholder="Your name"/>
+          <br />
+          <input type="submit" value="Join game">
+        </form>
+      </div>
+      <!--  -->
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="./javascript/ui.js"></script>
+  </body>
+</html>
