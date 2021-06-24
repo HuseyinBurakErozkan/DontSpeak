@@ -34,6 +34,7 @@ createForm.addEventListener("submit", (e) => {
   }
 });
 
+
 /**
  * Hande user requesting to join a game
  */

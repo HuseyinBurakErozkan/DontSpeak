@@ -2,43 +2,39 @@
  * This file contains all room-related routes and methods
  */
 const path = require('path');
-
 const CLIENT_DIR = path.join(__dirname, '../client');
 
-var rooms = [];
+/**
+ * 
+ * @param {*} app The express app. Passed as an argument to allow the room object to perform routing 
+ * @param {*} io The socket.io server. Required to be passed as an argument to allow room 
+ * to perform socket.io related functions
+ */
+function Room(app, io) {
 
+  // Dictionary datatype, with the key being the client socket id, and the value being
+  // the socket object with player-relayed information attached
+  this.players = [];
+  this.id = Math.floor(Math.random()*9000) + 1000;
 
-module.exports = function(app, io) {
+  this.addPlayer = (player) => {
+    this.players.push({
+      key: player.id,
+      value: player
+    })
+  };
+
+  this.getPlayer = (playerId) => {
+    // They key is the id, whereas the value is the object itself
+    return this.players.find(p => p.key == playerId).value;
+  };
 
   io.on("connection", (socket) => {
-    socket.on("request create game", (name) => {
-      console.log(name + " has requested to create a game");
-
-      // Create a new room and add it to the list of rooms currently running in the server
-      let room = {
-        id: generateRoomNumber,
-        players: [],
-        status: 'lobby'
-      }
-
-      rooms.push({
-        key: room.id,
-        value: room
-      })
-    });
-
-    socket.on("request join game", (name, roomId) => {
-      console.log(name + "has requested to join game " + roomId);
-    })
+    // Add socket.io related stuff here
   });
 }
 
 
-function addPlayerToRoom() {
-  console.log('Adding player to room. Socket id: ', socket);
-}
-
-
-function generateRoomNumber() {
-  return Math.floor(Math.random()*90000) + 1000;
+module.exports = {
+  Room: Room
 }
