@@ -3,8 +3,8 @@
 const expect = require('chai').expect;
 const server = require('../app');
 const serverIo = require('../app');
-const lobbys = require('../server/lobby');
-let Lobby = lobbys.Lobby;
+const lobbies = require('../server/lobby');
+let Lobby = lobbies.Lobby;
 var assert = require('assert');
 
 const io = require('socket.io-client');
@@ -26,7 +26,7 @@ describe('Lobby creation Events', () => {
 
   afterEach((done) => {
     player.disconnect();
-    server.emptyLobbysArray();
+    Lobby.emptyLobbiesArray();
 
     done();
   })
@@ -36,17 +36,17 @@ describe('Lobby creation Events', () => {
     
     player.emit("request create game", "testPlayerName");
     player.on("response lobby created", () => {
-      expect(server.getLobbysCount()).to.have.be.at.least(1);
+      expect(Lobby.getCount()).to.have.be.at.least(1);
       done();
     })
   });
 
 
-  it("Newly created lobby should be able to be found in the collection of lobbys", (done) => {
+  it("Newly created lobby should be able to be found in the collection of lobbies", (done) => {
     
     player.emit("request create game", "testPlayerName");
     player.on("response lobby created", (lobbyId) => {
-      var result = server.getLobby(lobbyId);
+      var result = Lobby.getLobby(lobbyId);
       expect(result).to.not.be.null.and.to.not.be.undefined;
       done();
     })
@@ -74,7 +74,7 @@ describe('Lobby creation Events', () => {
     
     player.emit("request create game", "testPlayerName");
     player.on("response lobby created", (lobbyId) => {
-      var newLobby = server.getLobby(lobbyId);
+      var newLobby = Lobby.getLobby(lobbyId);
       expect(newLobby.id).to.be.a('number');
       expect(newLobby.id).to.be.above(999).and.to.be.below(10000);
       done();
@@ -86,7 +86,7 @@ describe('Lobby creation Events', () => {
     
     player.emit("request create game", "testPlayerName");
     player.on("response lobby created", (lobbyId) => {
-      var lobby = server.getLobby(lobbyId);
+      var lobby = Lobby.getLobby(lobbyId);
       var foundPlayer = lobby.getPlayer(player.id);
 
       expect(player.id).to.be.equal(foundPlayer.id);
@@ -99,7 +99,7 @@ describe('Lobby creation Events', () => {
 
     player.emit("request create game", "testPlayerName");
     player.on("response lobby created", (lobbyId) => {
-      var lobby = server.getLobby(lobbyId);
+      var lobby = Lobby.getLobby(lobbyId);
       expect(lobby.players).to.have.lengthOf(1);
       done();
     });
@@ -108,9 +108,9 @@ describe('Lobby creation Events', () => {
 
 
 /**
- * These tests are for any functionalities during the waiting lobby - before the game has begun
+ * These tests are for any functionalities during waiting in the lobby - before the game has begun
  */
-describe('Lobby lobby Events', () => {
+describe('Lobby Events', () => {
 
   var player; // The initial player that created the lobby
   var lobby;
@@ -119,14 +119,14 @@ describe('Lobby lobby Events', () => {
     player = io("http://localhost:3000/", ioOptions);
     player.emit("request create game", "testPlayerName");
     player.on("response lobby created", (lobbyId) => {
-      lobby = server.getLobby(lobbyId);
+      lobby = Lobby.getLobby(lobbyId);
       done();
     });
   });
 
   afterEach((done) => {
     player.disconnect();
-    server.emptyLobbysArray();
+    Lobby.emptyLobbiesArray();
     done();
   })
 
@@ -145,7 +145,7 @@ describe('Lobby lobby Events', () => {
     newPlayer.emit("request join game", "testPlayerName", lobby.id);
 
     newPlayer.on("response lobby joined", () => {      
-      var currentLobbyId = server.getLobby(lobby.id).id;
+      var currentLobbyId = Lobby.getLobby(lobby.id).id;
       expect(lobby.id).to.equal(currentLobbyId);
 
       newPlayer.disconnect();

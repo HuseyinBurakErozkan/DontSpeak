@@ -4,6 +4,9 @@
 const path = require('path');
 const CLIENT_DIR = path.join(__dirname, '../client');
 
+var lobbies = [];
+
+
 /**
  * 
  * @param {*} app The express app. Passed as an argument to allow the lobby object to perform routing 
@@ -49,7 +52,30 @@ Lobby.createLobby = (socket, app, io) => {
   var lobby = new Lobby(app, io);
   lobby.addPlayer(socket);
 
+  lobbies.push({
+    key: lobby.id,
+    value: lobby
+  });
+
+
   return lobby;
+}
+
+Lobby.getLobby = (id) => {
+  // Note that the lobby's id is stored as a key in the dict, so compare l.key to id
+  var lobby = lobbies.find(l => l.key == id);
+
+  // Return the value, which is the lobby object itself
+  return lobby.value;
+}
+
+Lobby.getCount = () => {
+  return lobbies.length;
+}
+
+// NOTE: Used only for testing purposes
+Lobby.emptyLobbiesArray = () => {
+  lobbies = [];
 }
 
 

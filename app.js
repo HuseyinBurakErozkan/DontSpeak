@@ -13,8 +13,6 @@ const lobbyModule = require('./server/lobby');
 let Lobby = lobbyModule.Lobby;
 
 
-var lobbys = [];
-
 // Handle the initial client connection
 io.on('connection', (socket) => {
 
@@ -28,7 +26,7 @@ io.on('connection', (socket) => {
     }
 
     attachPlayerInfo(socket, name);
-    var lobby = createLobby(socket);
+    var lobby = Lobby.createLobby(socket, app, io);
 
     // Respond with the lobby's id
     io.to(socket.id).emit("response lobby created", lobby.id);
@@ -48,7 +46,7 @@ io.on('connection', (socket) => {
       return;      
     }
     
-    var lobby = getLobby(id);
+    var lobby = Lobby.getLobby(id);
     attachPlayerInfo(socket, name);
     lobby.addPlayer(socket);
 
@@ -57,7 +55,7 @@ io.on('connection', (socket) => {
 
 
   socket.on("debug", () => {
-    console.log(lobbys);
+    // This will be used for debugging specific emitters or listeners
   })
 });
 
@@ -71,39 +69,6 @@ io.on('connection', (socket) => {
 function attachPlayerInfo(socket, name) {
   socket.playerName = name;
 }
-
-
-
-function createLobby(socket, name) {
-  var lobby = Lobby.createLobby(socket, app, io);
-
-  lobbys.push({
-    key: lobby.id,
-    value: lobby
-  });
-
-  return lobby;
-}
-
-function getLobby(id) {
-  // Note that the lobby's id is stored as a key in the dict, so compare r.key to id
-  var lobby = lobbys.find(r => r.key == id);
-
-  // Return the value, which is the lobby object itself
-  return lobby.value;
-}
-
-function getLobbysCount() {
-  return lobbys.length;
-}
-
-function emptyLobbysArray() {
-  lobbys = [];
-}
-
-// Export functions for testing
-module.exports = {attachPlayerInfo, createLobby, getLobby, getLobbysCount, emptyLobbysArray}
-
 
 // Export the express app io so it can be used when testing route-related functions, as well
 // as other functions that may require it passed as an argument (the lobby object for example)
