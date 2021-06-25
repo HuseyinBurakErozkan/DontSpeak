@@ -2,6 +2,7 @@
 <html>
   <head>
     <title>Dont Speak!</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
   <body>
     <h1>Dont Speak!</h1>
@@ -33,6 +34,16 @@
       <!--  Lobby screen -->
       <div id="screen-lobby" hidden>
         <h2 id="h2-lobby-id">Lobby id</h2>
+        <div id="display-teams">
+          <p>Team 1</p>
+          <div id="div-team1">
+
+          </div>
+          <p>Team 2</p>
+          <div id="div-team2">
+
+          </div>
+        </div>
         <form id="form-start-game" method="POST">
           <input type="submit" value="Start">
         </form>
@@ -41,8 +52,12 @@
       <!-- -->
     </div>
     <script src="/socket.io/socket.io.js"></script>
-    <script src="./javascript/mainmenu.js"></script> 
-    <!-- All other scripts using sockets go below this line -->
-    <script src="./javascript/lobby.js"></script>
+    <script>
+      var socket = io();
+    </script>
+      <!-- All other scripts using sockets go below this line -->
+      <script src="./javascript/lobby.js"></script>
+      <script src="./javascript/mainmenu.js"></script>
+      <script src="./javascript/flash.js"></script>
   </body>
 </html>

@@ -1,4 +1,3 @@
-var socket = io();
 
 /**
  * Handles switching between the logically separated 'screens' in the menu section
@@ -34,10 +33,11 @@ createForm.addEventListener("submit", (e) => {
 
     
     // Once the server responds
-    socket.on("response lobby created", (id) => {
+    socket.on("response lobby created", (id, team1, team2) => {
       document.getElementById('h2-lobby-id').innerHTML = "Game id: " + id;
       
       changeScreen(createForm, 'screen-lobby');
+      joinLobby(team1, team2);
     });
   }
 });
@@ -64,7 +64,6 @@ joinForm.addEventListener("submit", (e) => {
     console.log("Need a valid lobby number. 4 digits");
   }
   else {
-    console.log("Joining lobby " + lobbyId + " as " + name);
     socket.emit("request join game", name, lobbyId);
 
     // Once the server responds

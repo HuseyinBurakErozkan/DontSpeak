@@ -208,6 +208,22 @@ describe('Lobby Events', () => {
     });
   });
 
+  it("Player should NOT be able to join a lobby if an incorrect id is provded", (done) => {
+    var newPlayer = io("http://localhost:3000/", ioOptions);
+    var wrongId = lobby.id + 1;
+    newPlayer.emit("request join game", "testPlayerName", wrongId);
+      
+    // The server has allowed the played to join, therefore test failed
+    newPlayer.on("response lobby joined", (lobbyId) => {
+      assert.fail();
+      newPlayer.disconnect();
+      done();
+    });
+
+    newPlayer.on("error", () => {
+      done();
+    });
+  })
 
   it("Lobby should NOT add player if invalid name", (done) => {
     

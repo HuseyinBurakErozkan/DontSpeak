@@ -59,6 +59,7 @@ function Lobby() {
     return this.players.find(p => p.key == playerId).value;
   };
 
+
   this.changePlayerTeam = (socket) => {
 
     // First find which team the player belongs to
@@ -100,6 +101,31 @@ function Lobby() {
       // TODO: Do something. Start the game
     }
   }
+
+  // TODO: Rewrite the code for sockets and players to avoid the neccesity for these sorts of
+  // functions, as they may cause issues later
+  /**
+   * Since socket data can't be sent to clients without causing issues/errors, and player data
+   * is attached to sockets, we need to extract the player data from sockets and send only the player
+   * data and socket id. This function extracts player data for every player in the lobby
+   */
+  this.getArrayOfPlayersWithoutSockets = () => {
+    
+    var team1PlayerData = [];
+    var team2PlayerData = [];
+    
+    for (var key in this.team1) {
+      var socket = this.team1[key].value;
+      team1PlayerData.push(socket.player);
+    }
+
+    for (var key in this.team2) {
+      var socket = this.team2[key].value;
+      team2PlayerData.push(socket.player);
+    }
+    
+    return [team1PlayerData, team2PlayerData];
+  }
 }
 
 Lobby.createLobby = (socket) => {
@@ -119,6 +145,10 @@ Lobby.getLobby = (id) => {
   // Note that the lobby's id is stored as a key in the dict, so compare l.key to id
   var lobby = lobbies.find(l => l.key == id);
 
+  if (lobby === undefined) {
+    return undefined;
+  }
+  
   // Return the value, which is the lobby object itself
   return lobby.value;
 }

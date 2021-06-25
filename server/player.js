@@ -1,7 +1,8 @@
-function Player(name, lobby) {
+function Player(name, lobby, id) {
   
   this.name = name;
   this.inLobby = lobby;
+  this.id = id;
 }
 
 /**
@@ -31,7 +32,8 @@ Player.create = (socket, name, lobbyId) => {
   if (socket !== undefined && name !== undefined && lobbyId !== undefined) {
     socket.player = {
       name: name,
-      lobbyId: lobbyId
+      lobbyId: lobbyId,
+      id: socket.id
     }
     return true;
   }
