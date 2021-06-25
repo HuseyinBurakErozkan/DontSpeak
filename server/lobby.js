@@ -1,16 +1,16 @@
 /**
- * This file contains all room-related routes and methods
+ * This file contains all lobby-related routes and methods
  */
 const path = require('path');
 const CLIENT_DIR = path.join(__dirname, '../client');
 
 /**
  * 
- * @param {*} app The express app. Passed as an argument to allow the room object to perform routing 
- * @param {*} io The socket.io server. Required to be passed as an argument to allow room 
+ * @param {*} app The express app. Passed as an argument to allow the lobby object to perform routing 
+ * @param {*} io The socket.io server. Required to be passed as an argument to allow lobby 
  * to perform socket.io related functions
  */
-function Room(app, io) {
+function Lobby(app, io) {
 
   // Dictionary datatype, with the key being the client socket id, and the value being
   // the socket object with player-relayed information attached
@@ -45,7 +45,15 @@ function Room(app, io) {
   });
 }
 
+Lobby.createLobby = (socket, app, io) => {
+  var lobby = new Lobby(app, io);
+  lobby.addPlayer(socket);
+
+  return lobby;
+}
+
+
 
 module.exports = {
-  Room: Room
+  Lobby: Lobby,
 }

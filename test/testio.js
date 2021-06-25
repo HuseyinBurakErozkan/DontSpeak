@@ -3,8 +3,8 @@
 const expect = require('chai').expect;
 const server = require('../app');
 const serverIo = require('../app');
-const rooms = require('../server/room');
-let Room = rooms.Room;
+const lobbys = require('../server/lobby');
+let Lobby = lobbys.Lobby;
 var assert = require('assert');
 
 const io = require('socket.io-client');
@@ -14,7 +14,7 @@ const ioOptions = {
   reconnection: false
 }
 
-describe('Room creation Events', () => {
+describe('Lobby creation Events', () => {
 
   var player;
 
@@ -26,39 +26,39 @@ describe('Room creation Events', () => {
 
   afterEach((done) => {
     player.disconnect();
-    server.emptyRoomsArray();
+    server.emptyLobbysArray();
 
     done();
   })
 
 
-  it("New Room should be created and stored in a collection on creation", (done) => {
+  it("New Lobby should be created and stored in a collection on creation", (done) => {
     
     player.emit("request create game", "testPlayerName");
-    player.on("response room created", () => {
-      expect(server.getRoomsCount()).to.have.be.at.least(1);
+    player.on("response lobby created", () => {
+      expect(server.getLobbysCount()).to.have.be.at.least(1);
       done();
     })
   });
 
 
-  it("Newly created room should be able to be found in the collection of rooms", (done) => {
+  it("Newly created lobby should be able to be found in the collection of lobbys", (done) => {
     
     player.emit("request create game", "testPlayerName");
-    player.on("response room created", (roomId) => {
-      var result = server.getRoom(roomId);
+    player.on("response lobby created", (lobbyId) => {
+      var result = server.getLobby(lobbyId);
       expect(result).to.not.be.null.and.to.not.be.undefined;
       done();
     })
   });
 
 
-  it("New room should NOT be created if player hasn't provided a name", (done) => {
+  it("New lobby should NOT be created if player hasn't provided a name", (done) => {
 
     player.emit("request create game", "");
     
     // Server should never respond in this fashion if the player hasn't provided a name
-    player.on("response room created", (roomId) => {
+    player.on("response lobby created", (lobbyId) => {
       assert.fail();
       done();
     });
@@ -70,24 +70,24 @@ describe('Room creation Events', () => {
   })
 
 
-  it("New room should have generated a 4 digit id on initialisation", (done) => {
+  it("New lobby should have generated a 4 digit id on initialisation", (done) => {
     
     player.emit("request create game", "testPlayerName");
-    player.on("response room created", (roomId) => {
-      var newRoom = server.getRoom(roomId);
-      expect(newRoom.id).to.be.a('number');
-      expect(newRoom.id).to.be.above(999).and.to.be.below(10000);
+    player.on("response lobby created", (lobbyId) => {
+      var newLobby = server.getLobby(lobbyId);
+      expect(newLobby.id).to.be.a('number');
+      expect(newLobby.id).to.be.above(999).and.to.be.below(10000);
       done();
     });
   });
 
 
-  it("Player should be added to the room that they created", (done) => {
+  it("Player should be added to the lobby that they created", (done) => {
     
     player.emit("request create game", "testPlayerName");
-    player.on("response room created", (roomId) => {
-      var room = server.getRoom(roomId);
-      var foundPlayer = room.getPlayer(player.id);
+    player.on("response lobby created", (lobbyId) => {
+      var lobby = server.getLobby(lobbyId);
+      var foundPlayer = lobby.getPlayer(player.id);
 
       expect(player.id).to.be.equal(foundPlayer.id);
       done();
@@ -95,12 +95,12 @@ describe('Room creation Events', () => {
   });
 
   
-  it("Room should only have 1 player on creation", (done) => {
+  it("Lobby should only have 1 player on creation", (done) => {
 
     player.emit("request create game", "testPlayerName");
-    player.on("response room created", (roomId) => {
-      var room = server.getRoom(roomId);
-      expect(room.players).to.have.lengthOf(1);
+    player.on("response lobby created", (lobbyId) => {
+      var lobby = server.getLobby(lobbyId);
+      expect(lobby.players).to.have.lengthOf(1);
       done();
     });
   });
@@ -108,45 +108,45 @@ describe('Room creation Events', () => {
 
 
 /**
- * These tests are for any functionalities during the waiting room - before the game has begun
+ * These tests are for any functionalities during the waiting lobby - before the game has begun
  */
-describe('Room lobby Events', () => {
+describe('Lobby lobby Events', () => {
 
-  var player; // The initial player that created the room
-  var room;
+  var player; // The initial player that created the lobby
+  var lobby;
 
   beforeEach((done) => {
     player = io("http://localhost:3000/", ioOptions);
     player.emit("request create game", "testPlayerName");
-    player.on("response room created", (roomId) => {
-      room = server.getRoom(roomId);
+    player.on("response lobby created", (lobbyId) => {
+      lobby = server.getLobby(lobbyId);
       done();
     });
   });
 
   afterEach((done) => {
     player.disconnect();
-    server.emptyRoomsArray();
+    server.emptyLobbysArray();
     done();
   })
 
 
   it("Game cannot be started unless there are at least 4 players", (done) => {
 
-    var result = room.startGame();
+    var result = lobby.startGame();
     expect(result).to.equal(false);
     done();
   });
 
 
-  it("Joining player should be added to correct room", (done) => {
+  it("Joining player should be added to correct lobby", (done) => {
     
     var newPlayer = io("http://localhost:3000/", ioOptions);
-    newPlayer.emit("request join game", "testPlayerName", room.id);
+    newPlayer.emit("request join game", "testPlayerName", lobby.id);
 
-    newPlayer.on("response room joined", () => {      
-      var currentRoomId = server.getRoom(room.id).id;
-      expect(room.id).to.equal(currentRoomId);
+    newPlayer.on("response lobby joined", () => {      
+      var currentLobbyId = server.getLobby(lobby.id).id;
+      expect(lobby.id).to.equal(currentLobbyId);
 
       newPlayer.disconnect();
       done();
@@ -156,7 +156,7 @@ describe('Room lobby Events', () => {
 
   // A MaxListenersExceededWarning warning is being thrown when this test runs. Comment out for now
   // and figure out the cause of the issue.
-  // it("Room should add new players who are trying to join", (done) => {
+  // it("Lobby should add new players who are trying to join", (done) => {
 
   //   /**
   //    * This number will be decremented each time a player is added. Once at 0, the
@@ -167,19 +167,19 @@ describe('Room lobby Events', () => {
   //   var loopAmt = playersLeft;
   //   for (var i = 0; i < loopAmt; i++) {
   //     var newPlayer = io("http://localhost:3000/", ioOptions);
-  //     newPlayer.emit("request join game", "testPlayerName", room.id);
-  //     newPlayer.on("response room joined", (roomId) => {
+  //     newPlayer.emit("request join game", "testPlayerName", lobby.id);
+  //     newPlayer.on("response lobby joined", (lobbyId) => {
 
   //       playersLeft--; // Decrement in the callback
 
   //       // Only perform the test once the last callback has been called
   //       if (playersLeft === 0) {
           
-  //         // 3 new players + The original player that created the room
-  //         expect(room.players).to.have.lengthOf(4);
+  //         // 3 new players + The original player that created the lobby
+  //         expect(lobby.players).to.have.lengthOf(4);
 
   //         // Disconnect all sockets to prevent memory leaks
-  //         for (const [key, value] of Object.entries(room.players)) {
+  //         for (const [key, value] of Object.entries(lobby.players)) {
   //           value.value.disconnect();
   //         }          
 
@@ -190,13 +190,13 @@ describe('Room lobby Events', () => {
   // });
 
 
-  it("Player should NOT join any room if room id is not provided", (done) => {
+  it("Player should NOT join any lobby if lobby id is not provided", (done) => {
     
     var newPlayer = io("http://localhost:3000/", ioOptions);
     newPlayer.emit("request join game", "testPlayerName");
       
     // The server has allowed the played to join, therefore test failed
-    newPlayer.on("response room joined", (roomId) => {
+    newPlayer.on("response lobby joined", (lobbyId) => {
       assert.fail();
       newPlayer.disconnect();
       done();
@@ -213,13 +213,13 @@ describe('Room lobby Events', () => {
 
 
 
-  it("Room should NOT add player if invalid name", (done) => {
+  it("Lobby should NOT add player if invalid name", (done) => {
     
     var newPlayer = io("http://localhost:3000/", ioOptions);
     newPlayer.emit("request join game");
       
     // The server has allowed the played to join, therefore test failed
-    newPlayer.on("response room joined", (roomId) => {
+    newPlayer.on("response lobby joined", (lobbyId) => {
       assert.fail();
       newPlayer.disconnect();
       done();
@@ -247,13 +247,13 @@ describe('Room lobby Events', () => {
   // });
 
 
-  // it("Player should not be able to join room if game in progress", (done) => {
+  // it("Player should not be able to join lobby if game in progress", (done) => {
 
   //   assert.fail();
   //   done();
   // });
 
-  // it ("Room should let every player know when game is starting", (done) => {
+  // it ("Lobby should let every player know when game is starting", (done) => {
   //   assert.fail();
   //   done();
   // });

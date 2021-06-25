@@ -9,16 +9,16 @@ const io = new Server(server);
 app.use(express.static('client/public'));
 
 require('./server/game')(app);
-const roomModule = require('./server/room');
-let Room = roomModule.Room;
+const lobbyModule = require('./server/lobby');
+let Lobby = lobbyModule.Lobby;
 
 
-var rooms = [];
+var lobbys = [];
 
 // Handle the initial client connection
 io.on('connection', (socket) => {
 
-  // Create a new room/lobby and add the player to it 
+  // Create a new lobby/lobby and add the player to it 
   socket.on("request create game", (name) => {
     
     // First check if the player has entered a name
@@ -27,10 +27,11 @@ io.on('connection', (socket) => {
       return;
     }
 
-    var room = createRoom(socket, name);
+    attachPlayerInfo(socket, name);
+    var lobby = createLobby(socket);
 
-    // Respond with the room's id
-    io.to(socket.id).emit("response room created", room.id);
+    // Respond with the lobby's id
+    io.to(socket.id).emit("response lobby created", lobby.id);
   });
 
 
@@ -43,20 +44,20 @@ io.on('connection', (socket) => {
     }
     // Then check to ensure id has been added
     if (id === null || id === undefined) {
-      io.to(socket.id).emit("error", "No room id was provided");
+      io.to(socket.id).emit("error", "No lobby id was provided");
       return;      
     }
     
-    var room = getRoom(id);
+    var lobby = getLobby(id);
     attachPlayerInfo(socket, name);
-    room.addPlayer(socket);
+    lobby.addPlayer(socket);
 
-    io.to(socket.id).emit("response room joined", room.id);
+    io.to(socket.id).emit("response lobby joined", lobby.id);
   });
 
 
   socket.on("debug", () => {
-    console.log(rooms);
+    console.log(lobbys);
   })
 });
 
@@ -73,40 +74,39 @@ function attachPlayerInfo(socket, name) {
 
 
 
-function createRoom(socket) {
-  var room = new Room(app, io);
-  room.addPlayer(socket);
-  rooms.push({
-    key: room.id,
-    value: room
+function createLobby(socket, name) {
+  var lobby = Lobby.createLobby(socket, app, io);
+
+  lobbys.push({
+    key: lobby.id,
+    value: lobby
   });
 
-  return room;
+  return lobby;
 }
 
+function getLobby(id) {
+  // Note that the lobby's id is stored as a key in the dict, so compare r.key to id
+  var lobby = lobbys.find(r => r.key == id);
 
-function getRoom(id) {
-  // Note that the room's id is stored as a key in the dict, so compare r.key to id
-  var room = rooms.find(r => r.key == id);
-
-  // Return the value, which is the room object itself
-  return room.value;
+  // Return the value, which is the lobby object itself
+  return lobby.value;
 }
 
-function getRoomsCount() {
-  return rooms.length;
+function getLobbysCount() {
+  return lobbys.length;
 }
 
-function emptyRoomsArray() {
-  rooms = [];
+function emptyLobbysArray() {
+  lobbys = [];
 }
 
 // Export functions for testing
-module.exports = {attachPlayerInfo, createRoom, getRoom, getRoomsCount, emptyRoomsArray}
+module.exports = {attachPlayerInfo, createLobby, getLobby, getLobbysCount, emptyLobbysArray}
 
 
 // Export the express app io so it can be used when testing route-related functions, as well
-// as other functions that may require it passed as an argument (the room object for example)
+// as other functions that may require it passed as an argument (the lobby object for example)
 module.exports.app = app;
 module.exports.io = io;
 
