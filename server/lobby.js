@@ -10,10 +10,8 @@ var lobbies = [];
 /**
  * 
  * @param {*} app The express app. Passed as an argument to allow the lobby object to perform routing 
- * @param {*} io The socket.io server. Required to be passed as an argument to allow lobby 
- * to perform socket.io related functions
  */
-function Lobby(app, io) {
+function Lobby(app) {
 
   // Dictionary datatype, with the key being the client socket id, and the value being
   // the socket object with player-relayed information attached
@@ -42,14 +40,10 @@ function Lobby(app, io) {
       // TODO: Do something. Start the game
     }
   }
-
-  io.on("connection", (socket) => {
-    // Add socket.io related stuff here
-  });
 }
 
-Lobby.createLobby = (socket, app, io) => {
-  var lobby = new Lobby(app, io);
+Lobby.createLobby = (socket, app) => {
+  var lobby = new Lobby(app);
   lobby.addPlayer(socket);
 
   lobbies.push({
@@ -80,6 +74,7 @@ Lobby.emptyLobbiesArray = () => {
 
 
 
+
 module.exports = {
-  Lobby: Lobby,
+  Lobby: Lobby
 }

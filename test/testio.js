@@ -156,38 +156,38 @@ describe('Lobby Events', () => {
 
   // A MaxListenersExceededWarning warning is being thrown when this test runs. Comment out for now
   // and figure out the cause of the issue.
-  // it("Lobby should add new players who are trying to join", (done) => {
+  it("Lobby should add new players who are trying to join", (done) => {
 
-  //   /**
-  //    * This number will be decremented each time a player is added. Once at 0, the
-  //    * test will be performed. If the list of players is not = playersLeft + 1 (The player
-  //    * that created the game), that means that not all players were able to be added.
-  //    */
-  //   var playersLeft = 3;
-  //   var loopAmt = playersLeft;
-  //   for (var i = 0; i < loopAmt; i++) {
-  //     var newPlayer = io("http://localhost:3000/", ioOptions);
-  //     newPlayer.emit("request join game", "testPlayerName", lobby.id);
-  //     newPlayer.on("response lobby joined", (lobbyId) => {
+    /**
+     * This number will be decremented each time a player is added. Once at 0, the
+     * test will be performed. If the list of players is not = playersLeft + 1 (The player
+     * that created the game), that means that not all players were able to be added.
+     */
+    var playersLeft = 3;
+    var loopAmt = playersLeft;
+    for (var i = 0; i < loopAmt; i++) {
+      var newPlayer = io("http://localhost:3000/", ioOptions);
+      newPlayer.emit("request join game", "testPlayerName", lobby.id);
+      newPlayer.on("response lobby joined", (lobbyId) => {
 
-  //       playersLeft--; // Decrement in the callback
+        playersLeft--; // Decrement in the callback
 
-  //       // Only perform the test once the last callback has been called
-  //       if (playersLeft === 0) {
+        // Only perform the test once the last callback has been called
+        if (playersLeft === 0) {
           
-  //         // 3 new players + The original player that created the lobby
-  //         expect(lobby.players).to.have.lengthOf(4);
+          // 3 new players + The original player that created the lobby
+          expect(lobby.players).to.have.lengthOf(4);
 
-  //         // Disconnect all sockets to prevent memory leaks
-  //         for (const [key, value] of Object.entries(lobby.players)) {
-  //           value.value.disconnect();
-  //         }          
+          // Disconnect all sockets to prevent memory leaks
+          for (const [key, value] of Object.entries(lobby.players)) {
+            value.value.disconnect();
+          }          
 
-  //         done();
-  //       }
-  //     });
-  //   }
-  // });
+          done();
+        }
+      });
+    }
+  });
 
 
   it("Player should NOT join any lobby if lobby id is not provided", (done) => {
@@ -211,8 +211,6 @@ describe('Lobby Events', () => {
   });
 
 
-
-
   it("Lobby should NOT add player if invalid name", (done) => {
     
     var newPlayer = io("http://localhost:3000/", ioOptions);
@@ -232,6 +230,13 @@ describe('Lobby Events', () => {
     });
   });
 
+  
+  // it ("Lobby should be removed from collection of lobbies once empty", (done) => {
+  //   expect(Lobby.getCount()).to.equal(1);
+
+  //   assert.fail(); // TODO: Remove once test code implemented
+  //   done();
+  // });
 
   // it("Game should start when there are at least 4 players", (done) => {
 

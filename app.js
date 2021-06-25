@@ -26,7 +26,7 @@ io.on('connection', (socket) => {
     }
 
     attachPlayerInfo(socket, name);
-    var lobby = Lobby.createLobby(socket, app, io);
+    var lobby = Lobby.createLobby(socket, app);
 
     // Respond with the lobby's id
     io.to(socket.id).emit("response lobby created", lobby.id);
@@ -56,7 +56,11 @@ io.on('connection', (socket) => {
 
   socket.on("debug", () => {
     // This will be used for debugging specific emitters or listeners
-  })
+  });
+
+  socket.on('disconnect', () => {
+    //console.log("disconnecting");
+  });
 });
 
 
