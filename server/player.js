@@ -1,8 +1,5 @@
-function Player(name, lobby, id) {
-  
-  this.name = name;
-  this.inLobby = lobby;
-  this.id = id;
+function Player() {
+
 }
 
 /**

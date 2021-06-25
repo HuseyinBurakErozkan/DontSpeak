@@ -77,7 +77,17 @@ module.exports = socketHandler = (io, socket) => {
     // This will be used for debugging specific emitters or listeners
   });
 
+  // When a user disconnects, inform the other clients
   socket.on('disconnect', () => {
-    //console.log("socket disconnected");
+    if (socket.hasOwnProperty("player")) {
+      
+      // Remove player from lobby
+      var lobby = Lobby.getLobby(socket.player.lobbyId);
+      lobby.removePlayer(socket);
+
+      // Inform the other clients that player has disconnected
+      var result = lobby.getArrayOfPlayersWithoutSockets();
+      io.to("lobby" + socket.player.lobbyId).emit("update: player left", result[0], result[1]);
+    }
   });
 }

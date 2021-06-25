@@ -14,6 +14,9 @@ socket.on("update: teams changed", (team1, team2) => {
 
 });
 
+socket.on("update: player left", (team1, team2) => {
+  displayTeams(team1, team2);
+});
 
 function displayTeams(team1, team2) {
   var team1Div = document.getElementById("div-team1");

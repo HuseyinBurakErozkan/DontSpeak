@@ -54,6 +54,30 @@ function Lobby() {
   };
 
 
+  this.removePlayer = (socket) => {
+    // TODO: Add functionality to pause or stop game if player drops out and there are only 3 left
+
+    // First find which team the player is in, then remove them.
+    var s = this.team1.find(p => p.key == socket.id);
+
+    if (s !== undefined) {
+      var index = this.team1.indexOf(s.key);
+      this.team1.splice(index, 1);
+      return true;
+    }
+
+    s = this.team2.find(p => p.key == socket.id);
+
+    if (s !== undefined) {
+      var index = this.team2.indexOf(s.key);
+      this.team2.splice(index, 1);
+      return true;
+    }
+
+    return false;
+
+  }
+
   this.getPlayer = (playerId) => {
     // They key is the id, whereas the value is the object itself
     return this.players.find(p => p.key == playerId).value;
@@ -123,7 +147,7 @@ function Lobby() {
       var socket = this.team2[key].value;
       team2PlayerData.push(socket.player);
     }
-    
+
     return [team1PlayerData, team2PlayerData];
   }
 }
