@@ -6,7 +6,6 @@ const CLIENT_DIR = path.join(__dirname, '../client');
 
 var lobbies = [];
 
-
 /**
  * 
  * @param {*} app The express app. Passed as an argument to allow the lobby object to perform routing 

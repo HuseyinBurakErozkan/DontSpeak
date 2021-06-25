@@ -9,8 +9,11 @@ const io = new Server(server);
 app.use(express.static('client/public'));
 
 require('./server/game')(app);
-const lobbyModule = require('./server/lobby');
-let Lobby = lobbyModule.Lobby;
+
+const Player = require('./server/player').Player;
+//const lobbyModule = require('./server/lobby');
+//const Lobby = lobbyModule.Lobby;
+const Lobby = require('./server/lobby').Lobby;
 
 
 // Handle the initial client connection
@@ -20,13 +23,13 @@ io.on('connection', (socket) => {
   socket.on("request create game", (name) => {
     
     // First check if the player has entered a name
-    if (name === null || name === undefined || name.replace(/\s/g, "") == "") {
+    if (!Player.validName(name)) {
       io.to(socket.id).emit("error", "Please input a valid name");
       return;
     }
 
-    attachPlayerInfo(socket, name);
     var lobby = Lobby.createLobby(socket, app);
+    Player.create(socket, name, lobby.id);
 
     // Respond with the lobby's id
     io.to(socket.id).emit("response lobby created", lobby.id);
@@ -36,7 +39,7 @@ io.on('connection', (socket) => {
   socket.on("request join game", (name, id) => {
     
     // First check if the player has entered a name
-    if (name === null || name === undefined || name.replace(/\s/g, "") == "") {
+    if (!Player.validName(name)) {
       io.to(socket.id).emit("error", "Please input a valid name");
       return;
     }
@@ -47,7 +50,7 @@ io.on('connection', (socket) => {
     }
     
     var lobby = Lobby.getLobby(id);
-    attachPlayerInfo(socket, name);
+    Player.create(socket, name, lobby.id);
     lobby.addPlayer(socket);
 
     io.to(socket.id).emit("response lobby joined", lobby.id);
@@ -63,16 +66,6 @@ io.on('connection', (socket) => {
   });
 });
 
-
-/**
- * Attach player's information to the socket, so that it can better represet the player.
- * Only has player name for now, but may be extended in the future.
- * @param {*} socket The socket representing the player's connection 
- * @param {*} name The name of the player
- */
-function attachPlayerInfo(socket, name) {
-  socket.playerName = name;
-}
 
 // Export the express app io so it can be used when testing route-related functions, as well
 // as other functions that may require it passed as an argument (the lobby object for example)
