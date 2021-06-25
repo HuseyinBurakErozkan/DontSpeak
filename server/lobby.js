@@ -63,7 +63,7 @@ function Lobby() {
     if (s !== undefined) {
       var index = this.team1.indexOf(s.key);
       this.team1.splice(index, 1);
-      return true;
+      this.removeLobbyIfEmpty();
     }
 
     s = this.team2.find(p => p.key == socket.id);
@@ -71,11 +71,23 @@ function Lobby() {
     if (s !== undefined) {
       var index = this.team2.indexOf(s.key);
       this.team2.splice(index, 1);
-      return true;
+      this.removeLobbyIfEmpty();
     }
 
     return false;
 
+  }
+
+
+  /**
+   * Once a lobby is empty, it should automatically remove itself from the array.
+   */
+  this.removeLobbyIfEmpty = () => {
+
+    if (this.team1.length === 0 && this.team2.length === 0) {
+      var index = lobbies.indexOf(this);
+      lobbies.splice(index, 1);
+    }
   }
 
   this.getPlayer = (playerId) => {

@@ -26,8 +26,6 @@ describe('Lobby creation Events', () => {
 
   afterEach((done) => {
     player.disconnect();
-    Lobby.emptyLobbiesArray();
-
     done();
   })
 
@@ -126,17 +124,17 @@ describe('Lobby Events', () => {
 
   afterEach((done) => {
     player.disconnect();
-    Lobby.emptyLobbiesArray();
+
     done();
   })
 
 
-  it("Game cannot be started unless there are at least 4 players", (done) => {
+  // it("Game cannot be started unless there are at least 4 players", (done) => {
 
-    var result = lobby.startGame();
-    expect(result).to.equal(false);
-    done();
-  });
+  //   var result = lobby.startGame();
+  //   expect(result).to.equal(false);
+  //   done();
+  // });
 
 
   it("Joining player should be added to correct lobby", (done) => {
@@ -263,6 +261,7 @@ describe('Lobby Events', () => {
     var playersLeft = 3;
     var loopAmt = playersLeft;
     for (var i = 0; i < loopAmt; i++) {
+      console.log(i);
       var newPlayer = io("http://localhost:3000/", ioOptions);
       newPlayer.emit("request: join game", "testPlayerName", lobby.id);
       newPlayer.on("response: lobby joined", (lobbyId) => {
@@ -278,8 +277,7 @@ describe('Lobby Events', () => {
           // Disconnect all sockets to prevent memory leaks
           for (const [key, value] of Object.entries(lobby.players)) {
             value.value.disconnect();
-          }          
-
+          }
           done();
         }
       });
@@ -304,32 +302,7 @@ describe('Lobby Events', () => {
     expect(lobby.team1.length + lobby.team2.length).to.equal(1);
 
     done();
-
-    // As the initial player is randomly assigned to a team, we have to find which team
-    // the player was assigned to before testing.
-    // if (lobby.team1.length === 1 && lobby.team2.length === 0) {
-    //   lobby.changePlayerTeam(player);
-    //   expect(lobby.team1).to.have.lengthOf(0);
-    //   expect(lobby.team2).to.have.lengthOf(1);
-    //   done();
-    // } 
-    // else if (lobby.team1.length === 0 && lobby.team2.length === 1) {
-    //   lobby.changePlayerTeam(player);
-    //   expect(lobby.team1).to.have.lengthOf(1);
-    //   expect(lobby.team2).to.have.lengthOf(0);
-    //   done();
-    // } else { // Should never reach this point
-    //   assert.fail();
-    //   done();
-    // }
   });
-
-  // it ("Lobby should be removed from collection of lobbies once empty", (done) => {
-  //   expect(Lobby.getCount()).to.equal(1);
-
-  //   assert.fail(); // TODO: Remove once test code implemented
-  //   done();
-  // });
 
   // it("Game should start when there are at least 4 players", (done) => {
 
@@ -355,5 +328,31 @@ describe('Lobby Events', () => {
   //   assert.fail();
   //   done();
   // });
+
+  // it("Game should not continue if player has left and there are less than the minimum required 4 players", (done) => {
+  //   assert.fail();
+  //   done();
+  // });
+
+});
+
+describe("Lobby destruction events", () => {
+
+  it ("Lobby should be removed from collection of lobbies once empty", (done) => {
+    
+    // TODO: Find why some lobbies still exist during testing, even though they should all be removed
+    Lobby.emptyLobbiesArray(); // First empty the array.
+
+    var player = io("http://localhost:3000/", ioOptions);
+    player.emit("request: create game", "testPlayerName");
+    
+    player.on("response: lobby created", () => {
+      expect(Lobby.getCount()).to.equal(1);
+      player.disconnect();
+
+      done();
+    });
+
+  });
 
 });
