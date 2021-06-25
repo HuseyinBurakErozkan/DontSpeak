@@ -11,13 +11,12 @@ app.use(express.static('client/public'));
 require('./server/game')(app);
 
 const Player = require('./server/player').Player;
-//const lobbyModule = require('./server/lobby');
-//const Lobby = lobbyModule.Lobby;
 const Lobby = require('./server/lobby').Lobby;
 
 
 // Handle the initial client connection
 io.on('connection', (socket) => {
+  //console.log('socket connected');
 
   // Create a new lobby/lobby and add the player to it 
   socket.on("request create game", (name) => {
@@ -62,7 +61,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', () => {
-    //console.log("disconnecting");
+    //console.log("socket disconnected");
   });
 });
 
@@ -75,4 +74,3 @@ module.exports.io = io;
 module.exports.server = server.listen(3000, () => {
   console.log("listening on *:3000");
 });
-

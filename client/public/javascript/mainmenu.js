@@ -31,6 +31,14 @@ createForm.addEventListener("submit", (e) => {
   else {
     console.log("Name is " + name);
     socket.emit("request create game", name);
+
+    
+    // Once the server responds
+    socket.on("response lobby created", (id) => {
+      document.getElementById('h2-lobby-id').innerHTML = "Game id: " + id;
+      
+      changeScreen(createForm, 'screen-lobby');
+    });
   }
 });
 
@@ -45,19 +53,27 @@ joinForm.addEventListener("submit", (e) => {
   var nameInput = document.getElementById("input-name-join");
   var name = nameInput.value.trim();
 
-  var roomId = document.getElementById("input-room-number").value.trim();
+  var lobbyId = document.getElementById("input-lobby-number").value.trim();
 
   if (name.replace(/\s/g, "") == "" || nameInput.value == null) {
     // TODO: Display feedback
     console.log("Need a valid username");
   }
-  else if (roomId < 1000 || roomId > 9999) {
+  else if (lobbyId < 1000 || lobbyId > 9999) {
     // TODO: Display feedback
-    console.log("Need a valid room number. 4 digits");
+    console.log("Need a valid lobby number. 4 digits");
   }
   else {
-    console.log("Joining room " + roomId + " as " + name);
-    socket.emit("request join game", name, roomId);
+    console.log("Joining lobby " + lobbyId + " as " + name);
+    socket.emit("request join game", name, lobbyId);
+
+    // Once the server responds
+    socket.on("response lobby joined", (id) => {
+
+      document.getElementById('h2-lobby-id').innerHTML = "Game id: " + id;
+
+      changeScreen(joinForm, 'screen-lobby');
+    });
   }
   
 });

@@ -154,8 +154,6 @@ describe('Lobby Events', () => {
   });
 
 
-  // A MaxListenersExceededWarning warning is being thrown when this test runs. Comment out for now
-  // and figure out the cause of the issue.
   it("Lobby should add new players who are trying to join", (done) => {
 
     /**
@@ -230,7 +228,86 @@ describe('Lobby Events', () => {
     });
   });
 
+
+  it("Player should be assigned to a team when lobby is created", (done) => {
+    // Sum the lengths of both team arrays. It should be 1 if player was placed into a team
+    var teamsLength = lobby.team1.length + lobby.team2.length;
+    expect(teamsLength).to.equal(1);
+
+    done();
+  });
+
+  it("Lobby should balance out teams when other players join", (done) => {
+
+    /**
+     * This number will be decremented each time a player is added. Once at 0, the
+     * test will be performed. If the list of players is not = playersLeft + 1 (The player
+     * that created the game), that means that not all players were able to be added.
+     */
+    var playersLeft = 3;
+    var loopAmt = playersLeft;
+    for (var i = 0; i < loopAmt; i++) {
+      var newPlayer = io("http://localhost:3000/", ioOptions);
+      newPlayer.emit("request join game", "testPlayerName", lobby.id);
+      newPlayer.on("response lobby joined", (lobbyId) => {
+
+        playersLeft--; // Decrement in the callback
+
+        // Only perform the test once the last callback has been called
+        if (playersLeft === 0) {
+          
+          // If working as expected, the players should be evenly divided into both teams
+          expect(lobby.team1.length).to.equal(lobby.team2.length);
+
+          // Disconnect all sockets to prevent memory leaks
+          for (const [key, value] of Object.entries(lobby.players)) {
+            value.value.disconnect();
+          }          
+
+          done();
+        }
+      });
+    }
+  });
   
+
+  it("Lobby should be able to change a player's team", (done) => {
+
+    // First ensure only the original player is in 1 team
+    expect(lobby.team1.length + lobby.team2.length).to.equal(1);
+
+    var t1length = lobby.team1.length;
+
+    lobby.changePlayerTeam(player);
+
+    // Team count for both should have flipped between 0 and 1, so only need to check if the 
+    // current length of team1 is not equal to the previous value
+    expect(t1length).to.not.equal(lobby.team1.length);
+
+    // Also ensure that total players between both teams are still 1
+    expect(lobby.team1.length + lobby.team2.length).to.equal(1);
+
+    done();
+
+    // As the initial player is randomly assigned to a team, we have to find which team
+    // the player was assigned to before testing.
+    // if (lobby.team1.length === 1 && lobby.team2.length === 0) {
+    //   lobby.changePlayerTeam(player);
+    //   expect(lobby.team1).to.have.lengthOf(0);
+    //   expect(lobby.team2).to.have.lengthOf(1);
+    //   done();
+    // } 
+    // else if (lobby.team1.length === 0 && lobby.team2.length === 1) {
+    //   lobby.changePlayerTeam(player);
+    //   expect(lobby.team1).to.have.lengthOf(1);
+    //   expect(lobby.team2).to.have.lengthOf(0);
+    //   done();
+    // } else { // Should never reach this point
+    //   assert.fail();
+    //   done();
+    // }
+  });
+
   // it ("Lobby should be removed from collection of lobbies once empty", (done) => {
   //   expect(Lobby.getCount()).to.equal(1);
 

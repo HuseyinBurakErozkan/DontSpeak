@@ -8,7 +8,7 @@
     <!-- The initial menu is logically separated into 'screens' -->
     <div class="screen-container">
       <!-- Start screen -->
-      <div id="screen-start">
+      <div id="screen-menu">
         <button onClick="changeScreen(this, 'screen-create')">Create game</button>
         <button onClick="changeScreen(this, 'screen-join')">Join game</button>
       </div>
@@ -17,22 +17,32 @@
         <form id="form-create" method="POST">
           <input type="text" id="input-name-create" class="input-name-create" placeholder="Your name"/>
           <br />
-          <input type="submit" value="New room">
+          <input type="submit" value="New lobby">
         </form>
       </div>
       <!-- Join game screen -->
       <div id="screen-join" hidden>
         <form id="form-join" method="POST">
-          <input type="number" id="input-room-number" placeholder="Room number (4 digits)" />
+          <input type="number" id="input-lobby-number" placeholder="Lobby number (4 digits)" />
           <br />
           <input type="text" id="input-name-join" placeholder="Your name"/>
           <br />
           <input type="submit" value="Join game">
         </form>
       </div>
-      <!--  -->
+      <!--  Lobby screen -->
+      <div id="screen-lobby" hidden>
+        <h2 id="h2-lobby-id">Lobby id</h2>
+        <form id="form-start-game" method="POST">
+          <input type="submit" value="Start">
+        </form>
+      </div>
+
+      <!-- -->
     </div>
     <script src="/socket.io/socket.io.js"></script>
-    <script src="./javascript/ui.js"></script>
+    <script src="./javascript/mainmenu.js"></script> 
+    <!-- All other scripts using sockets go below this line -->
+    <script src="./javascript/lobby.js"></script>
   </body>
 </html>

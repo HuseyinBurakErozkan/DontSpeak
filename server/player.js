@@ -1,7 +1,6 @@
 function Player(name, lobby) {
   
   this.name = name;
-  this.score = 0;
   this.inLobby = lobby;
 }
 
@@ -34,10 +33,8 @@ Player.create = (socket, name, lobbyId) => {
       name: name,
       lobbyId: lobbyId
     }
-
     return true;
   }
-
   return false;
 }
 

@@ -1,9 +1,6 @@
 /**
  * This file contains all lobby-related routes and methods
  */
-const path = require('path');
-const CLIENT_DIR = path.join(__dirname, '../client');
-
 var lobbies = [];
 
 /**
@@ -15,14 +12,49 @@ function Lobby(app) {
   // Dictionary datatype, with the key being the client socket id, and the value being
   // the socket object with player-relayed information attached
   this.players = [];
+  
+  // Only 2 teams for now
+  this.team1 = [];
+  this.team2 = [];
+
   this.id = Math.floor(Math.random()*9000) + 1000;
 
 
-  this.addPlayer = (player) => {
+  this.addPlayer = (socket) => {
     this.players.push({
-      key: player.id,
-      value: player
-    })
+      key: socket.id,
+      value: socket
+    });
+
+    // Automatically assign a player to a team
+    if (this.team1.length < this.team2.length) {
+      this.team1.push({
+        key: socket.id,
+        value: socket
+      });
+    }
+    else if (this.team1.length > this.team2.length) {
+      this.team2.push({
+        key: socket.id,
+        value: socket
+      });
+    }
+    else if (this.team1.length === this.team2.length) {
+      
+      // Randomly assign the player to a team
+      var rand = Math.round(Math.random());
+      if (rand < 0.5) {
+        this.team1.push({
+          key: socket.id,
+          value: socket
+        });
+      } else {
+        this.team2.push({
+          key: socket.id,
+          value: socket
+        });
+      }
+    }
   };
 
 
@@ -31,7 +63,40 @@ function Lobby(app) {
     return this.players.find(p => p.key == playerId).value;
   };
 
-  
+  this.changePlayerTeam = (socket) => {
+
+    // First find which team the player belongs to
+
+    var s = this.team1.find(p => p.key == socket.id);
+
+    // Since there are only 2 teams, changing teams just requires flipping the player to the other team
+    if (s !== undefined) {
+      // First remove the player from team 1 array, then add to team 2 array
+      var index = this.team1.indexOf(s.key);
+      this.team1.splice(index, 1);
+      this.team2.push({
+        key: socket.id,
+        value: socket
+      });
+      return true; // Indicate that player was successfully moved
+    }
+    
+    s = this.team2.find(p => p.key == socket.id);
+
+    if (s !== undefined) {
+      // First remove the player from team 1 array, then add to team 2 array
+      var index = this.team2.indexOf(s.key);
+      this.team2.splice(index, 1);
+      this.team1.push({
+        key: socket.id,
+        value: socket
+      });
+      return true; // Indicate that player was successfully moved
+    }
+    
+    return false;
+  }
+    
   this.startGame = () => {
     if (this.players.length < 4) {
       return false; // Don't allow the game to start, as at least 4 players are needed
@@ -70,8 +135,6 @@ Lobby.getCount = () => {
 Lobby.emptyLobbiesArray = () => {
   lobbies = [];
 }
-
-
 
 
 module.exports = {
