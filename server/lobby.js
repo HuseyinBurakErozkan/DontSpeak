@@ -3,11 +3,7 @@
  */
 var lobbies = [];
 
-/**
- * 
- * @param {*} app The express app. Passed as an argument to allow the lobby object to perform routing 
- */
-function Lobby(app) {
+function Lobby() {
 
   // Dictionary datatype, with the key being the client socket id, and the value being
   // the socket object with player-relayed information attached
@@ -106,8 +102,8 @@ function Lobby(app) {
   }
 }
 
-Lobby.createLobby = (socket, app) => {
-  var lobby = new Lobby(app);
+Lobby.createLobby = (socket) => {
+  var lobby = new Lobby();
   lobby.addPlayer(socket);
 
   lobbies.push({
