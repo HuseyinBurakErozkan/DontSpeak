@@ -34,8 +34,8 @@ describe('Lobby creation Events', () => {
 
   it("New Lobby should be created and stored in a collection on creation", (done) => {
     
-    player.emit("request create game", "testPlayerName");
-    player.on("response lobby created", () => {
+    player.emit("request: create game", "testPlayerName");
+    player.on("response: lobby created", () => {
       expect(Lobby.getCount()).to.have.be.at.least(1);
       done();
     })
@@ -44,8 +44,8 @@ describe('Lobby creation Events', () => {
 
   it("Newly created lobby should be able to be found in the collection of lobbies", (done) => {
     
-    player.emit("request create game", "testPlayerName");
-    player.on("response lobby created", (lobbyId) => {
+    player.emit("request: create game", "testPlayerName");
+    player.on("response: lobby created", (lobbyId) => {
       var result = Lobby.getLobby(lobbyId);
       expect(result).to.not.be.null.and.to.not.be.undefined;
       done();
@@ -55,16 +55,16 @@ describe('Lobby creation Events', () => {
 
   it("New lobby should NOT be created if player hasn't provided a name", (done) => {
 
-    player.emit("request create game", "");
+    player.emit("request: create game", "");
     
     // Server should never respond in this fashion if the player hasn't provided a name
-    player.on("response lobby created", (lobbyId) => {
+    player.on("response: lobby created", (lobbyId) => {
       assert.fail();
       done();
     });
 
     // The correct response would be for the server to emit an error to the user
-    player.on("error", (msg) => {
+    player.on("error:", (msg) => {
       done(); // Indicate that the test has passed
     });
   })
@@ -72,8 +72,8 @@ describe('Lobby creation Events', () => {
 
   it("New lobby should have generated a 4 digit id on initialisation", (done) => {
     
-    player.emit("request create game", "testPlayerName");
-    player.on("response lobby created", (lobbyId) => {
+    player.emit("request: create game", "testPlayerName");
+    player.on("response: lobby created", (lobbyId) => {
       var newLobby = Lobby.getLobby(lobbyId);
       expect(newLobby.id).to.be.a('number');
       expect(newLobby.id).to.be.above(999).and.to.be.below(10000);
@@ -84,8 +84,8 @@ describe('Lobby creation Events', () => {
 
   it("Player should be added to the lobby that they created", (done) => {
     
-    player.emit("request create game", "testPlayerName");
-    player.on("response lobby created", (lobbyId) => {
+    player.emit("request: create game", "testPlayerName");
+    player.on("response: lobby created", (lobbyId) => {
       var lobby = Lobby.getLobby(lobbyId);
       var foundPlayer = lobby.getPlayer(player.id);
 
@@ -97,8 +97,8 @@ describe('Lobby creation Events', () => {
   
   it("Lobby should only have 1 player on creation", (done) => {
 
-    player.emit("request create game", "testPlayerName");
-    player.on("response lobby created", (lobbyId) => {
+    player.emit("request: create game", "testPlayerName");
+    player.on("response: lobby created", (lobbyId) => {
       var lobby = Lobby.getLobby(lobbyId);
       expect(lobby.players).to.have.lengthOf(1);
       done();
@@ -117,8 +117,8 @@ describe('Lobby Events', () => {
 
   beforeEach((done) => {
     player = io("http://localhost:3000/", ioOptions);
-    player.emit("request create game", "testPlayerName");
-    player.on("response lobby created", (lobbyId) => {
+    player.emit("request: create game", "testPlayerName");
+    player.on("response: lobby created", (lobbyId) => {
       lobby = Lobby.getLobby(lobbyId);
       done();
     });
@@ -142,9 +142,9 @@ describe('Lobby Events', () => {
   it("Joining player should be added to correct lobby", (done) => {
     
     var newPlayer = io("http://localhost:3000/", ioOptions);
-    newPlayer.emit("request join game", "testPlayerName", lobby.id);
+    newPlayer.emit("request: join game", "testPlayerName", lobby.id);
 
-    newPlayer.on("response lobby joined", () => {      
+    newPlayer.on("response: lobby joined", () => {      
       var currentLobbyId = Lobby.getLobby(lobby.id).id;
       expect(lobby.id).to.equal(currentLobbyId);
 
@@ -165,8 +165,8 @@ describe('Lobby Events', () => {
     var loopAmt = playersLeft;
     for (var i = 0; i < loopAmt; i++) {
       var newPlayer = io("http://localhost:3000/", ioOptions);
-      newPlayer.emit("request join game", "testPlayerName", lobby.id);
-      newPlayer.on("response lobby joined", (lobbyId) => {
+      newPlayer.emit("request: join game", "testPlayerName", lobby.id);
+      newPlayer.on("response: lobby joined", (lobbyId) => {
 
         playersLeft--; // Decrement in the callback
 
@@ -191,10 +191,10 @@ describe('Lobby Events', () => {
   it("Player should NOT join any lobby if lobby id is not provided", (done) => {
     
     var newPlayer = io("http://localhost:3000/", ioOptions);
-    newPlayer.emit("request join game", "testPlayerName");
+    newPlayer.emit("request: join game", "testPlayerName");
       
     // The server has allowed the played to join, therefore test failed
-    newPlayer.on("response lobby joined", (lobbyId) => {
+    newPlayer.on("response: lobby joined", (lobbyId) => {
       assert.fail();
       newPlayer.disconnect();
       done();
@@ -202,7 +202,7 @@ describe('Lobby Events', () => {
     
 
     // Server emitted error, therefore, test passed
-    newPlayer.on("error", () => {
+    newPlayer.on("error:", () => {
       newPlayer.disconnect();
       done();
     });
@@ -211,16 +211,16 @@ describe('Lobby Events', () => {
   it("Player should NOT be able to join a lobby if an incorrect id is provded", (done) => {
     var newPlayer = io("http://localhost:3000/", ioOptions);
     var wrongId = lobby.id + 1;
-    newPlayer.emit("request join game", "testPlayerName", wrongId);
+    newPlayer.emit("request: join game", "testPlayerName", wrongId);
       
     // The server has allowed the played to join, therefore test failed
-    newPlayer.on("response lobby joined", (lobbyId) => {
+    newPlayer.on("response: lobby joined", (lobbyId) => {
       assert.fail();
       newPlayer.disconnect();
       done();
     });
 
-    newPlayer.on("error", () => {
+    newPlayer.on("error:", () => {
       done();
     });
   })
@@ -228,17 +228,17 @@ describe('Lobby Events', () => {
   it("Lobby should NOT add player if invalid name", (done) => {
     
     var newPlayer = io("http://localhost:3000/", ioOptions);
-    newPlayer.emit("request join game");
+    newPlayer.emit("request: join game");
       
     // The server has allowed the played to join, therefore test failed
-    newPlayer.on("response lobby joined", (lobbyId) => {
+    newPlayer.on("response: lobby joined", (lobbyId) => {
       assert.fail();
       newPlayer.disconnect();
       done();
     });
 
     // Server emitted error, therefore, test passed
-    newPlayer.on("error", () => {
+    newPlayer.on("error:", () => {
       newPlayer.disconnect();
       done();
     });
@@ -264,8 +264,8 @@ describe('Lobby Events', () => {
     var loopAmt = playersLeft;
     for (var i = 0; i < loopAmt; i++) {
       var newPlayer = io("http://localhost:3000/", ioOptions);
-      newPlayer.emit("request join game", "testPlayerName", lobby.id);
-      newPlayer.on("response lobby joined", (lobbyId) => {
+      newPlayer.emit("request: join game", "testPlayerName", lobby.id);
+      newPlayer.on("response: lobby joined", (lobbyId) => {
 
         playersLeft--; // Decrement in the callback
 

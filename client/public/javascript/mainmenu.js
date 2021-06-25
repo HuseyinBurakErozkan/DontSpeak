@@ -29,11 +29,11 @@ createForm.addEventListener("submit", (e) => {
   }
   else {
     console.log("Name is " + name);
-    socket.emit("request create game", name);
+    socket.emit("request: create game", name);
 
     
     // Once the server responds
-    socket.on("response lobby created", (id, team1, team2) => {
+    socket.on("response: lobby created", (id, team1, team2) => {
       document.getElementById('h2-lobby-id').innerHTML = "Game id: " + id;
       
       changeScreen(createForm, 'screen-lobby');
@@ -64,15 +64,14 @@ joinForm.addEventListener("submit", (e) => {
     console.log("Need a valid lobby number. 4 digits");
   }
   else {
-    socket.emit("request join game", name, lobbyId);
+    socket.emit("request: join game", name, lobbyId);
 
     // Once the server responds
-    socket.on("response lobby joined", (id) => {
+    socket.on("response: lobby joined", (id) => {
 
       document.getElementById('h2-lobby-id').innerHTML = "Game id: " + id;
 
       changeScreen(joinForm, 'screen-lobby');
     });
   }
-  
 });

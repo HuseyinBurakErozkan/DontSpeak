@@ -1,5 +1,5 @@
 
-socket.on('error', (msg) => {
+socket.on("error:", (msg) => {
   flashError(msg);
 });
 
