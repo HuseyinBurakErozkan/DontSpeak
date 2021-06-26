@@ -34,7 +34,7 @@ describe('Lobby creation Events', () => {
     
     player.emit("request: create game", "testPlayerName");
     player.on("response: lobby created", () => {
-      expect(Lobby.getCount()).to.have.be.at.least(1);
+      expect(Lobby.getCount()).to.be.at.least(1);
       done();
     })
   });
@@ -131,8 +131,7 @@ describe('Lobby Events', () => {
 
   // it("Game cannot be started unless there are at least 4 players", (done) => {
 
-  //   var result = lobby.startGame();
-  //   expect(result).to.equal(false);
+  //   assert.fail();
   //   done();
   // });
 
@@ -159,7 +158,7 @@ describe('Lobby Events', () => {
    * 
    * TODO: Find out why this issue is being caused.
    */
-  
+
   // // TEST ONLY THIS FUNCTION FOR NOW
   // it.only("Lobby should add new players who are trying to join", (done) => {
 
@@ -274,7 +273,7 @@ describe('Lobby Events', () => {
 
   it("Player should be assigned to a team when lobby is created", (done) => {
     // Sum the lengths of both team arrays. It should be 1 if player was placed into a team
-    var teamsLength = lobby.team1.length + lobby.team2.length;
+    var teamsLength = lobby.team1.size + lobby.team2.size;
     expect(teamsLength).to.equal(1);
 
     done();
@@ -328,7 +327,7 @@ describe('Lobby Events', () => {
   it("Lobby should be able to change a player's team", (done) => {
 
     // First ensure only the original player is in 1 team
-    expect(lobby.team1.length + lobby.team2.length).to.equal(1);
+    expect(lobby.team1.size + lobby.team2.size).to.equal(1);
 
     var t1length = lobby.team1.length;
 
@@ -336,10 +335,10 @@ describe('Lobby Events', () => {
 
     // Team count for both should have flipped between 0 and 1, so only need to check if the 
     // current length of team1 is not equal to the previous value
-    expect(t1length).to.not.equal(lobby.team1.length);
+    expect(t1length).to.not.equal(lobby.team1.size);
 
     // Also ensure that total players between both teams are still 1
-    expect(lobby.team1.length + lobby.team2.length).to.equal(1);
+    expect(lobby.team1.size + lobby.team2.size).to.equal(1);
 
     done();
   });

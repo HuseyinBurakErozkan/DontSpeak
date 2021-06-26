@@ -50,7 +50,7 @@ module.exports = socketHandler = (io, socket) => {
     var lobby = Lobby.getLobby(id);
 
     if (lobby === undefined || lobby === null) {
-      io.to(socket.id).emit("error:", "That lobby doesn't exist", id);
+      io.to(socket.id).emit("error:", "Lobby " + id + " doesn't exist", id);
       return;
     }
 

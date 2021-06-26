@@ -1,146 +1,101 @@
 /**
  * This file contains all lobby-related routes and methods
  */
-var lobbies = [];
+var lobbies = new Map();
 
 function Lobby() {
-
-  // // Dictionary datatype, with the key being the client socket id, and the value being
-  // // the socket object with player-relayed information attached
-  // this.players = [];
   
   // Only 2 teams for now
-  this.team1 = [];
-  this.team2 = [];
+  this.team1 = new Map();
+  this.team2 = new Map();
 
-  this.id = Math.floor(Math.random()*9000) + 1000;
-
+  this.id = Math.floor(Math.random() * 9000) + 1000;
 
   this.addPlayer = (socket) => {
-    // this.players.push({
-    //   key: socket.id,
-    //   value: socket
-    // });
 
     // Automatically assign a player to a team
-    if (this.team1.length < this.team2.length) {
-      this.team1.push({
-        key: socket.id,
-        value: socket
-      });
+    if (this.team1.size < this.team2.size) {
+      this.team1.set(socket.id, socket); 
     }
-    else if (this.team1.length > this.team2.length) {
-      this.team2.push({
-        key: socket.id,
-        value: socket
-      });
+    else if (this.team1.size > this.team2.size) {
+      this.team2.set(socket.id, socket);
     }
-    else if (this.team1.length === this.team2.length) {
+    else if (this.team1.size === this.team2.size) { // Both size are equal, so assign to random team
       
-      // Randomly assign the player to a team
       var rand = Math.round(Math.random());
-      if (rand < 0.5) {
-        this.team1.push({
-          key: socket.id,
-          value: socket
-        });
-      } else {
-        this.team2.push({
-          key: socket.id,
-          value: socket
-        });
+      rand < 0.5 ? this.team1.set(socket.id, socket) : this.team2.set(socket.id, socket);
       }
-    }
   };
 
-
   this.removePlayer = (socket) => {
-    // TODO: Add functionality to pause or stop game if player drops out and there are only 3 left
+    var deleted = false;
 
-    // First find which team the player is in, then remove them.
-    var s = this.team1.find(p => p.key == socket.id);
-
-    if (s !== undefined) {
-      var index = this.team1.indexOf(s.key);
-      this.team1.splice(index, 1);
-      this.removeLobbyIfEmpty();
+    if (this.team1.delete(socket.id)) {
+      deleted = true;
+    }
+    else if (this.team2.delete(socket.id)) {
+      deleted = true;
     }
 
-    s = this.team2.find(p => p.key == socket.id);
-
-    if (s !== undefined) {
-      var index = this.team2.indexOf(s.key);
-      this.team2.splice(index, 1);
+    if (deleted) {
       this.removeLobbyIfEmpty();
+      return true; // Indicate that the player was removed from lobby
     }
 
     return false;
   }
-
 
   /**
    * Once a lobby is empty, it should automatically remove itself from the array.
    */
   this.removeLobbyIfEmpty = () => {
 
-    if (this.team1.length === 0 && this.team2.length === 0) {
-      var index = lobbies.indexOf(this);
-      lobbies.splice(index, 1);
+    if (this.team1.size === 0 && this.team2.size === 0) {
+      lobbies.delete(this.id);
     }
   }
 
   this.getPlayer = (playerId) => {
-    // The key is the id, whereas the value is the object itself
-    var player = this.team1.find(p => p.key == playerId);
-    if (player !== undefined) {
-      return player.value;
+    var p1 = this.team1.get(playerId);
+    var p2 = this.team2.get(playerId);
+
+    if (p1 !== undefined) {
+      return p1;
+    } 
+    else if (p2 !== undefined) {
+      return p2
     }
-    
-    player = this.team2.find(p => p.key == playerId);
-    if (player !== undefined) {
-      return player.value;
+    else {
+      return null;
     }
   };
 
   this.getPlayers = () => {
-    var allPlayers = [];
-    allPlayers = allPlayers.concat([this.team1, this.team2]);
-
-    return allPlayers;
+    return new Map(...this.team1, ...this.team2);
   }
 
 
   this.changePlayerTeam = (socket) => {
 
     // First find which team the player belongs to
+    var player = this.team1.get(socket.id); 
 
-    var s = this.team1.find(p => p.key == socket.id);
-
-    // Since there are only 2 teams, changing teams just requires flipping the player to the other team
-    if (s !== undefined) {
-      // First remove the player from team 1 array, then add to team 2 array
-      var index = this.team1.indexOf(s.key);
-      this.team1.splice(index, 1);
-      this.team2.push({
-        key: socket.id,
-        value: socket
-      });
-      return true; // Indicate that player was successfully moved
+    if (player !== undefined) {
+      this.team1.delete(socket.id);
+      this.team2.set(socket.id, player);
+      return true;
     }
-    
-    s = this.team2.find(p => p.key == socket.id);
+    else {
+      player = this.team2.get(socket.id);
 
-    if (s !== undefined) {
-      // First remove the player from team 1 array, then add to team 2 array
-      var index = this.team2.indexOf(s.key);
-      this.team2.splice(index, 1);
-      this.team1.push({
-        key: socket.id,
-        value: socket
-      });
-      return true; // Indicate that player was successfully moved
+      if (player !== undefined) {
+        this.team2.delete(socket.id);
+        this.team2.set(socket.id, player);
+        return false;
+      }
     }
-    
+
+    // Player was not found in any team, so something must have went wrong
     return false;
   }
     
@@ -153,8 +108,7 @@ function Lobby() {
   }
 
   this.getPlayerCount = () => {
-
-    return this.team1.length + this.team2.length;
+    return this.team1.size + this.team2.size;
   }
 
 
@@ -170,15 +124,13 @@ function Lobby() {
     var team1PlayerData = [];
     var team2PlayerData = [];
     
-    for (var key in this.team1) {
-      var socket = this.team1[key].value;
+    for(let socket of this.team1.values()) {
       team1PlayerData.push(socket.player);
     }
-
-    for (var key in this.team2) {
-      var socket = this.team2[key].value;
+    for(let socket of this.team2.values()) {
       team2PlayerData.push(socket.player);
     }
+
 
     return [team1PlayerData, team2PlayerData];
   }
@@ -187,35 +139,25 @@ function Lobby() {
 Lobby.createLobby = (socket) => {
   var lobby = new Lobby();
   lobby.addPlayer(socket);
-
-  lobbies.push({
-    key: lobby.id,
-    value: lobby
-  });
-
-
+  lobbies.set(lobby.id, lobby);
   return lobby;
 }
 
 Lobby.getLobby = (id) => {
-  // Note that the lobby's id is stored as a key in the dict, so compare l.key to id
-  var lobby = lobbies.find(l => l.key == id);
 
-  if (lobby === undefined) {
-    return undefined;
+  // Must account for strings that represent integers
+  if (typeof(id) === 'string') {
+    var idInt = parseInt(id);
+
+    if (Number.isInteger(idInt)) {
+      return lobbies.get(idInt);
+    }
   }
-  
-  // Return the value, which is the lobby object itself
-  return lobby.value;
+  return lobbies.get(id);
 }
 
 Lobby.getCount = () => {
-  return lobbies.length;
-}
-
-// NOTE: Used only for testing purposes
-Lobby.emptyLobbiesArray = () => {
-  lobbies = [];
+  return lobbies.size;
 }
 
 
