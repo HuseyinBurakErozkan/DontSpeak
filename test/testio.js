@@ -98,7 +98,7 @@ describe('Lobby creation Events', () => {
     player.emit("request: create game", "testPlayerName");
     player.on("response: lobby created", (lobbyId) => {
       var lobby = Lobby.getLobby(lobbyId);
-      expect(lobby.players).to.have.lengthOf(1);
+      expect(lobby.getPlayerCount()).to.equal(1);
       done();
     });
   });
@@ -152,38 +152,67 @@ describe('Lobby Events', () => {
   });
 
 
-  it("Lobby should add new players who are trying to join", (done) => {
+  /**
+   * NOTE: There is an issue with adding multiple clients. When more clients are added,
+   * only 1 socket is assigned an id, which means that they share a connection(?).
+   * The ioOption 'forceNew: true' should ensure that they don't, but the issue isn't solved.
+   * 
+   * TODO: Find out why this issue is being caused.
+   */
+  
+  // // TEST ONLY THIS FUNCTION FOR NOW
+  // it.only("Lobby should add new players who are trying to join", (done) => {
 
-    /**
-     * This number will be decremented each time a player is added. Once at 0, the
-     * test will be performed. If the list of players is not = playersLeft + 1 (The player
-     * that created the game), that means that not all players were able to be added.
-     */
-    var playersLeft = 3;
-    var loopAmt = playersLeft;
-    for (var i = 0; i < loopAmt; i++) {
-      var newPlayer = io("http://localhost:3000/", ioOptions);
-      newPlayer.emit("request: join game", "testPlayerName", lobby.id);
-      newPlayer.on("response: lobby joined", (lobbyId) => {
+  //   /**
+  //    * This number will be decremented each time a player is added. Once at 0, the
+  //    * test will be performed. If the list of players is not = playersLeft + 1 (The player
+  //    * that created the game), that means that not all players were able to be added.
+  //    */
+  //   var playersLeft = 3;
+  //   var loopAmt = playersLeft;
+  //   var addedPlayers = []; // Used to disconnect each socket later
 
-        playersLeft--; // Decrement in the callback
+  //   console.log("original player's id: " + player.id);
+  //   for (var i = 0; i < loopAmt; i++) {
+  //     var newPlayer = io("http://localhost:3000/", ioOptions);
 
-        // Only perform the test once the last callback has been called
-        if (playersLeft === 0) {
-          
-          // 3 new players + The original player that created the lobby
-          expect(lobby.players).to.have.lengthOf(4);
+      
+  //     newPlayer.emit("request: join game", "testPlayerName" + i, lobby.id);
 
-          // Disconnect all sockets to prevent memory leaks
-          for (const [key, value] of Object.entries(lobby.players)) {
-            value.value.disconnect();
-          }          
+  //     newPlayer.on('connect', () => {
+  //       console.log(newPlayer.id);
+  //       // console.log(newPlayer.id + "------------------------------------------------");
+  //     })
+  //     // console.log("Before emission");
+  //     // console.log(newPlayer.id);
+  //     // newPlayer.on("error:", (msg) => {
+  //     //   console.log("ERRRRRRRRRRRRROR " + msg )
+  //     // });
+  //     newPlayer.on("response: lobby joined", (lobbyId) => {
 
-          done();
-        }
-      });
-    }
-  });
+  //       // console.log("=========================+++++++++++++++++")
+  //       // console.log(newPlayer.id);
+  //       addedPlayers.push(newPlayer);
+  //       playersLeft--; // Decrement in the callback
+
+  //       // Only perform the test once the last callback has been called
+  //       if (playersLeft === 0) {
+       
+  //         setInterval(() => {
+  //         // 3 new players + The original player that created the lobby
+  //         expect(lobby.getPlayerCount()).to.equal(4);
+ 
+  //         for (var i = 0; i < loopAmt; i++) {
+  //           addedPlayers[i].disconnect();
+  //         }
+
+  //         done();
+  //         }, 200)
+
+  //       }
+  //     });
+  //   }
+  // });
 
 
   it("Player should NOT join any lobby if lobby id is not provided", (done) => {
@@ -251,38 +280,49 @@ describe('Lobby Events', () => {
     done();
   });
 
-  it("Lobby should balance out teams when other players join", (done) => {
 
-    /**
-     * This number will be decremented each time a player is added. Once at 0, the
-     * test will be performed. If the list of players is not = playersLeft + 1 (The player
-     * that created the game), that means that not all players were able to be added.
-     */
-    var playersLeft = 3;
-    var loopAmt = playersLeft;
-    for (var i = 0; i < loopAmt; i++) {
-      console.log(i);
-      var newPlayer = io("http://localhost:3000/", ioOptions);
-      newPlayer.emit("request: join game", "testPlayerName", lobby.id);
-      newPlayer.on("response: lobby joined", (lobbyId) => {
+  /**
+   * NOTE: There is an issue with adding multiple clients. When more clients are added,
+   * only 1 socket is assigned an id, which means that they share a connection(?).
+   * The ioOption 'forceNew: true' should ensure that they don't, but the issue isn't solved.
+   * 
+   * TODO: Find out why this issue is being caused.
+   */
+  //   // it("Lobby should balance out teams when other players join", (done) => {
 
-        playersLeft--; // Decrement in the callback
+  //   /**
+  //    * This number will be decremented each time a player is added. Once at 0, the
+  //    * test will be performed. If the list of players is not = playersLeft + 1 (The player
+  //    * that created the game), that means that not all players were able to be added.
+  //    */
+  //   var playersLeft = 3;
+  //   var loopAmt = playersLeft;
+  //   var addedPlayers = [];
 
-        // Only perform the test once the last callback has been called
-        if (playersLeft === 0) {
+  //   for (var i = 0; i < loopAmt; i++) {
+  //     var newPlayer = io("http://localhost:3000/", ioOptions);
+  //     newPlayer.emit("request: join game", "testPlayerName", lobby.id);
+  //     newPlayer.on("response: lobby joined", (lobbyId) => {
+
+  //       addedPlayers.push(newPlayer);
+  //       playersLeft--; // Decrement in the callback
+
+  //       // Only perform the test once the last callback has been called
+  //       if (playersLeft === 0) {
           
-          // If working as expected, the players should be evenly divided into both teams
-          expect(lobby.team1.length).to.equal(lobby.team2.length);
+  //         // If working as expected, the players should be evenly divided into both teams
+  //         expect(lobby.team1.length).to.equal(lobby.team2.length);
 
-          // Disconnect all sockets to prevent memory leaks
-          for (const [key, value] of Object.entries(lobby.players)) {
-            value.value.disconnect();
-          }
-          done();
-        }
-      });
-    }
-  });
+  //         // Disconnect all sockets once done with them
+  //         for (var i = 0; i < loopAmt; i++) {
+  //           addedPlayers[i].disconnect();
+  //         }      
+
+  //         done();
+  //       }
+  //     });
+  //   }
+  // });
   
 
   it("Lobby should be able to change a player's team", (done) => {
@@ -340,8 +380,9 @@ describe("Lobby destruction events", () => {
 
   it ("Lobby should be removed from collection of lobbies once empty", (done) => {
     
-    // TODO: Find why some lobbies still exist during testing, even though they should all be removed
-    Lobby.emptyLobbiesArray(); // First empty the array.
+    // Firt ensure there are no lobbies. If this fails, that means there is an issue with either
+    // the software or the tests
+    expect(Lobby.getCount()).to.equal(0); 
 
     var player = io("http://localhost:3000/", ioOptions);
     player.emit("request: create game", "testPlayerName");
@@ -352,7 +393,5 @@ describe("Lobby destruction events", () => {
 
       done();
     });
-
   });
-
 });

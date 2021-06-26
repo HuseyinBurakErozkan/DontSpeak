@@ -12,8 +12,6 @@ require('./server/game')(app);
 
 const Player = require('./server/player').Player;
 const Lobby = require('./server/lobby').Lobby;
-//const socketHandler = require('./server/sockethandler');
-
 
 // Handle the initial client connection
 io.on('connection', (socket) => {

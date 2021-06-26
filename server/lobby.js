@@ -5,9 +5,9 @@ var lobbies = [];
 
 function Lobby() {
 
-  // Dictionary datatype, with the key being the client socket id, and the value being
-  // the socket object with player-relayed information attached
-  this.players = [];
+  // // Dictionary datatype, with the key being the client socket id, and the value being
+  // // the socket object with player-relayed information attached
+  // this.players = [];
   
   // Only 2 teams for now
   this.team1 = [];
@@ -17,10 +17,10 @@ function Lobby() {
 
 
   this.addPlayer = (socket) => {
-    this.players.push({
-      key: socket.id,
-      value: socket
-    });
+    // this.players.push({
+    //   key: socket.id,
+    //   value: socket
+    // });
 
     // Automatically assign a player to a team
     if (this.team1.length < this.team2.length) {
@@ -75,7 +75,6 @@ function Lobby() {
     }
 
     return false;
-
   }
 
 
@@ -91,9 +90,24 @@ function Lobby() {
   }
 
   this.getPlayer = (playerId) => {
-    // They key is the id, whereas the value is the object itself
-    return this.players.find(p => p.key == playerId).value;
+    // The key is the id, whereas the value is the object itself
+    var player = this.team1.find(p => p.key == playerId);
+    if (player !== undefined) {
+      return player.value;
+    }
+    
+    player = this.team2.find(p => p.key == playerId);
+    if (player !== undefined) {
+      return player.value;
+    }
   };
+
+  this.getPlayers = () => {
+    var allPlayers = [];
+    allPlayers = allPlayers.concat([this.team1, this.team2]);
+
+    return allPlayers;
+  }
 
 
   this.changePlayerTeam = (socket) => {
@@ -131,12 +145,18 @@ function Lobby() {
   }
     
   this.startGame = () => {
-    if (this.players.length < 4) {
+    if (this.team1.length < 2 || this.team2.length < 2) {
       return false; // Don't allow the game to start, as at least 4 players are needed
     } else {
       // TODO: Do something. Start the game
     }
   }
+
+  this.getPlayerCount = () => {
+
+    return this.team1.length + this.team2.length;
+  }
+
 
   // TODO: Rewrite the code for sockets and players to avoid the neccesity for these sorts of
   // functions, as they may cause issues later

@@ -80,7 +80,6 @@ module.exports = socketHandler = (io, socket) => {
   // When a user disconnects, inform the other clients
   socket.on('disconnect', () => {
     if (socket.hasOwnProperty("player")) {
-      
       // Remove player from lobby
       var lobby = Lobby.getLobby(socket.player.lobbyId);
       lobby.removePlayer(socket);
