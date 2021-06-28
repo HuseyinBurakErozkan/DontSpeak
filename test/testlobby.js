@@ -129,11 +129,12 @@ describe('Lobby Events', () => {
   })
 
 
-  // it("Game cannot be started unless there are at least 4 players", (done) => {
+  it("Game cannot be started unless there are at least 4 players", (done) => {
 
-  //   assert.fail();
-  //   done();
-  // });
+    var gameStarted = lobby.startGame();
+    expect(gameStarted).to.be.equal(false);
+    done();
+  });
 
 
   it("Joining player should be added to correct lobby", (done) => {

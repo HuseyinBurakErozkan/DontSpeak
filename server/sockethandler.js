@@ -1,5 +1,6 @@
 const Player = require('./player').Player;
 const Lobby = require('./lobby').Lobby;
+const Game = require('./game').Game;
 
 module.exports = socketHandler = (io, socket) => {
   

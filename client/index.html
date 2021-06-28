@@ -2,7 +2,9 @@
 <html>
   <head>
     <title>Dont Speak!</title>
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
   </head>
   <body>
     <h1>Dont Speak!</h1>
@@ -35,13 +37,13 @@
       <div id="screen-lobby" hidden>
         <h2 id="h2-lobby-id">Lobby id</h2>
         <div id="display-teams">
-          <p>Team 1</p>
-          <div id="div-team1">
-
+          <div class="lobby-team-container">
+            <p>Team 1</p>
+            <div id="div-team1"></div>
           </div>
-          <p>Team 2</p>
-          <div id="div-team2">
-
+          <div class="lobby-team-container">
+            <p>Team 2</p>
+            <div id="div-team2"></div>
           </div>
         </div>
         <form id="form-start-game" method="POST">

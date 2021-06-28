@@ -12,7 +12,7 @@ function Lobby() {
   this.id = Math.floor(Math.random() * 9000) + 1000;
 
   this.addPlayer = (socket) => {
-
+    
     // Automatically assign a player to a team
     if (this.team1.size < this.team2.size) {
       this.team1.set(socket.id, socket); 
@@ -100,9 +100,10 @@ function Lobby() {
   }
     
   this.startGame = () => {
-    if (this.team1.length < 2 || this.team2.length < 2) {
+    if (this.team1.size < 2 || this.team2.size < 2) {
       return false; // Don't allow the game to start, as at least 4 players are needed
     } else {
+      return true;
       // TODO: Do something. Start the game
     }
   }

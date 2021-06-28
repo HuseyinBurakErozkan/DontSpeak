@@ -11,6 +11,7 @@ background: rgb(255,145,82);
 background: linear-gradient(135deg, rgba(255,145,82,1) 0%, rgba(245,87,167,1) 24%, rgba(173,23,252,1) 47%, rgba(50,137,255,1) 79%, rgba(33,232,163,1) 100%); 
 
 */
+
 .screen-container {
   border: 2px solid tomato;
 }
@@ -24,15 +25,16 @@ background: linear-gradient(135deg, rgba(255,145,82,1) 0%, rgba(245,87,167,1) 24
 }
 
 .__player {
-  display: inline-block;
-}
-.__player.div-team1 {
-  background-color: #bd0000;
-  color: white;
-}
-.__player.div-team2 {
-  background-color: #002fff;
-  color: white;
-}
 
-/*# sourceMappingURL=style.css.map */
+  display: inline-block;
+
+  &.div-team1 {
+    background-color: #bd0000;
+    color: white;
+  }
+
+  &.div-team2 {
+    background-color: #002fff;
+    color: white;
+  }
+}
