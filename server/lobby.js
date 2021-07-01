@@ -1,14 +1,17 @@
 /**
  * This file contains all lobby-related routes and methods
  */
+
 var lobbies = new Map();
+
+var Game = require('./game').Game;
 
 function Lobby() {
   
   // Only 2 teams for now
   this.team1 = new Map();
   this.team2 = new Map();
-
+  
   this.id = Math.floor(Math.random() * 9000) + 1000;
 
   this.addPlayer = (socket) => {
@@ -26,6 +29,7 @@ function Lobby() {
       rand < 0.5 ? this.team1.set(socket.id, socket) : this.team2.set(socket.id, socket);
       }
   };
+
 
   this.removePlayer = (socket) => {
     var deleted = false;
@@ -55,6 +59,7 @@ function Lobby() {
     }
   }
 
+
   this.getPlayer = (playerId) => {
     var p1 = this.team1.get(playerId);
     var p2 = this.team2.get(playerId);
@@ -70,8 +75,28 @@ function Lobby() {
     }
   };
 
+
   this.getPlayers = () => {
     return new Map(...this.team1, ...this.team2);
+  }
+
+
+  this.getPlayerTeam = (socket) => {
+    var player = this.team1.get(socket.id); 
+
+    if (player !== undefined) {
+      return "team1";
+    }
+    else {
+      player = this.team2.get(socket.id);
+
+      if (player !== undefined) {
+        return "team2";
+      }
+    }
+
+    // Player was not found in any team, so something must have went wrong
+    return false;
   }
 
 
@@ -90,8 +115,8 @@ function Lobby() {
 
       if (player !== undefined) {
         this.team2.delete(socket.id);
-        this.team2.set(socket.id, player);
-        return false;
+        this.team1.set(socket.id, player);
+        return true;
       }
     }
 
@@ -99,12 +124,13 @@ function Lobby() {
     return false;
   }
     
+
   this.startGame = () => {
     if (this.team1.size < 2 || this.team2.size < 2) {
       return false; // Don't allow the game to start, as at least 4 players are needed
     } else {
+      this.game = new Game(this.team1, this.team2);
       return true;
-      // TODO: Do something. Start the game
     }
   }
 
@@ -137,12 +163,13 @@ function Lobby() {
   }
 }
 
-Lobby.createLobby = (socket) => {
+
+Lobby.createLobby = () => {
   var lobby = new Lobby();
-  lobby.addPlayer(socket);
   lobbies.set(lobby.id, lobby);
   return lobby;
 }
+
 
 Lobby.getLobby = (id) => {
 
@@ -156,6 +183,7 @@ Lobby.getLobby = (id) => {
   }
   return lobbies.get(id);
 }
+
 
 Lobby.getCount = () => {
   return lobbies.size;

@@ -1,11 +1,12 @@
 'use strict';
 
 const expect = require('chai').expect;
-const server = require('../app');
-const serverIo = require('../app');
-const lobbies = require('../server/lobby');
+const server = require('../../app');
+const serverIo = require('../../app');
+const lobbies = require('../../server/lobby');
 let Lobby = lobbies.Lobby;
 var assert = require('assert');
+const Player = require('../../server/player').Player;
 
 const io = require('socket.io-client');
 const ioOptions = { 
@@ -32,7 +33,7 @@ describe('Lobby creation Events', () => {
 
   it("New Lobby should be created and stored in a collection on creation", (done) => {
     
-    player.emit("request: create game", "testPlayerName");
+    player.emit("request: create lobby", "testPlayerName");
     player.on("response: lobby created", () => {
       expect(Lobby.getCount()).to.be.at.least(1);
       done();
@@ -42,7 +43,7 @@ describe('Lobby creation Events', () => {
 
   it("Newly created lobby should be able to be found in the collection of lobbies", (done) => {
     
-    player.emit("request: create game", "testPlayerName");
+    player.emit("request: create lobby", "testPlayerName");
     player.on("response: lobby created", (lobbyId) => {
       var result = Lobby.getLobby(lobbyId);
       expect(result).to.not.be.null.and.to.not.be.undefined;
@@ -53,7 +54,7 @@ describe('Lobby creation Events', () => {
 
   it("New lobby should NOT be created if player hasn't provided a name", (done) => {
 
-    player.emit("request: create game", "");
+    player.emit("request: create lobby", "");
     
     // Server should never respond in this fashion if the player hasn't provided a name
     player.on("response: lobby created", (lobbyId) => {
@@ -70,7 +71,7 @@ describe('Lobby creation Events', () => {
 
   it("New lobby should have generated a 4 digit id on initialisation", (done) => {
     
-    player.emit("request: create game", "testPlayerName");
+    player.emit("request: create lobby", "testPlayerName");
     player.on("response: lobby created", (lobbyId) => {
       var newLobby = Lobby.getLobby(lobbyId);
       expect(newLobby.id).to.be.a('number');
@@ -82,7 +83,7 @@ describe('Lobby creation Events', () => {
 
   it("Player should be added to the lobby that they created", (done) => {
     
-    player.emit("request: create game", "testPlayerName");
+    player.emit("request: create lobby", "testPlayerName");
     player.on("response: lobby created", (lobbyId) => {
       var lobby = Lobby.getLobby(lobbyId);
       var foundPlayer = lobby.getPlayer(player.id);
@@ -95,7 +96,7 @@ describe('Lobby creation Events', () => {
   
   it("Lobby should only have 1 player on creation", (done) => {
 
-    player.emit("request: create game", "testPlayerName");
+    player.emit("request: create lobby", "testPlayerName");
     player.on("response: lobby created", (lobbyId) => {
       var lobby = Lobby.getLobby(lobbyId);
       expect(lobby.getPlayerCount()).to.equal(1);
@@ -115,7 +116,7 @@ describe('Lobby Events', () => {
 
   beforeEach((done) => {
     player = io("http://localhost:3000/", ioOptions);
-    player.emit("request: create game", "testPlayerName");
+    player.emit("request: create lobby", "testPlayerName");
     player.on("response: lobby created", (lobbyId) => {
       lobby = Lobby.getLobby(lobbyId);
       done();
@@ -140,7 +141,7 @@ describe('Lobby Events', () => {
   it("Joining player should be added to correct lobby", (done) => {
     
     var newPlayer = io("http://localhost:3000/", ioOptions);
-    newPlayer.emit("request: join game", "testPlayerName", lobby.id);
+    newPlayer.emit("request: join lobby", "testPlayerName", lobby.id);
 
     newPlayer.on("response: lobby joined", () => {      
       var currentLobbyId = Lobby.getLobby(lobby.id).id;
@@ -161,7 +162,7 @@ describe('Lobby Events', () => {
    */
 
   // // TEST ONLY THIS FUNCTION FOR NOW
-  // it.only("Lobby should add new players who are trying to join", (done) => {
+  // it("Lobby should add new players who are trying to join", (done) => {
 
   //   /**
   //    * This number will be decremented each time a player is added. Once at 0, the
@@ -177,7 +178,7 @@ describe('Lobby Events', () => {
   //     var newPlayer = io("http://localhost:3000/", ioOptions);
 
       
-  //     newPlayer.emit("request: join game", "testPlayerName" + i, lobby.id);
+  //     newPlayer.emit("request: join lobby", "testPlayerName" + i, lobby.id);
 
   //     newPlayer.on('connect', () => {
   //       console.log(newPlayer.id);
@@ -218,7 +219,7 @@ describe('Lobby Events', () => {
   it("Player should NOT join any lobby if lobby id is not provided", (done) => {
     
     var newPlayer = io("http://localhost:3000/", ioOptions);
-    newPlayer.emit("request: join game", "testPlayerName");
+    newPlayer.emit("request: join lobby", "testPlayerName");
       
     // The server has allowed the played to join, therefore test failed
     newPlayer.on("response: lobby joined", (lobbyId) => {
@@ -238,7 +239,7 @@ describe('Lobby Events', () => {
   it("Player should NOT be able to join a lobby if an incorrect id is provded", (done) => {
     var newPlayer = io("http://localhost:3000/", ioOptions);
     var wrongId = lobby.id + 1;
-    newPlayer.emit("request: join game", "testPlayerName", wrongId);
+    newPlayer.emit("request: join lobby", "testPlayerName", wrongId);
       
     // The server has allowed the played to join, therefore test failed
     newPlayer.on("response: lobby joined", (lobbyId) => {
@@ -255,7 +256,7 @@ describe('Lobby Events', () => {
   it("Lobby should NOT add player if invalid name", (done) => {
     
     var newPlayer = io("http://localhost:3000/", ioOptions);
-    newPlayer.emit("request: join game");
+    newPlayer.emit("request: join lobby");
       
     // The server has allowed the played to join, therefore test failed
     newPlayer.on("response: lobby joined", (lobbyId) => {
@@ -301,7 +302,7 @@ describe('Lobby Events', () => {
 
   //   for (var i = 0; i < loopAmt; i++) {
   //     var newPlayer = io("http://localhost:3000/", ioOptions);
-  //     newPlayer.emit("request: join game", "testPlayerName", lobby.id);
+  //     newPlayer.emit("request: join lobby", "testPlayerName", lobby.id);
   //     newPlayer.on("response: lobby joined", (lobbyId) => {
 
   //       addedPlayers.push(newPlayer);
@@ -344,17 +345,34 @@ describe('Lobby Events', () => {
     done();
   });
 
-  // it("Game should start when there are at least 4 players", (done) => {
+  // it("Should be ready start when there are at least 4 players", (done) => {
 
-  //   assert.fail();
-  //   done();
-  // });
+  //   var players = [];
+  //   for (var i = 0; i < 3; i++) {
+  //     var newSocket = io("http://localhost:3000/", ioOptions);
+      
+  //     // Player should be able to be created
+  //     expect(Player.create(newSocket, "player" + i, lobby.id)).to.equal(true);
 
+  //     // Add a random id as a property to the socket, as the io option force true: new doesn't
+  //     // seem to work
+  //     newSocket.id = Math.floor(Math.random() * 1000000) + 1;
 
-  // it("Each team must have at least 2 players before game can begin", (done) => {
+  //     players.push(newSocket);
+  //     lobby.addPlayer(newSocket);
+  //   }
 
-  //   assert.fail();
-  //   done();
+  //   // Game should be able to start after 4 players are in the lobby
+  //   expect(lobby.startGame()).to.equal(true);
+
+  //   for (var i = 0; i < 3; i++) {
+  //     lobby.removePlayer(newSocket);
+  //   }
+
+  //   setInterval(() => {
+  //     done();
+  //   }, 500);
+
   // });
 
 
@@ -385,7 +403,7 @@ describe("Lobby destruction events", () => {
     expect(Lobby.getCount()).to.equal(0); 
 
     var player = io("http://localhost:3000/", ioOptions);
-    player.emit("request: create game", "testPlayerName");
+    player.emit("request: create lobby", "testPlayerName");
     
     player.on("response: lobby created", () => {
       expect(Lobby.getCount()).to.equal(1);

@@ -15,7 +15,7 @@ module.exports = socketHandler = (io, socket) => {
    */
 
   // Create a new lobby/lobby and add the player to it 
-  socket.on("request: create game", (name) => {
+  socket.on("request: create lobby", (name) => {
     
     // First check if the player has entered a name
     if (!Player.validName(name)) {
@@ -23,7 +23,8 @@ module.exports = socketHandler = (io, socket) => {
       return;
     }
 
-    var lobby = Lobby.createLobby(socket);
+    var lobby = Lobby.createLobby();
+    lobby.addPlayer(socket);
     Player.create(socket, name, lobby.id);
 
     // Move the socket to a room specifically for that lobby
@@ -35,7 +36,7 @@ module.exports = socketHandler = (io, socket) => {
   });
 
 
-  socket.on("request: join game", (name, id) => {
+  socket.on("request: join lobby", (name, id) => {
     
     // First check if the player has entered a name
     if (!Player.validName(name)) {
@@ -89,5 +90,9 @@ module.exports = socketHandler = (io, socket) => {
       var result = lobby.getArrayOfPlayersWithoutSockets();
       io.to("lobby" + socket.player.lobbyId).emit("update: player left", result[0], result[1]);
     }
+  });
+
+  socket.on("get: id", () => {
+    return socket.id;
   });
 }

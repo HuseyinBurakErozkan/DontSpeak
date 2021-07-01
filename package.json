@@ -13,7 +13,7 @@
     "mocha": "^9.0.1"
   },
   "scripts": {
-    "test": "mocha test --exit",
+    "test": "mocha test --exit --recursive",
     "start": "node app.js",
     "debugTest": "DEBUG=* mocha test"
   },

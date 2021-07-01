@@ -29,7 +29,7 @@ createForm.addEventListener("submit", (e) => {
   }
   else {
     console.log("Name is " + name);
-    socket.emit("request: create game", name);
+    socket.emit("request: create lobby", name);
 
     
     // Once the server responds
@@ -64,7 +64,7 @@ joinForm.addEventListener("submit", (e) => {
     console.log("Need a valid lobby number. 4 digits");
   }
   else {
-    socket.emit("request: join game", name, lobbyId);
+    socket.emit("request: join lobby", name, lobbyId);
 
     // Once the server responds
     socket.on("response: lobby joined", (id) => {

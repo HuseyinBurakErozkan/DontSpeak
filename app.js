@@ -12,7 +12,7 @@ const client_dir = path.join(__dirname, './client');
 app.use(express.static('client/public'));
 
 
-// Handle the initial client connection
+// Handle the initial client connection to server
 io.on('connection', (socket) => {
   require('./server/sockethandler')(io, socket);
 });
@@ -24,9 +24,10 @@ app.get('/', (req, res) => {
 
 // Export the express app io so it can be used when testing route-related functions, as well
 // as other functions that may require it passed as an argument (the lobby object for example)
-module.exports.app = app;
 module.exports.io = io;
 
+// Export the server so it can be used for testing
 module.exports.server = server.listen(3000, () => {
   console.log("listening on *:3000");
 });
+
