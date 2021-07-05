@@ -50,5 +50,15 @@ function displayTeams(team1, team2) {
 
 document.getElementById("form-start-game").addEventListener("submit", (e) => {
   e.preventDefault();
-  alert('clicked start');
+  
+  console.log("client: start game")
+
+  socket.emit("request: start game");
+
+  socket.on("response: game started", () => {
+    
+  });
+
+  socket.on("error:", (msg) => {
+  });
 });

@@ -1,15 +1,18 @@
-const words = {
-  'dog': ['cat', 'pet', 'woof', 'puppy'],
-  'cat': ['kitten', 'dog', 'pet', 'meow'],
-  'moon': ['earth', 'sun', 'satellite', 'sky'],
-  'house': ['home', 'live', 'shelter', ''],
-  'car': ['vehicle', 'automobile', 'drive', 'transport'],
-  'watch': ['time', 'wrist', 'clock', 'time'],
-  'glacier': ['ice', 'water', 'snow', 'mountain'],
-  'summer': ['season', 'winter', 'spring', 'autumn'],
-  'beach': ['water', 'shore', 'sand', 'ocean'],
-  'umbrella': ['shade', 'rain', 'parasol', 'sun'],
-  'idea': ['plan', 'thought', 'design', 'think']
-  // '': ['', '', '', ''],
-}
+const words = new Map([
+  [1, ['dog', ['cat', 'pet', 'woof', 'puppy']]],
+  [2, ['cat', ['kitten', 'dog', 'pet', 'meow']]],
+  [3, ['moon', ['earth', 'sun', 'satellite', 'sky']]],
+  [4, ['house', ['home', 'live', 'shelter', '']]],
+  [5, ['car', ['vehicle', 'automobile', 'drive', 'transport']]],
+  [6, ['watch', ['time', 'wrist', 'clock', 'time']]],
+  [7, ['glacier', ['ice', 'water', 'snow', 'mountain']]],
+  [8, ['summer', ['season', 'winter', 'spring', 'autumn']]],
+  [9, ['beach', ['water', 'shore', 'sand', 'ocean']]],
+  [10, ['umbrella', ['shade', 'rain', 'parasol', 'sun']]],
+  [11, ['idea', ['plan', 'thought', 'design', 'think']]]
+  // [12, ['', ['', '', '', '']]],
+])
 
+module.exports = {
+  words: words
+}

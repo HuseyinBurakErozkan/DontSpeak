@@ -165,6 +165,7 @@ describe('Lobby instance with minimum needed players', () => {
     lobby.changePlayerTeam(sockets[0]);
     expect(lobby.startGame()).to.equal(true);
     expect(lobby.game).to.exist;
+
     done();
   });
 });

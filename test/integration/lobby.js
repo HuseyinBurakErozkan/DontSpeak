@@ -394,6 +394,21 @@ describe('Lobby Events', () => {
 
 });
 
+// describe("Game start events", () => { 
+
+//   beforeEach((done) => {
+//     player = io("http://localhost:3000/", ioOptions);
+
+//     done();
+//   });
+
+//   afterEach((done) => {
+//     player.disconnect();
+//     done();
+//   })
+
+// });
+
 describe("Lobby destruction events", () => {
 
   it ("Lobby should be removed from collection of lobbies once empty", (done) => {

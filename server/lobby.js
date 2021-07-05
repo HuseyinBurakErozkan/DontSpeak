@@ -7,7 +7,7 @@ var lobbies = new Map();
 var Game = require('./game').Game;
 
 function Lobby() {
-  
+
   // Only 2 teams for now
   this.team1 = new Map();
   this.team2 = new Map();
