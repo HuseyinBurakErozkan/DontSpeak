@@ -97,6 +97,7 @@ module.exports = socketHandler = (io, socket) => {
 
   });
 
+  
   socket.on('debug', () => {
     // This will be used for debugging specific emitters or listeners
   });

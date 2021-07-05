@@ -1,30 +1,80 @@
+
 /**
  * This file stores all non-user game-related routes and methods.
  */
 
 const Word = require('./word');
 const Player = require('./player').Player;
+const strategyManager = require('./strategy').StrategyManager;
 
 function Game(team1, team2) {
 
-  this.team1 = team1, this.team2 = team2;
+  // this.team1 = team1, this.team2 = team2;
 
+  // Convert the dictionaries to arrays to enable iterating via index number. This is used 
+  // so that the game can iterate through and choose which player takes on the role of speaker
+  this.team1 = Array.from(team1, ([id, player]) => ({ id, player }));
+  this.team2 = Array.from(team2, ([id, player]) => ({ id, player }));
   // Used to ensure that everyone has a turn where they speak
   this.team1speakerIndex = 0, this.team2speakerIndex = 0;
-  this.chosenWords = new Map(); // 
+
+  this.chosenWords = new Map(); // Stores list of words that have been chosen before, to avoid repeats
+  this.strategy;
+
 
   this.startGame = () => {
     var rand = Math.random();
 
     // Randomly choose which team starts first
-    (rand > 0.5)
+
+
+    (rand > 0.5) 
       ? this.speakingTeam = team1
       : this.speakingTeam = team2;
   }
 
-  this.startRound = () => {
-    
+  this.startRound = (io, socket) => {
+    // First handle iterating through list of players to choose a speaker
+    this.chooseSpeaker();
+
+    // Roll the dice to select which rule will be used, and then call the strategy/implementation
+    // for that rule
+    this.rollDice();
+    this.strategy.handleStrategy(io, socket);
   }
+
+
+  this.chooseSpeaker = () => {
+    var speaker;
+
+    // First, handle who will be speaking
+    if (this.speakingTeam === team1) {
+      // console.log("Speaker for team 1 is: ", this.team1[this.team1speakerIndex]);
+      speaker = this.team1[this.team1speakerIndex];
+      this.speakingTeam = team2;
+
+      // If all players in the team have spoken, reset back to the first speaker
+      (this.team1speakerIndex == team1.size - 1)
+        ? this.team1speakerIndex = 0
+        : this.team1speakerIndex++;
+    }
+    else {
+      // console.log("Speaker for team 2 is: ", this.team2[this.team2speakerIndex]);
+      speaker = this.team2[this.team2speakerIndex];
+      this.speakingTeam = team1;
+
+      // If all players in the team have spoken, reset back to the first speaker
+      (this.team2speakerIndex == team2.size - 1)
+        ? this.team2speakerIndex = 0
+        : this.team2speakerIndex++;
+    }
+
+    // Ensure that the round has a speaker, otherwise don't allow the game to continue
+    if (speaker === undefined) {
+      throw "Speaker is undefined";
+    }
+  }
+
 
   this.selectWord = () => {
     var word;
@@ -48,44 +98,22 @@ function Game(team1, team2) {
     
     switch(rand) {
       case 0:
-        this.roll = Roll.STANDARD;
+        this.strategy = strategyManager.getstrategy("Standard");
         break;
       case 1:
-        this.roll = Roll.NOBODYLANGUAGE;
+        this.strategy = strategyManager.getstrategy("No body language");
         break;
       case 2:
-        this.roll = Roll.DOUBLE;
+          this.strategy = strategyManager.getstrategy("Double");
         break;
       case 3:
-        this.roll = Roll.EVERYBODY;
+          this.strategy = strategyManager.getstrategy("Everybody");
         break;
     }
   }
 
   this.startGame();
-
-}
-
-
-/**
- * Use ES6 class to implement enum patten 
- */
-class Roll {
-  static STANDARD = new Roll("standard rules");
-  static NOBODYLANGUAGE = new Roll("no body language allowed");
-  static DOUBLE = new Roll("double time");
-  static EVERYBODY = new Roll("everybody guesses");
-  // TODO: Add a rule where once selected, only the most difficult words are used.
-  // TODO: Think of and add some more interesting rules
-
-  constructor(description) {
-    this.description = description;
-  }
-
-  getDescription() {
-    return this.description;
-  }
-}
+};
 
 module.exports = {
   Game: Game

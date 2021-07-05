@@ -54,7 +54,12 @@ describe('Game', () => {
     done();
   });
 
-  it("Should choose a player within the team to be the speaker", (done) => {
+
+  // TODO: Improve this test
+  it("Should loop back to the first player, once all players have performed speaker role", (done) => {
+    for (var i = 0; i < 10; i++) {
+      game.startRound();
+    }
     done();
   });
 
@@ -80,8 +85,9 @@ describe('Game', () => {
     // Loop 200 times, as that gives a > 99.99% chance to hit all rolls 
     for (var i = 0; i < 200; i++) {
       game.rollDice();
-      if (!rolledPossibilities.includes(game.roll.description)) {
-        rolledPossibilities.push(game.roll.description);
+      if (!rolledPossibilities.includes(game.strategy.description)) {
+        // console.log("DOESN'T INCLUDE", game.strategy.description);
+        rolledPossibilities.push(game.strategy.description);
 
         // Once all roles are reached, avoid unnecessary looping and just conclude
         // the test as passed
