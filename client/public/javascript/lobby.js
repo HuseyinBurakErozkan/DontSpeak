@@ -2,22 +2,11 @@ function joinLobby(team1, team2) {
   displayTeams(team1, team2);
 }
 
-
-
 socket.on("update: player joined", (player, team1, team2) => {
   console.log("new player joined");
   console.log(team1, team2)
   displayTeams(team1, team2);
 })
-
-
-socket.on("update: teams changed", (team1, team2) => {
-
-});
-
-socket.on("update: player left", (team1, team2) => {
-  displayTeams(team1, team2);
-});
 
 function displayTeams(team1, team2) {
   var team1Div = document.getElementById("div-team1");
@@ -45,20 +34,23 @@ function displayTeams(team1, team2) {
   }
 }
 
-
-
-
 document.getElementById("form-start-game").addEventListener("submit", (e) => {
   e.preventDefault();
-  
-  console.log("client: start game")
-
   socket.emit("request: start game");
+});
 
-  socket.on("response: game started", () => {
-    
-  });
 
-  socket.on("error:", (msg) => {
-  });
+/**
+ * Server emit events
+ */
+socket.on("update: teams changed", (team1, team2) => {
+
+});
+
+socket.on("update: player left", (team1, team2) => {
+  displayTeams(team1, team2);
+});
+
+socket.on("error:", (msg) => {
+  console.log("Error: ", msg);
 });

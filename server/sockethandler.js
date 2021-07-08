@@ -68,36 +68,40 @@ module.exports = socketHandler = (io, socket) => {
     io.to("lobby" + lobby.id).emit("update: player joined", socket.player, result[0], result[1]);
   });
 
+
   socket.on('request: change team', (lobbyId) => {
     // TODO: ADD CODE HERE
   });
 
 
-
   socket.on('request: start game', () => {
-
     var lobby = Lobby.getLobby(socket.player.lobbyId);
     if (lobby.startGame()) {
       io.to("lobby" + socket.player.lobbyId).emit("response: game started");
 
       var game = lobby.game;
-      console.log(game.startingTeam);
-
     }
     else {
       io.to("lobby" + socket.player.lobbyId).emit("error:", 
-        "Game can not start. Must have at least 2 players in each team");
+        "Game can not start. Either an error occurred or there are less than 2 players per team");
     }
   });
 
+  socket.on('request: start round', () => {
+
+    var game = Lobby.getLobby(socket.player.lobbyId).game;
+
+    if (game.state === "waiting") {
+      game.startRound(io, socket, game);
+    }
+  });
 
   // This request will be called when the player who has to explain the words has indicated
   // that they're ready to start
-  socket.on('request: ready for round', () => {
-
+  socket.on('request: ready to speak', () => {
+    
   });
 
-  
   socket.on('debug', () => {
     // This will be used for debugging specific emitters or listeners
   });

@@ -12,6 +12,7 @@ function Lobby() {
   this.team1 = new Map();
   this.team2 = new Map();
   
+  // TODO: Ensure that there aren't any existing lobbies with the same id
   this.id = Math.floor(Math.random() * 9000) + 1000;
 
   this.addPlayer = (socket) => {
@@ -126,10 +127,12 @@ function Lobby() {
     
 
   this.startGame = () => {
-    if (this.team1.size < 2 || this.team2.size < 2) {
+    // First ensure that there are at least 2 players per team, and also ensure that there
+    // isn't a game already running
+    if (this.team1.size < 2 || this.team2.size < 2 || this.game !== undefined ) {
       return false; // Don't allow the game to start, as at least 4 players are needed
     } else {
-      this.game = new Game(this.team1, this.team2);
+      this.game = new Game(this.team1, this.team2, this.id);
       return true;
     }
   }

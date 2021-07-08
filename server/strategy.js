@@ -5,6 +5,8 @@
  * @module strategy 
  */
 
+const Word = require('./word');
+
 /**
  * This class handles calls to the different strategies
  */
@@ -35,18 +37,23 @@ class Strategy {
     this.name = name
     this.description = description;
     this.handler = handler;
+    this.chosenWords = [];
   }
 
   /** Call the implementation */
-  handleStrategy() {
-    this.handler();
+  handleStrategy(io, socket, game) {
+    this.handler(io, socket, game);
   }
+
+  
+
 }
 
 const strategyStandard = new Strategy(
   "Standard",
   "Standard rules",
-  () => {
+  (io, socket, game) => {
+    io.to("lobby" + game.id).emit("update: " + this.description);
     console.log("STANDARD RULES CHOSEN");
     // Handle standard rules here
   }
@@ -55,7 +62,8 @@ const strategyStandard = new Strategy(
 const strategyDouble = new Strategy(
   "Double",
   "Time is doubled!",
-  () => {
+  (io, socket, game) => {
+    io.to("lobby" + game.id).emit("update: " + this.description);
     console.log("DOUBLE TIME!")
     // Handle double time rules here
   }
@@ -64,7 +72,8 @@ const strategyDouble = new Strategy(
 const strategyNobodyLanguage = new Strategy(
   "No body language",
   "You cannot use body language",
-  () => {
+  (io, socket, game) => {
+    io.to("lobby" + game.id).emit("update: " + this.description);
     console.log("NO BODY LANGUAGE");
     // Handle rules here
   }
@@ -73,12 +82,12 @@ const strategyNobodyLanguage = new Strategy(
 const strategyEverybody = new Strategy(
   "Everybody",
   "Everybody except the speaker can answer for this round!",
-  () => {
+  (io, socket, game) => {
+    io.to("lobby" + game.id).emit("update: " + this.description);
     console.log("EVERYBODY JOINS");
     // Handle rules here
   }
 );
-
 
 const strategyManager = new StrategyManager();
 

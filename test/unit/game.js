@@ -54,11 +54,30 @@ describe('Game', () => {
     done();
   });
 
+  it("Should begin displaying words once speaker is ready", (done) => {
+
+
+    assert.fail();
+  });
+
 
   // TODO: Improve this test
   it("Should loop back to the first player, once all players have performed speaker role", (done) => {
+
+    // A basic mock of the io server, as the tested function requires it as an argument
+    var ioMock = {
+      to: () => {
+        return { 
+          emit: () => {
+            // The mock only needs to provide a definition for this function. No functionality
+            // is required, so leave it empty.
+          }
+        };
+      }
+    }
+    
     for (var i = 0; i < 10; i++) {
-      game.startRound();
+      game.startRound(ioMock);
     }
     done();
   });
@@ -86,7 +105,6 @@ describe('Game', () => {
     for (var i = 0; i < 200; i++) {
       game.rollDice();
       if (!rolledPossibilities.includes(game.strategy.description)) {
-        // console.log("DOESN'T INCLUDE", game.strategy.description);
         rolledPossibilities.push(game.strategy.description);
 
         // Once all roles are reached, avoid unnecessary looping and just conclude

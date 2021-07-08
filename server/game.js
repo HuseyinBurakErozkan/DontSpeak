@@ -7,44 +7,60 @@ const Word = require('./word');
 const Player = require('./player').Player;
 const strategyManager = require('./strategy').StrategyManager;
 
-function Game(team1, team2) {
+function Game(team1, team2, lobbyId) {
 
-  // this.team1 = team1, this.team2 = team2;
+  this.id = lobbyId;
 
   // Convert the dictionaries to arrays to enable iterating via index number. This is used 
   // so that the game can iterate through and choose which player takes on the role of speaker
-  this.team1 = Array.from(team1, ([id, player]) => ({ id, player }));
-  this.team2 = Array.from(team2, ([id, player]) => ({ id, player }));
+  this.team1 = Array.from(team1.values());
+  this.team2 = Array.from(team2.values());
+
   // Used to ensure that everyone has a turn where they speak
   this.team1speakerIndex = 0, this.team2speakerIndex = 0;
 
   this.chosenWords = new Map(); // Stores list of words that have been chosen before, to avoid repeats
   this.strategy;
 
+  this.state = "waiting"; // TODO: Implement a better solution for managing game state
 
   this.startGame = () => {
     var rand = Math.random();
 
     // Randomly choose which team starts first
-
-
     (rand > 0.5) 
       ? this.speakingTeam = team1
       : this.speakingTeam = team2;
   }
 
+
   this.startRound = (io, socket) => {
+    this.state = "playing";
+
     // First handle iterating through list of players to choose a speaker
-    this.chooseSpeaker();
+    this.setSpeaker();
 
     // Roll the dice to select which rule will be used, and then call the strategy/implementation
     // for that rule
+
     this.rollDice();
-    this.strategy.handleStrategy(io, socket);
+    if (io !== undefined) {
+      // Let all players know which rule was chosen. Game id is derived from lobby id.
+      io.to("lobby" + this.id).emit("update: rule:", this.strategy.description);
+      // Let all players knows who the speaker is
+      io.to("lobby" + this.id).emit("update: speaker:", this.speakerSocket.player.name);
+      // Inform the player who was chosen as speaker, that they're speaking for this round
+      io.to(this.speakerSocket.id).emit("update: role: speaking");
+    }
+    else {
+      throw Error("io is undefined");
+    }
+
+    this.strategy.handleStrategy(io, socket, this);
   }
 
 
-  this.chooseSpeaker = () => {
+  this.setSpeaker = () => {
     var speaker;
 
     // First, handle who will be speaking
@@ -73,6 +89,8 @@ function Game(team1, team2) {
     if (speaker === undefined) {
       throw "Speaker is undefined";
     }
+
+    this.speakerSocket = speaker;
   }
 
 
