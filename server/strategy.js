@@ -55,7 +55,7 @@ function Strategy(wordHandler) {
         io.to("lobby" + game.id).emit("update: word: ", currentWord);
       });
 
-      this.countdown(10, game, () => {
+      this.countdown(30, game, () => {
         callback();
       });
     } catch(e) {

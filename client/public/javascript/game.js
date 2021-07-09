@@ -17,10 +17,10 @@ socket.on("update: role: speaking", () => {
   alert("you're the speaker");
   // NOTE: TESTING ONLY
   // TODO: Remove the timer
-  setInterval(() => {
-    console.log("client: requesting word");
-    socket.emit("request: word");
-  }, 1500);
+  // setInterval(() => {
+  //   console.log("client: requesting word");
+  //   socket.emit("request: word");
+  // }, 1500);
 });
 
 socket.on("test", () => {
