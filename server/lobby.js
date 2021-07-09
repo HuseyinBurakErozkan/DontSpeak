@@ -3,10 +3,9 @@
  */
 
 const io = require('../app').io;
+const Game = require('./game').Game;
 
 var lobbies = new Map();
-
-var Game = require('./game').Game;
 
 function Lobby() {
 
@@ -17,8 +16,39 @@ function Lobby() {
   // TODO: Ensure that there aren't any existing lobbies with the same id
   this.id = Math.floor(Math.random() * 9000) + 1000;
 
+  /**
+   * This function is for adding lobby-related event listeners for the socket after it 
+   * has joined the lobby. It does not handle any game or lobby related logic. That is
+   * handled by the addPlayer() function. 
+   */
+  this.addSocket = (socket) => {
+    socket.on('request: change team', () => {
+      // TODO: Add code here
+    });
+  
+    socket.on('request: start game', () => {
+      if (this.startGame()) {
+        io.to("lobby" + this.id).emit("response: game started");
+  
+        // Add the socket to the game object, so listeners can be attached to it
+        this.game.addSocket(socket);
+      }
+      else {
+        io.to("lobby" + this.id).emit("error:", 
+          "Game can not start. Either an error occurred or there are less than 2 players per team");
+      }
+    });
+
+    this.addPlayer(socket); // Now add the player to the lobby
+  };
+
+
+  /**
+   * Add a player to the lobby and assign it to a team
+   * @param {object} socket The socket representing the player connection 
+   */
   this.addPlayer = (socket) => {
-    
+
     // Automatically assign a player to a team
     if (this.team1.size < this.team2.size) {
       this.team1.set(socket.id, socket); 
@@ -29,9 +59,10 @@ function Lobby() {
     else if (this.team1.size === this.team2.size) { // Both size are equal, so assign to random team
       
       var rand = Math.round(Math.random());
-      rand < 0.5 ? this.team1.set(socket.id, socket) : this.team2.set(socket.id, socket);
-      }
-  };
+      rand < 0.5 ? this.team1.set(socket.id, socket) : this.team2.set(socket.id, socket); 
+    }
+  }
+
 
 
   this.removePlayer = (socket) => {

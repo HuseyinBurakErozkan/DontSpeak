@@ -12,10 +12,12 @@ const Word = require('../../server/word');
 // Create a mock of the socket, as some functions require the socket's id as arguments
 function createMock() {
   return {
-    id: Math.floor(Math.random() * 9000000000) + 1000
+    id: Math.floor(Math.random() * 9000000000) + 1000,
+    on: () => {
+      // Do nothing, as we only have to mock the socket for its id, not its functionality
+    }
   }
 }
-
 
 describe('Game', () => {
 
@@ -41,7 +43,7 @@ describe('Game', () => {
     for (var i = 0; i < 4; i++) {
       var socketMock = createMock();
       Player.create(socketMock, "testPlayer" + i, lobby.id);
-      lobby.addPlayer(socketMock);
+      lobby.addSocket(socketMock);
       sockets.push(socketMock);
     }
 

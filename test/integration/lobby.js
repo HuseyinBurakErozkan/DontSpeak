@@ -359,7 +359,7 @@ describe('Lobby Events', () => {
   //     newSocket.id = Math.floor(Math.random() * 1000000) + 1;
 
   //     players.push(newSocket);
-  //     lobby.addPlayer(newSocket);
+  //     lobby.addSocket(newSocket);
   //   }
 
   //   // Game should be able to start after 4 players are in the lobby

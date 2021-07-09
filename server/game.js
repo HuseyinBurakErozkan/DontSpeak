@@ -12,9 +12,35 @@ function Game(team1, team2, lobbyId) {
 
   this.id = lobbyId;
   
+  // Create a new word handler object, specifically for this game.
   this.wordHandler = new Word();
   this.strategyManager = new Strategy(this.wordHandler);
 
+  /**
+   * Attach listeners to the socket, so that game-related emitter events can be delegated from
+   * the socket handler to the game
+   * @param {object} socket The socket that is having listeners attached
+   */
+  this.addSocket = (socket) => {
+    console.log('added socket');
+
+    // Listen to when user wants to start a new round
+    socket.on('request: start round', () => {
+
+      if (this.state === "waiting") {
+        this.startRound(socket);
+      }
+    });
+
+
+    socket.on('request: ready to speak', () => {
+    
+    });
+  }
+
+  this.removeSocket = (socket) => {
+
+  }
 
   // Convert the dictionaries to arrays to enable iterating via index number. This is used 
   // so that the game can iterate through and choose which player takes on the role of speaker
@@ -27,17 +53,6 @@ function Game(team1, team2, lobbyId) {
   this.state = "waiting"; // TODO: Implement a better solution for managing game state
 
 
-  this.displayWord = () => {
-    console.log("game: request: word");
-    if (this.state === "playing") {
-      console.log("getting a word to display");
-      var currentWord = this.strategyManager.selectWord();
-      console.log(currentWord);
-      // console.log(currentWord);
-      // this.io.to("lobby" + this.id).emit("update: word: ", currentWord);
-    }
-  }
-
   this.startGame = () => {
     var rand = Math.random();
 
@@ -46,6 +61,9 @@ function Game(team1, team2, lobbyId) {
       ? this.speakingTeam = team1
       : this.speakingTeam = team2;
   }
+
+
+  this.startGame();
 
 
   this.startRound = (socket) => {
@@ -69,7 +87,7 @@ function Game(team1, team2, lobbyId) {
       // Testing purposes only
       const newRound = setTimeout(() => {
         console.log("new round starting");
-        this.strategyManager = new Strategy(this.wordHandler); // New instance of strategy, to readd the listener
+        this.strategyManager = new Strategy(this.wordHandler); // New instance of strategy, to re-add the listener
         // this.startRound(io, socket);
       }, 5000);
     });
@@ -137,12 +155,17 @@ function Game(team1, team2, lobbyId) {
         break;
     }
 
-    // NOTE: FOR NOW, JUST TEST USING THE STNDARD STRATEGY
+    // NOTE: For now, test using just the standard strategy
     this.strategyManager.runStrategy = this.strategyManager.standardRule;
 
   }
   
-  this.startGame();
+
+  this.displayWord = () => {
+    if (this.state === "playing") {
+      currentWord = this.strategyManager.selectWord();
+    }
+  }
 };
 
 module.exports = {

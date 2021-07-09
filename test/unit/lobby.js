@@ -11,13 +11,18 @@ const Player = require('../../server/player').Player;
 // Create a mock of the socket, as some functions require the socket's id as arguments
 function createMock() {
   return {
-    id: Math.floor(Math.random() * 9000000000) + 1000
+    id: Math.floor(Math.random() * 9000000000) + 1000,
+    on: () => {
+      // Do nothing, as we only have to mock the socket for its id, not its functionality
+    }
   }
 }
 
 describe('Lobby instance', () => {
 
+  var mockSocket;
   beforeEach((done) => {
+    mockSocket = createMock();
     done();
   });
 
@@ -44,8 +49,8 @@ describe('Lobby instance', () => {
     var lobby = Lobby.createLobby();
     expect(lobby.getPlayerCount()).to.equal(0);
 
-    var player = Player.create("mock socket", "testPlayer", lobby.id);
-    lobby.addPlayer(player);
+    var player = Player.create(mockSocket, "testPlayer", lobby.id);
+    lobby.addSocket(mockSocket);
     expect(lobby.getPlayerCount()).to.equal(1);
     // TODO: ADD A PLAYER AND EXPECT COUNT TO EQUAL 1
     done();
@@ -61,7 +66,7 @@ describe('Lobby instance with 1 player', () => {
   beforeEach((done) => {
     lobby = Lobby.createLobby();
     Player.create(socketMock, "testPlayer", lobby.id);
-    lobby.addPlayer(socketMock);
+    lobby.addSocket(socketMock);
     done();
   });
 
@@ -111,7 +116,7 @@ describe('Lobby instance with minimum needed players', () => {
     for (var i = 0; i < 4; i++) {
       var socketMock = createMock();
       Player.create(socketMock, "testPlayer" + i, lobby.id);
-      lobby.addPlayer(socketMock);
+      lobby.addSocket(socketMock);
       sockets.push(socketMock);
     }
 
