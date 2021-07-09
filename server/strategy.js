@@ -1,5 +1,7 @@
 "use strict";
 
+const io = require('../app').io
+
 /**
  * This module provides different implementations for various rules that a round of the game can have.
  * @module strategy 
@@ -9,7 +11,7 @@ function Strategy(wordHandler) {
 
   this.wordHandler = wordHandler;
 
-  this.countdown = (seconds, io, game, callback) => {
+  this.countdown = (seconds, game, callback) => {
     try {
       var i = seconds;
 
@@ -28,7 +30,7 @@ function Strategy(wordHandler) {
     }
   }
 
-  this.standardRule = (io, speaker, game, callback) => { 
+  this.standardRule = (speaker, game, callback) => { 
     try {
 
       this.name = "Standard";
@@ -53,7 +55,7 @@ function Strategy(wordHandler) {
         io.to("lobby" + game.id).emit("update: word: ", currentWord);
       });
 
-      this.countdown(10, io, game, () => {
+      this.countdown(10, game, () => {
         callback();
       });
     } catch(e) {
@@ -61,34 +63,34 @@ function Strategy(wordHandler) {
     }
   }
 
-  this.doubleRule = (io, speaker, game) => {
+  this.doubleRule = (speaker, game) => {
     this.name = "Double";
     this.description = "Time is doubled!";
     io.to("lobby" + game.id).emit("update: " + this.description);
 
-    this.countdown(10, io, game, () => {
+    this.countdown(10, game, () => {
       console.log("DOUBLE ROUND OVER");
       return;
     });
   }
 
-  this.noBodyLanguageRule = (io, speaker, game) => {
+  this.noBodyLanguageRule = (speaker, game) => {
     this.name = "No body language";
     this.description = "You cannot use body language";
     io.to("lobby" + game.id).emit("update: " + this.description);
     
-    this.countdown(5, io, game, () => {
+    this.countdown(5, game, () => {
       console.log("NO BODY LANGUAGE ROUND OVER");
       return;
     });
   }
 
-  this.everybodyRule = (io, speaker, game) => {
+  this.everybodyRule = (speaker, game) => {
     this.name = "Everybody";
     this.description = "Everybody except the speaker can answer for this round!";
     io.to("lobby" + game.id).emit("update: " + this.description);
 
-    this.countdown(5, io, game, () => {
+    this.countdown(5, game, () => {
       console.log("EVERYBODY ROUND OVER");
       return;
     });

@@ -6,11 +6,11 @@
 const Word = require('./word').Word;
 const Player = require('./player').Player;
 const Strategy = require('./strategy').Strategy;
+const io = require('../app').io;
 
-function Game(team1, team2, lobbyId, io) {
+function Game(team1, team2, lobbyId) {
 
   this.id = lobbyId;
-  this.io = io;
   
   this.wordHandler = new Word();
   this.strategyManager = new Strategy(this.wordHandler);
@@ -48,7 +48,7 @@ function Game(team1, team2, lobbyId, io) {
   }
 
 
-  this.startRound = (io, socket) => {
+  this.startRound = (socket) => {
     this.state = "playing";
 
     // First handle iterating through list of players to choose a speaker
@@ -57,7 +57,7 @@ function Game(team1, team2, lobbyId, io) {
     // Roll the dice to select which rule will be used, and then call the strategy/implementation
     // for that rule
     this.rollDice();
-    this.strategyManager.runStrategy(io, this.speakerSocket, this, () => {
+    this.strategyManager.runStrategy(this.speakerSocket, this, () => {
 
       // Let the players know the round is over, and don't allow the player to request words
       // until the next round starts
@@ -74,17 +74,12 @@ function Game(team1, team2, lobbyId, io) {
       }, 5000);
     });
 
-    if (io !== undefined) {
-      // Let all players know which rule was chosen. Game id is derived from lobby id.
-      io.to("lobby" + this.id).emit("update: rule:", this.strategyManager.description);
-      // Let all players knows who the speaker is
-      io.to("lobby" + this.id).emit("update: speaker:", this.speakerSocket.player.name);
-      // Inform the player who was chosen as speaker, that they're speaking for this round
-      io.to(this.speakerSocket.id).emit("update: role: speaking");
-    }
-    else {
-      throw Error("io is undefined");
-    }
+    // Let all players know which rule was chosen. Game id is derived from lobby id.
+    io.to("lobby" + this.id).emit("update: rule:", this.strategyManager.description);
+    // Let all players knows who the speaker is
+    io.to("lobby" + this.id).emit("update: speaker:", this.speakerSocket.player.name);
+    // Inform the player who was chosen as speaker, that they're speaking for this round
+    io.to(this.speakerSocket.id).emit("update: role: speaking");
 
   }
 

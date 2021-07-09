@@ -14,7 +14,7 @@ app.use(express.static('client/public'));
 
 // Handle the initial client connection to server
 io.on('connection', (socket) => {
-  require('./server/sockethandler')(io, socket);
+  require('./server/sockethandler')(socket);
 });
 
 

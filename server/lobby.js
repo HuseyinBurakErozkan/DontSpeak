@@ -2,13 +2,13 @@
  * This file contains all lobby-related routes and methods
  */
 
+const io = require('../app').io;
+
 var lobbies = new Map();
 
 var Game = require('./game').Game;
 
-function Lobby(io) {
-
-  this.io = io;
+function Lobby() {
 
   // Only 2 teams for now
   this.team1 = new Map();
@@ -134,7 +134,7 @@ function Lobby(io) {
     if (this.team1.size < 2 || this.team2.size < 2 || this.game !== undefined ) {
       return false; // Don't allow the game to start, as at least 4 players are needed
     } else {
-      this.game = new Game(this.team1, this.team2, this.id, this.io);
+      this.game = new Game(this.team1, this.team2, this.id);
       return true;
     }
   }
@@ -169,8 +169,8 @@ function Lobby(io) {
 }
 
 
-Lobby.createLobby = (io) => {
-  var lobby = new Lobby(io);
+Lobby.createLobby = () => {
+  var lobby = new Lobby();
   lobbies.set(lobby.id, lobby);
   return lobby;
 }

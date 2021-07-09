@@ -1,8 +1,8 @@
 const Player = require('./player').Player;
 const Lobby = require('./lobby').Lobby;
 const Game = require('./game').Game;
-
-module.exports = socketHandler = (io, socket) => {
+const io = require('../app').io
+module.exports = socketHandler = (socket) => {
   
   /**
    * Depending on the type of socket communication, prepend emitter messages with:
