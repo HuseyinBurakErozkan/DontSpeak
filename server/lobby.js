@@ -6,7 +6,9 @@ var lobbies = new Map();
 
 var Game = require('./game').Game;
 
-function Lobby() {
+function Lobby(io) {
+
+  this.io = io;
 
   // Only 2 teams for now
   this.team1 = new Map();
@@ -132,7 +134,7 @@ function Lobby() {
     if (this.team1.size < 2 || this.team2.size < 2 || this.game !== undefined ) {
       return false; // Don't allow the game to start, as at least 4 players are needed
     } else {
-      this.game = new Game(this.team1, this.team2, this.id);
+      this.game = new Game(this.team1, this.team2, this.id, this.io);
       return true;
     }
   }
@@ -167,8 +169,8 @@ function Lobby() {
 }
 
 
-Lobby.createLobby = () => {
-  var lobby = new Lobby();
+Lobby.createLobby = (io) => {
+  var lobby = new Lobby(io);
   lobbies.set(lobby.id, lobby);
   return lobby;
 }

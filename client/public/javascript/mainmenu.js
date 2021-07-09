@@ -33,11 +33,11 @@ createForm.addEventListener("submit", (e) => {
 
     
     // Once the server responds
-    socket.on("response: lobby created", (id, team1, team2) => {
-      document.getElementById('h2-lobby-id').innerHTML = "Game id: " + id;
+    socket.on("response: lobby created", (player, lobbyId, team1, team2) => {
+      document.getElementById('h2-lobby-id').innerHTML = "Game id: " + lobbyId;
       
       changeScreen(createForm, 'screen-lobby');
-      joinLobby(team1, team2);
+      joinLobby(team1, team2, player);
     });
   }
 });
@@ -67,11 +67,16 @@ joinForm.addEventListener("submit", (e) => {
     socket.emit("request: join lobby", name, lobbyId);
 
     // Once the server responds
-    socket.on("response: lobby joined", (id) => {
+    socket.on("response: lobby joined", (id, player) => {
 
       document.getElementById('h2-lobby-id').innerHTML = "Game id: " + id;
 
       changeScreen(joinForm, 'screen-lobby');
+      
+      // TODO: Remove the lines below later
+      var nameDisplay = document.createElement("p");
+      nameDisplay.appendChild(document.createTextNode("hi " + player.name));
+      document.getElementsByClassName("screen-container")[0].insertBefore(nameDisplay, document.getElementById("screen-lobby"));
     });
   }
 });

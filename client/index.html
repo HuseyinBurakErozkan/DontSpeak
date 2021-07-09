@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="css/style.css">
   </head>
   <body>
-    <h1>Dont Speak!</h1>
+    <h1 id="game-title">Dont Speak!</h1>
     <!-- The initial menu is logically separated into 'screens' -->
     <div class="screen-container">
       <!-- Start screen -->
@@ -51,7 +51,16 @@
         </form>
       </div>
 
-      <!-- -->
+      <!-- Play word screen -->
+      <div id="screen-word" hidden>
+        <div class="word-primary">
+
+        </div>
+        <div class="word-secondary">
+
+        </div>
+      </div>
+
     </div>
     <script src="/socket.io/socket.io.js"></script>
     <script>

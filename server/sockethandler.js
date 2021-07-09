@@ -23,7 +23,7 @@ module.exports = socketHandler = (io, socket) => {
       return;
     }
 
-    var lobby = Lobby.createLobby();
+    var lobby = Lobby.createLobby(io);
     lobby.addPlayer(socket);
     Player.create(socket, name, lobby.id);
 
@@ -32,7 +32,7 @@ module.exports = socketHandler = (io, socket) => {
 
     // Respond with the lobby's id
     var result = lobby.getArrayOfPlayersWithoutSockets();
-    io.to(socket.id).emit("response: lobby created", lobby.id, result[0], result[1]);
+    io.to(socket.id).emit("response: lobby created", socket.player, lobby.id, result[0], result[1]);
   });
 
 
@@ -61,7 +61,7 @@ module.exports = socketHandler = (io, socket) => {
 
     // Have the socket join the lobby's socket.io room
     socket.join("lobby" + lobby.id);
-    io.to(socket.id).emit("response: lobby joined", lobby.id);
+    io.to(socket.id).emit("response: lobby joined", lobby.id, socket.player);
 
     // Emit this messsage to notyify all sockets in the lobby that a new player has joined
     var result = lobby.getArrayOfPlayersWithoutSockets();
@@ -78,8 +78,6 @@ module.exports = socketHandler = (io, socket) => {
     var lobby = Lobby.getLobby(socket.player.lobbyId);
     if (lobby.startGame()) {
       io.to("lobby" + socket.player.lobbyId).emit("response: game started");
-
-      var game = lobby.game;
     }
     else {
       io.to("lobby" + socket.player.lobbyId).emit("error:", 
@@ -122,5 +120,18 @@ module.exports = socketHandler = (io, socket) => {
   socket.on("get: id", () => {
     return socket.id;
   });
+
+  
+  // socket.on("request: word", () => {
+  //   if (socket.player === undefined) {
+  //     return;
+  //   }
+  //   try {
+  //     var game = Lobby.getLobby(socket.player.lobbyId).game;
+  //     game.displayWord();
+  //   } catch(e) {
+  //     console.log(e);
+  //   }
+  // });
 
 }

@@ -44,7 +44,7 @@ describe('Lobby creation Events', () => {
   it("Newly created lobby should be able to be found in the collection of lobbies", (done) => {
     
     player.emit("request: create lobby", "testPlayerName");
-    player.on("response: lobby created", (lobbyId) => {
+    player.on("response: lobby created", (player, lobbyId, team1, team2) => {
       var result = Lobby.getLobby(lobbyId);
       expect(result).to.not.be.null.and.to.not.be.undefined;
       done();
@@ -57,7 +57,7 @@ describe('Lobby creation Events', () => {
     player.emit("request: create lobby", "");
     
     // Server should never respond in this fashion if the player hasn't provided a name
-    player.on("response: lobby created", (lobbyId) => {
+    player.on("response: lobby created", (player, lobbyId, team1, team2) => {
       assert.fail();
       done();
     });
@@ -72,7 +72,7 @@ describe('Lobby creation Events', () => {
   it("New lobby should have generated a 4 digit id on initialisation", (done) => {
     
     player.emit("request: create lobby", "testPlayerName");
-    player.on("response: lobby created", (lobbyId) => {
+    player.on("response: lobby created", (player, lobbyId, team1, team2) => {
       var newLobby = Lobby.getLobby(lobbyId);
       expect(newLobby.id).to.be.a('number');
       expect(newLobby.id).to.be.above(999).and.to.be.below(10000);
@@ -84,7 +84,7 @@ describe('Lobby creation Events', () => {
   it("Player should be added to the lobby that they created", (done) => {
     
     player.emit("request: create lobby", "testPlayerName");
-    player.on("response: lobby created", (lobbyId) => {
+    player.on("response: lobby created", (player, lobbyId, team1, team2) => {
       var lobby = Lobby.getLobby(lobbyId);
       var foundPlayer = lobby.getPlayer(player.id);
 
@@ -97,7 +97,7 @@ describe('Lobby creation Events', () => {
   it("Lobby should only have 1 player on creation", (done) => {
 
     player.emit("request: create lobby", "testPlayerName");
-    player.on("response: lobby created", (lobbyId) => {
+    player.on("response: lobby created", (player, lobbyId, team1, team2) => {
       var lobby = Lobby.getLobby(lobbyId);
       expect(lobby.getPlayerCount()).to.equal(1);
       done();
@@ -117,7 +117,7 @@ describe('Lobby Events', () => {
   beforeEach((done) => {
     player = io("http://localhost:3000/", ioOptions);
     player.emit("request: create lobby", "testPlayerName");
-    player.on("response: lobby created", (lobbyId) => {
+    player.on("response: lobby created", (player, lobbyId, team1, team2) => {
       lobby = Lobby.getLobby(lobbyId);
       done();
     });

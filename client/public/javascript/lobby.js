@@ -1,5 +1,9 @@
-function joinLobby(team1, team2) {
+function joinLobby(team1, team2, player) {
   displayTeams(team1, team2);
+  // TODO: Remove the lines below later
+  var nameDisplay = document.createElement("p");
+  nameDisplay.appendChild(document.createTextNode("hi " + player.name));
+  document.getElementsByClassName("screen-container")[0].insertBefore(nameDisplay, document.getElementById("screen-lobby"));
 }
 
 socket.on("update: player joined", (player, team1, team2) => {

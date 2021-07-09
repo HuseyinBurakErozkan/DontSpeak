@@ -5,97 +5,97 @@
  * @module strategy 
  */
 
-const Word = require('./word');
+function Strategy(wordHandler) {
 
-/**
- * This class handles calls to the different strategies
- */
-class StrategyManager {
-  constructor() {
-    this.strategies = [];
+  this.wordHandler = wordHandler;
+
+  this.countdown = (seconds, io, game, callback) => {
+    try {
+      var i = seconds;
+
+      var countdownTimer = setInterval(() => {
+        // io.to("lobby" + game.id).emit("update: seconds left: ", i);     
+        i--;
+        console.log(i + "seconds left");
+
+        if (i === 0) {
+          clearInterval(countdownTimer);
+          callback();
+        }
+      }, 1000);
+    } catch(e) {
+      console.log(e);
+    }
   }
 
-  addStrategy(strategy) {
-    this.strategies = [...this.strategies, strategy];
+  this.standardRule = (io, speaker, game, callback) => { 
+    try {
+
+      this.name = "Standard";
+      this.description = "Standard rules";
+
+      io.to("lobby" + game.id).emit("update: " + this.description);
+
+      // Select a word and let client know what it is. Originally start with easiest words
+      var currentWord = this.wordHandler.getWord(1);
+      io.to("lobby" + game.id).emit("update: word: ", currentWord);
+
+      var tier = 1; // Start at the easiest tier of words
+
+      speaker.on("request: word", () => {
+        /**
+         * Progressively increase the difficulty of words by incrementing by 0.25 each 
+         * time a new card is requested and then using round down to the nearest integer. 
+         * This means that the words will get more difficult every 4 cards requested.
+         */
+        tier += 0.25;
+        currentWord = this.wordHandler.getWord(Math.floor(tier));
+        io.to("lobby" + game.id).emit("update: word: ", currentWord);
+      });
+
+      this.countdown(10, io, game, () => {
+        callback();
+      });
+    } catch(e) {
+      // console.log(e);
+    }
   }
 
-  getstrategy(name) {
-    return this.strategies.find(strategy => strategy.name === name);
+  this.doubleRule = (io, speaker, game) => {
+    this.name = "Double";
+    this.description = "Time is doubled!";
+    io.to("lobby" + game.id).emit("update: " + this.description);
+
+    this.countdown(10, io, game, () => {
+      console.log("DOUBLE ROUND OVER");
+      return;
+    });
   }
+
+  this.noBodyLanguageRule = (io, speaker, game) => {
+    this.name = "No body language";
+    this.description = "You cannot use body language";
+    io.to("lobby" + game.id).emit("update: " + this.description);
+    
+    this.countdown(5, io, game, () => {
+      console.log("NO BODY LANGUAGE ROUND OVER");
+      return;
+    });
+  }
+
+  this.everybodyRule = (io, speaker, game) => {
+    this.name = "Everybody";
+    this.description = "Everybody except the speaker can answer for this round!";
+    io.to("lobby" + game.id).emit("update: " + this.description);
+
+    this.countdown(5, io, game, () => {
+      console.log("EVERYBODY ROUND OVER");
+      return;
+    });
+  }
+
 }
-
-
-/** Objects of this class provide different implementations, depending on the rule/dice roll */
-class Strategy {
-  /**
-   * 
-   * @param {string} name The name of the rule.
-   * @param {string} description The description, which describes the rule to the user.
-   * @param {function} handler The implementation of this specific rule.
-   */
-  constructor(name, description, handler) {
-    this.name = name
-    this.description = description;
-    this.handler = handler;
-    this.chosenWords = [];
-  }
-
-  /** Call the implementation */
-  handleStrategy(io, socket, game) {
-    this.handler(io, socket, game);
-  }
-
-  
-
-}
-
-const strategyStandard = new Strategy(
-  "Standard",
-  "Standard rules",
-  (io, socket, game) => {
-    io.to("lobby" + game.id).emit("update: " + this.description);
-    console.log("STANDARD RULES CHOSEN");
-    // Handle standard rules here
-  }
-);
-
-const strategyDouble = new Strategy(
-  "Double",
-  "Time is doubled!",
-  (io, socket, game) => {
-    io.to("lobby" + game.id).emit("update: " + this.description);
-    console.log("DOUBLE TIME!")
-    // Handle double time rules here
-  }
-);
-
-const strategyNobodyLanguage = new Strategy(
-  "No body language",
-  "You cannot use body language",
-  (io, socket, game) => {
-    io.to("lobby" + game.id).emit("update: " + this.description);
-    console.log("NO BODY LANGUAGE");
-    // Handle rules here
-  }
-);
-
-const strategyEverybody = new Strategy(
-  "Everybody",
-  "Everybody except the speaker can answer for this round!",
-  (io, socket, game) => {
-    io.to("lobby" + game.id).emit("update: " + this.description);
-    console.log("EVERYBODY JOINS");
-    // Handle rules here
-  }
-);
-
-const strategyManager = new StrategyManager();
-
-strategyManager.addStrategy(strategyStandard);
-strategyManager.addStrategy(strategyNobodyLanguage);
-strategyManager.addStrategy(strategyDouble);
-strategyManager.addStrategy(strategyEverybody);
 
 module.exports = {
-  StrategyManager: strategyManager
+  Strategy: Strategy
 }

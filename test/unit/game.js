@@ -23,6 +23,18 @@ describe('Game', () => {
   var sockets = [];
   var game;
 
+  // A basic mock of the io server, as the tested function requires it as an argument
+  var ioMock = {
+    to: () => {
+      return { 
+        emit: () => {
+          // The mock only needs to provide a definition for this function. No functionality
+          // is required, so leave it empty.
+        }
+      };
+    }
+  }
+
   beforeEach((done) => {
     lobby = Lobby.createLobby();
 
@@ -54,27 +66,15 @@ describe('Game', () => {
     done();
   });
 
-  it("Should begin displaying words once speaker is ready", (done) => {
+  // it("Should begin displaying words once speaker is ready", (done) => {
 
 
-    assert.fail();
-  });
+  //   assert.fail();
+  // });
 
 
   // TODO: Improve this test
   it("Should loop back to the first player, once all players have performed speaker role", (done) => {
-
-    // A basic mock of the io server, as the tested function requires it as an argument
-    var ioMock = {
-      to: () => {
-        return { 
-          emit: () => {
-            // The mock only needs to provide a definition for this function. No functionality
-            // is required, so leave it empty.
-          }
-        };
-      }
-    }
     
     for (var i = 0; i < 10; i++) {
       game.startRound(ioMock);
@@ -82,21 +82,6 @@ describe('Game', () => {
     done();
   });
 
-  it("Should choose a word", (done) => {
-    var result = game.selectWord();
-    expect(result).to.exist;
-    
-    // Also check that the result variable is indeed assigned a word, rather than a
-    // garbage value.
-    for (let v of Word.words.values()) {
-      if (result === v) {
-        done();
-      }
-    }
-    
-    // If here is reached, the result variable has been assigned an incorrect value
-    assert.fail();
-  });
 
   it("should be able to roll all dice rolls/rules", (done) => {
 
@@ -104,8 +89,9 @@ describe('Game', () => {
     // Loop 200 times, as that gives a > 99.99% chance to hit all rolls 
     for (var i = 0; i < 200; i++) {
       game.rollDice();
-      if (!rolledPossibilities.includes(game.strategy.description)) {
-        rolledPossibilities.push(game.strategy.description);
+      game.strategyManager.runStrategy(ioMock, createMock(), game);
+      if (!rolledPossibilities.includes(game.strategyManager.name)) {
+        rolledPossibilities.push(game.strategyManager.name);
 
         // Once all roles are reached, avoid unnecessary looping and just conclude
         // the test as passed
