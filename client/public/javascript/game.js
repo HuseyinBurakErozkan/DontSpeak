@@ -15,6 +15,8 @@ socket.on("update: speaker:", (speaker) => {
 
 socket.on("update: role: speaking", () => {
   alert("you're the speaker");
+  // NOTE: TESTING ONLY
+  // TODO: Remove the timer
   setInterval(() => {
     console.log("client: requesting word");
     socket.emit("request: word");
@@ -28,65 +30,50 @@ socket.on("test", () => {
 socket.on("update: word: ", (word) => {
 
   // Clear the word screen
-  var wordScreen = document.getElementById("screen-word");
-  while (wordScreen.firstChild) {
-    wordScreen.removeChild(wordScreen.lastChild);
-  }
+  var wordScreen = $("#screen-word");
+  wordScreen.empty();
 
-  var primaryDiv = document.createElement("div");
-  primaryDiv.classList.add("word-primary");
+  var primaryDiv = $("<div/>", { id: "div-word-primary", class: "word-primary" });
+  var secondaryDiv = $("<div/>", { id: "div-word-secondary", class: "word-secondary" });
+  wordScreen.append(primaryDiv);
+  wordScreen.append(secondaryDiv);
 
-  var secondaryDiv = document.createElement("div");
-  secondaryDiv.classList.add("word-secondary");
-  wordScreen.appendChild(primaryDiv);
-  wordScreen.appendChild(secondaryDiv);
+  // Display the word to be said
+  var element = $("<p></p>").text(word[0]);
+  $("#div-word-primary").append(element);
 
-  console.log(word)
-  console.log("The word is : " + word[0] + ", can't say: ");
-  console.log(word[1], word[2], word[3], word[4]);
-  
-  var element = document.createElement("p");
-  element.appendChild(document.createTextNode(word[0]));
-  document.getElementsByClassName("word-primary")[0].appendChild(element);
-
+  // Now display all the words that the player can't say
   var secondaryWords = word[1];
-
   for (var i = 0; i < secondaryWords.length; i++) {
-    var wordElement = document.createElement("p");
-    wordElement.appendChild(document.createTextNode(secondaryWords[i]));
-    document.getElementsByClassName("word-secondary")[0].appendChild(wordElement)
+    var elementSecondaryWord = $("<p></p>").text(secondaryWords[i]);
+    $("#div-word-secondary").append(elementSecondaryWord);
   }
 })
 
-
-function displayWordScreen() {
-  changeScreen(document.getElementById("h2-lobby-id"), "screen-word");
-}
-
 socket.on("update: Standard rules", () => {
-  displayWordScreen()
+  changeScreen($("#h2-lobby-id"), "screen-word");
   // alert("standard rules!");
 })
 
 socket.on("update: Time is doubled!", () => {
-  displayWordScreen()
+  changeScreen($("#h2-lobby-id"), "screen-word");
   // alert("double!");
 })
 
 socket.on("update: You cannot use body language", () => {
-  displayWordScreen()
+  changeScreen($("#h2-lobby-id"), "screen-word");
   // alert("statue!");
 })
 
 socket.on("update: Everybody except the speaker can answer for this round!", () => {
-  displayWordScreen()
+  changeScreen($("#h2-lobby-id"), "screen-word");
   // alert("everybody!");
 })
 
-
-socket.on("update: seconds left: ", (seconds) => {
-  console.log(seconds + " seconds left");
-})
+// NOTE: Not expected to be used. Remove in future
+// socket.on("update: seconds left: ", (seconds) => {
+//   console.log(seconds + " seconds left");
+// })
 
 socket.on("update: round over:", () => {
   console.log("round over");

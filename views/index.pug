@@ -1,0 +1,22 @@
+doctype html
+html
+  include includes/head.pug
+  body
+    h1#game-title= title
+    div.screen-container
+      include screens/mainscreen.pug
+      include screens/createlobby.pug
+      include screens/joinlobby.pug
+      include screens/lobby.pug
+      include screens/wordscreen.pug
+      
+    script(src='socket.io/socket.io.js')
+    script.
+      var socket = io();
+
+    script(src='./javascript/jquery-3.6.0.js')
+    script(src='./javascript/lobby.js')
+    script(src='./javascript/mainmenu.js')
+    script(src='./javascript/flash.js')
+    script(src='./javascript/game.js')
+    script(src='./javascript/socketevents.js')

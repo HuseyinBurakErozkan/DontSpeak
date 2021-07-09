@@ -8,6 +8,9 @@ const io = new Server(server);
 const path = require('path');
 const client_dir = path.join(__dirname, './client');
 
+app.set('view engine', 'pug')
+app.set('views','./views');
+
 // Allow client-side JS and CSS files to be served
 app.use(express.static('client/public'));
 
@@ -19,7 +22,7 @@ io.on('connection', (socket) => {
 
 
 app.get('/', (req, res) => {
-  res.sendFile(path.join(client_dir, 'index.html'));
+  res.render('index', { title: "Don't speak", screen: "main"})
 });
 
 // Export the express app io so it can be used when testing route-related functions, as well

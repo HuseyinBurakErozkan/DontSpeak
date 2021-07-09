@@ -1,4 +1,3 @@
-
 /**
  * Handles switching between the logically separated 'screens' in the menu section
  * of the app
@@ -6,37 +5,32 @@
  * @param {String} toClassId The Id of the html div element to display
  */
 function changeScreen(from, toClassId) {
-  var parentScreen = from.parentNode;
-  parentScreen.hidden = true;
-  
-  var toScreen = document.getElementById(toClassId);
-  toScreen.hidden = false;
+  // Get the ancestor screen element and hide it, then show the new screen
+  $(from).closest(".screen").addClass("--display-hidden");
+  $("#"+toClassId).removeClass("--display-hidden");
 }
+
 
 /**
  * Handle user requesting to create a new game
  */
-var createForm = document.getElementById("form-create");
-createForm.addEventListener("submit", (e) => {
-  e.preventDefault();
-  
-  var nameInput = document.getElementById("input-name-create");
-  var name = nameInput.value.trim();
+$("#form-create").submit((e) => {
+  e.preventDefault()
 
-  if (name.replace(/\s/g, "") == "" || nameInput.value == null) {
+  var name = $("#input-name-create").val().trim();
+
+  if (name.replace(/\s/g, "") == "" || $("#input-name-create").val() == null) {
     // TODO: Display feedback to the user
     console.log("Need a valid username");
   }
   else {
     console.log("Name is " + name);
     socket.emit("request: create lobby", name);
-
-    
+  
     // Once the server responds
     socket.on("response: lobby created", (player, lobbyId, team1, team2) => {
-      document.getElementById('h2-lobby-id').innerHTML = "Game id: " + lobbyId;
-      
-      changeScreen(createForm, 'screen-lobby');
+      $("#h2-lobby-id").text("Game id: " + lobbyId);
+      changeScreen($("#form-create"), "screen-lobby");
       joinLobby(team1, team2, player);
     });
   }
@@ -46,37 +40,22 @@ createForm.addEventListener("submit", (e) => {
 /**
  * Hande user requesting to join a game
  */
-var joinForm = document.getElementById("form-join");
-joinForm.addEventListener("submit", (e) => {
+$("#form-join").submit((e) => {
   e.preventDefault();
 
-  var nameInput = document.getElementById("input-name-join");
-  var name = nameInput.value.trim();
+  var name = $("#input-name-join").val().trim();
+  var lobbyId = $("#input-lobby-number").val().trim();
 
-  var lobbyId = document.getElementById("input-lobby-number").value.trim();
-
-  if (name.replace(/\s/g, "") == "" || nameInput.value == null) {
+  if (name.replace(/\s/g, "") == "" || $("#input-name-join").val() == null) {
     // TODO: Display feedback
     console.log("Need a valid username");
-  }
-  else if (lobbyId < 1000 || lobbyId > 9999) {
+  } else if (lobbyId < 1000 || lobbyId > 9999) {
     // TODO: Display feedback
     console.log("Need a valid lobby number. 4 digits");
-  }
-  else {
+  } else {
     socket.emit("request: join lobby", name, lobbyId);
 
-    // Once the server responds
-    socket.on("response: lobby joined", (id, player) => {
 
-      document.getElementById('h2-lobby-id').innerHTML = "Game id: " + id;
-
-      changeScreen(joinForm, 'screen-lobby');
-      
-      // TODO: Remove the lines below later
-      var nameDisplay = document.createElement("p");
-      nameDisplay.appendChild(document.createTextNode("hi " + player.name));
-      document.getElementsByClassName("screen-container")[0].insertBefore(nameDisplay, document.getElementById("screen-lobby"));
-    });
   }
 });
+
