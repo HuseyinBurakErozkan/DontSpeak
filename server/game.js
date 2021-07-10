@@ -22,19 +22,37 @@ function Game(team1, team2, lobbyId) {
    * @param {object} socket The socket that is having listeners attached
    */
   this.addSocket = (socket) => {
-    console.log('added socket');
 
-    // Listen to when user wants to start a new round
+    socket.on('request: new round', () => {
+
+      // New rounds can only be requested while in waiting state
+      if (this.state !== "waiting") {
+        return;
+      }
+
+      this.prepareRound();
+      // Let all players know that they are ready to begin playing the round. Also provide
+      // them with information about this particular round
+      io.to("lobby" + this.id).emit(
+        "response: new round", 
+        this.strategyManager.name,
+        this.strategyManager.description, 
+        this.speakerSocket.player.name);
+
+      io.to(this.speakerSocket.id).emit("update: role: speaking");
+    });
+    
+    // Listen to when user wants to start begin the round
     socket.on('request: start round', () => {
 
-      if (this.state === "waiting") {
+      // Only the speaker is allowed to ask for the round to start
+      if (this.state === "prepared" && socket === this.speakerSocket) {
         this.startRound(socket);
+      } else {
+        console.log("Game: Request: start round: The socket requesting is not the speaker")
+        // console.log(socket);
+        // console.log(this.speakerSocket);
       }
-    });
-
-
-    socket.on('request: ready to speak', () => {
-    
     });
   }
 
@@ -65,40 +83,28 @@ function Game(team1, team2, lobbyId) {
 
   this.startGame();
 
-
-  this.startRound = (socket) => {
-    this.state = "playing";
+  this.prepareRound = (socket) => {
+    this.state = "prepared";
 
     // First handle iterating through list of players to choose a speaker
     this.setSpeaker();
 
     // Roll the dice to select which rule will be used, and then call the strategy/implementation
     // for that rule
-    this.rollDice();
-    this.strategyManager.runStrategy(this.speakerSocket, this, () => {
+    this.rollDice();    
+  }
 
+  
+  this.startRound = (socket) => {
+    this.state = "playing";
+
+    this.strategyManager.runStrategy(this.speakerSocket, this, () => {
       // Let the players know the round is over, and don't allow the player to request words
       // until the next round starts
       this.speakerSocket.removeAllListeners("request: word");
       io.to("lobby" + this.id).emit("update: round over:");
-      this.state = "waiting";
-      console.log("round is over");
-
-      // Testing purposes only
-      const newRound = setTimeout(() => {
-        console.log("new round starting");
-        this.strategyManager = new Strategy(this.wordHandler); // New instance of strategy, to re-add the listener
-        // this.startRound(io, socket);
-      }, 5000);
+      this.state = "tallying";
     });
-
-    // Let all players know which rule was chosen. Game id is derived from lobby id.
-    io.to("lobby" + this.id).emit("update: rule:", this.strategyManager.description);
-    // Let all players knows who the speaker is
-    io.to("lobby" + this.id).emit("update: speaker:", this.speakerSocket.player.name);
-    // Inform the player who was chosen as speaker, that they're speaking for this round
-    io.to(this.speakerSocket.id).emit("update: role: speaking");
-
   }
 
 
@@ -107,7 +113,6 @@ function Game(team1, team2, lobbyId) {
 
     // First, handle who will be speaking
     if (this.speakingTeam === team1) {
-      // console.log("Speaker for team 1 is: ", this.team1[this.team1speakerIndex]);
       speaker = this.team1[this.team1speakerIndex];
       this.speakingTeam = team2;
 
@@ -117,7 +122,6 @@ function Game(team1, team2, lobbyId) {
         : this.team1speakerIndex++;
     }
     else {
-      // console.log("Speaker for team 2 is: ", this.team2[this.team2speakerIndex]);
       speaker = this.team2[this.team2speakerIndex];
       this.speakingTeam = team1;
 
@@ -142,28 +146,41 @@ function Game(team1, team2, lobbyId) {
     
     switch(rand) {
       case 0:
-        this.strategyManager.runStrategy = this.strategyManager.standardRule;
+        this.strategyManager.setStrategy("standard");
         break;
       case 1:
-          this.strategyManager.runStrategy = this.strategyManager.noBodyLanguageRule;
+        this.strategyManager.setStrategy("no body language");
         break;
       case 2:
-          this.strategyManager.runStrategy = this.strategyManager.doubleRule;
+        this.strategyManager.setStrategy("double time");
         break;
       case 3:
-          this.strategyManager.runStrategy = this.strategyManager.everybodyRule;
+        this.strategyManager.setStrategy("everybody");
         break;
     }
 
     // NOTE: For now, test using just the standard strategy
-    this.strategyManager.runStrategy = this.strategyManager.standardRule;
-
+    // this.strategyManager.runStrategy = this.strategyManager.standardRule;
+    this.strategyManager.setStrategy("standard");
   }
   
 
   this.displayWord = () => {
     if (this.state === "playing") {
       currentWord = this.strategyManager.selectWord();
+    }
+  }
+
+  this.getPlayerTeam = (socket) => {
+    var player = this.team1.find(s => s.id === socket.id);
+
+    if (player !== undefined) {
+      return "team1";
+    } else {
+      player = this.team2.find(s => s.id === socket.id);
+      if (player !== undefined) {
+        return "team2";
+      }
     }
   }
 };

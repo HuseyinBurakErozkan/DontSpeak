@@ -22,6 +22,8 @@ function Lobby() {
    * handled by the addPlayer() function. 
    */
   this.addSocket = (socket) => {
+    this.addPlayer(socket); // Now add the player to the lobby
+
     socket.on('request: change team', () => {
       // TODO: Add code here
     });
@@ -30,16 +32,22 @@ function Lobby() {
       if (this.startGame()) {
         io.to("lobby" + this.id).emit("response: game started");
   
-        // Add the socket to the game object, so listeners can be attached to it
-        this.game.addSocket(socket);
+        // Attach game-related eventListeners for all sockets in the lobby by calling
+        // the game's addSocket function.
+        for (let s of this.team1.values()) {
+          console.log(s.id);
+          this.game.addSocket(s)
+        }
+        for (let s of this.team2.values()) {
+          console.log(s.id)
+          this.game.addSocket(s);
+        }
       }
       else {
         io.to("lobby" + this.id).emit("error:", 
           "Game can not start. Either an error occurred or there are less than 2 players per team");
       }
     });
-
-    this.addPlayer(socket); // Now add the player to the lobby
   };
 
 

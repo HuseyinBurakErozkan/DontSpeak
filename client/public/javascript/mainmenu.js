@@ -7,6 +7,12 @@
 function changeScreen(from, toClassId) {
   // Get the ancestor screen element and hide it, then show the new screen
   $(from).closest(".screen").addClass("--display-hidden");
+
+  // If no previous screen child element isn't provided, use Jquery's implicit iteration
+  // to just hide every screen, then display the correct screen
+  if (from === null) {
+    $(".screen").addClass("--display-hidden");
+  }
   $("#"+toClassId).removeClass("--display-hidden");
 }
 
@@ -54,8 +60,5 @@ $("#form-join").submit((e) => {
     console.log("Need a valid lobby number. 4 digits");
   } else {
     socket.emit("request: join lobby", name, lobbyId);
-
-
   }
 });
-

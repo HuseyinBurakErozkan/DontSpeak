@@ -25,8 +25,8 @@ module.exports = socketHandler = (socket) => {
     }
 
     var lobby = Lobby.createLobby(io);
-    lobby.addSocket(socket);
     Player.create(socket, name, lobby.id);
+    lobby.addSocket(socket);
 
     // Move the socket to a room specifically for that lobby
     socket.join("lobby" + lobby.id);

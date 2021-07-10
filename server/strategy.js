@@ -10,6 +10,22 @@ const io = require('../app').io
 function Strategy(wordHandler) {
 
   this.wordHandler = wordHandler;
+  this.wordsPlayedThisRound = [];
+  this.handler;
+
+  this.setStrategy = (strategy) => {
+    switch(strategy) {
+      case "standard":
+        this.name = "Standard strategy";
+        this.description = "Standard rules";
+        this.handler = this.standardRule;
+    }
+  }
+
+  this.runStrategy = (speaker, game, callback) => {
+    console.log("strategy.runStrategy: called");
+    this.handler(speaker, game, callback);
+  }
 
   this.countdown = (seconds, game, callback) => {
     try {
@@ -30,17 +46,35 @@ function Strategy(wordHandler) {
     }
   }
 
-  this.standardRule = (speaker, game, callback) => { 
+  this.standardRule = (speaker, game, callback) => {
+
+    var secondsAmt = 10;
+    console.log("standard rule chosen");
+
     try {
-
-      this.name = "Standard";
-      this.description = "Standard rules";
-
       io.to("lobby" + game.id).emit("update: " + this.description);
+
 
       // Select a word and let client know what it is. Originally start with easiest words
       var currentWord = this.wordHandler.getWord(1);
-      io.to("lobby" + game.id).emit("update: word: ", currentWord);
+      
+      // Emit to the speaker and the other team - don't allow the client of the
+      // guessing player to receive that information
+      io.to(speaker.id).emit("update: word: ", currentWord); // Speaker needs to see the word
+
+      var playerTeam = game.getPlayerTeam(speaker);
+      if (playerTeam === "team1") {
+        for (var i = 0; i < game.team2.length; i++) {
+          io.to(game.team2[i].id).emit("update: word: ", currentWord);
+        }
+      } else if (playerTeam === "team2") {
+        for (var i = 0; i < game.team1.length; i++) {
+          io.to(game.team1[i].id).emit("update: word: ", currentWord);
+        }
+      } else {
+        throw "something went wrong. Player team = " + playerTeam;
+      }
+
 
       var tier = 1; // Start at the easiest tier of words
 
@@ -52,14 +86,33 @@ function Strategy(wordHandler) {
          */
         tier += 0.25;
         currentWord = this.wordHandler.getWord(Math.floor(tier));
-        io.to("lobby" + game.id).emit("update: word: ", currentWord);
+
+
+        playerTeam = game.getPlayerTeam(speaker);
+
+        // Emit to the speaker and the other team - don't allow the client of the
+        // guessing player to receive that information
+        io.to(speaker.id).emit("update: word: ", currentWord); // Speaker needs to see the word
+
+        var playerTeam = game.getPlayerTeam(speaker);
+        if (playerTeam === "team1") {
+          for (var i = 0; i < game.team2.length; i++) {
+            io.to(game.team2[i].id).emit("update: word: ", currentWord);
+          }
+        } else if (playerTeam === "team2") {
+          for (var i = 0; i < game.team1.length; i++) {
+            io.to(game.team1[i].id).emit("update: word: ", currentWord);
+          }
+        } else {
+          throw "something went wrong. Player team = " + playerTeam;
+        }
       });
 
-      this.countdown(30, game, () => {
+      this.countdown(secondsAmt, game, () => {
         callback();
       });
     } catch(e) {
-      // console.log(e);
+      console.log(e);
     }
   }
 
@@ -95,7 +148,6 @@ function Strategy(wordHandler) {
       return;
     });
   }
-
 }
 
 module.exports = {
