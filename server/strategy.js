@@ -24,6 +24,8 @@ function Strategy(wordHandler) {
 
   this.runStrategy = (speaker, game, callback) => {
     console.log("strategy.runStrategy: called");
+    // Reinitialise the array that stores each round's words used
+    this.wordsPlayedThisRound = [];
     this.handler(speaker, game, callback);
   }
 
@@ -49,25 +51,29 @@ function Strategy(wordHandler) {
   this.standardRule = (speaker, game, callback) => {
 
     var secondsAmt = 10;
+
     console.log("standard rule chosen");
 
     try {
-      io.to("lobby" + game.id).emit("update: " + this.description);
-
+      io.to("lobby" + game.id).emit("update: starting");
 
       // Select a word and let client know what it is. Originally start with easiest words
       var currentWord = this.wordHandler.getWord(1);
-      
+
+      // Push the word to the array, so that at the end of the round, players can review
+      // the words that were dispalyed
+      this.wordsPlayedThisRound.push(currentWord);
+
       // Emit to the speaker and the other team - don't allow the client of the
-      // guessing player to receive that information
+      // guessing player to receive information about the current word
       io.to(speaker.id).emit("update: word: ", currentWord); // Speaker needs to see the word
 
       var playerTeam = game.getPlayerTeam(speaker);
       var opposingTeam;
-      
+
       playerTeam === "team1" 
-        ? opposingTeam = game.team2
-        : opposingTeam = game.team1;
+        ? (opposingTeam = game.team2, playerTeam = game.team1)
+        : (opposingTeam = game.team1, playerTeam = game.team2);
 
       if (opposingTeam === undefined) {
         throw "Error: standard strategy: Player opposing team is defined";
@@ -77,6 +83,15 @@ function Strategy(wordHandler) {
       // when the speaker accidently says one of the taboo words
       for (var i = 0; i < opposingTeam.length; i++) {
         io.to(opposingTeam[i].id).emit("update: word: ", currentWord);
+      }
+
+      // Let the player's teammate's clients know that they have the role of guesser
+      for (var i = 0; i < playerTeam.length; i++) {
+        // Don't emit to the speaker
+        if (playerTeam[i] === speaker) {
+          continue;
+        }
+        io.to(playerTeam[i].id).emit("update: role: guesser", secondsAmt);
       }
 
       var tier = 1; // Start at the easiest tier of words
@@ -90,8 +105,10 @@ function Strategy(wordHandler) {
         tier += 0.25;
         currentWord = this.wordHandler.getWord(Math.floor(tier));
 
-        playerTeam = game.getPlayerTeam(speaker);
-
+        // Push the word to the array, so that at the end of the round, players can review
+        // the words that were dispalyed
+        this.wordsPlayedThisRound.push(currentWord);
+        
         // Emit to the speaker and the other team - don't allow the client of the
         // guessing player to receive that information
         io.to(speaker.id).emit("update: word: ", currentWord); // Speaker needs to see the word

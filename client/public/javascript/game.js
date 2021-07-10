@@ -13,18 +13,15 @@ socket.on("response: new round", (ruleName, ruleDesc, speaker) => {
 });
 
 socket.on("update: role: speaking", () => {
-  alert("you're the speaker");
+
   // Add a start button only the speaker can click, for when they're ready to start
   // describing the words
-
   var button = $("<button/>")
     .text("Start!")
-    .click(() => { 
-      console.log("EMITTING")
+    .click(() => {
       socket.emit("request: start round");
     });
   
-  console.log(button)
   $("#screen-round-ready").append(button);
 });
 
@@ -36,6 +33,21 @@ socket.on("update: role: speaking", () => {
 //   // console.log("Speaker is: ", speaker);
 // });
 
+
+socket.on("update: role: guesser", (seconds) => {
+  changeScreen(null, "screen-countdown");
+
+  var secondsLeft = seconds;
+  
+  var countdown = setInterval(() => {
+    $("#seconds-left").text(secondsLeft);
+    secondsLeft--;
+
+    if (secondsLeft === 0) {
+      clearInterval(countdown);
+    }
+  }, 1000);
+});
 
 
 socket.on("test", () => {
@@ -92,6 +104,30 @@ socket.on("update: word: ", (word) => {
 //   console.log(seconds + " seconds left");
 // })
 
-socket.on("update: round over:", () => {
+socket.on("update: round over", (wordsPlayed) => {
   console.log("round over");
+  console.log(wordsPlayed);
+
+  var reviewScreen = $("#screen-review");
+  reviewScreen.empty(); // Empty the review screen of previous words that may have been displayed
+
+  changeScreen(null, "screen-review");
+
+  for (var i = 0; i < wordsPlayed.length; i++) {
+    var wordCard = $("<div/>")
+      .addClass("word-card");
+
+    var primaryWord = $("<p/>")
+      .text(wordsPlayed[i][0])
+      .addClass("word__primary");   
+    wordCard.append(primaryWord);
+    reviewScreen.append(wordCard);
+
+    for (var j = 0; j < 4; j++) {
+      wordCard.append(
+        $("<p/>")
+          .text(wordsPlayed[i][1][j])
+          .addClass("word__secondary"));
+    }
+  }
 });

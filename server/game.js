@@ -79,9 +79,9 @@ function Game(team1, team2, lobbyId) {
       ? this.speakingTeam = team1
       : this.speakingTeam = team2;
   }
-
-
+  
   this.startGame();
+
 
   this.prepareRound = (socket) => {
     this.state = "prepared";
@@ -102,11 +102,20 @@ function Game(team1, team2, lobbyId) {
       // Let the players know the round is over, and don't allow the player to request words
       // until the next round starts
       this.speakerSocket.removeAllListeners("request: word");
-      io.to("lobby" + this.id).emit("update: round over:");
-      this.state = "tallying";
+
+      // Round is over
+      this.handleRoundEnd();
     });
   }
 
+  this.handleRoundEnd = () => {
+    // Send the array of words that were played, so that the frontend can display
+    // them all to the players for review
+    io.to("lobby" + this.id).emit(
+      "update: round over", (this.strategyManager.wordsPlayedThisRound));
+    this.state = "tallying";
+
+  }
 
   this.setSpeaker = () => {
     var speaker;
