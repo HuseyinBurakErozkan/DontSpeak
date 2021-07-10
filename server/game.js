@@ -165,12 +165,6 @@ function Game(team1, team2, lobbyId) {
   }
   
 
-  this.displayWord = () => {
-    if (this.state === "playing") {
-      currentWord = this.strategyManager.selectWord();
-    }
-  }
-
   this.getPlayerTeam = (socket) => {
     var player = this.team1.find(s => s.id === socket.id);
 

@@ -63,18 +63,21 @@ function Strategy(wordHandler) {
       io.to(speaker.id).emit("update: word: ", currentWord); // Speaker needs to see the word
 
       var playerTeam = game.getPlayerTeam(speaker);
-      if (playerTeam === "team1") {
-        for (var i = 0; i < game.team2.length; i++) {
-          io.to(game.team2[i].id).emit("update: word: ", currentWord);
-        }
-      } else if (playerTeam === "team2") {
-        for (var i = 0; i < game.team1.length; i++) {
-          io.to(game.team1[i].id).emit("update: word: ", currentWord);
-        }
-      } else {
-        throw "something went wrong. Player team = " + playerTeam;
+      var opposingTeam;
+      
+      playerTeam === "team1" 
+        ? opposingTeam = game.team2
+        : opposingTeam = game.team1;
+
+      if (opposingTeam === undefined) {
+        throw "Error: standard strategy: Player opposing team is defined";
       }
 
+      // Let all players in the opposing team know what the word is, so they dispute
+      // when the speaker accidently says one of the taboo words
+      for (var i = 0; i < opposingTeam.length; i++) {
+        io.to(opposingTeam[i].id).emit("update: word: ", currentWord);
+      }
 
       var tier = 1; // Start at the easiest tier of words
 
@@ -87,24 +90,16 @@ function Strategy(wordHandler) {
         tier += 0.25;
         currentWord = this.wordHandler.getWord(Math.floor(tier));
 
-
         playerTeam = game.getPlayerTeam(speaker);
 
         // Emit to the speaker and the other team - don't allow the client of the
         // guessing player to receive that information
         io.to(speaker.id).emit("update: word: ", currentWord); // Speaker needs to see the word
 
-        var playerTeam = game.getPlayerTeam(speaker);
-        if (playerTeam === "team1") {
-          for (var i = 0; i < game.team2.length; i++) {
-            io.to(game.team2[i].id).emit("update: word: ", currentWord);
-          }
-        } else if (playerTeam === "team2") {
-          for (var i = 0; i < game.team1.length; i++) {
-            io.to(game.team1[i].id).emit("update: word: ", currentWord);
-          }
-        } else {
-          throw "something went wrong. Player team = " + playerTeam;
+        // Let all players in the opposing team know what the word is, so they dispute
+        // when the speaker accidently says one of the taboo words
+        for (var i = 0; i < opposingTeam.length; i++) {
+          io.to(opposingTeam[i].id).emit("update: word: ", currentWord);
         }
       });
 
@@ -115,6 +110,7 @@ function Strategy(wordHandler) {
       console.log(e);
     }
   }
+
 
   this.doubleRule = (speaker, game) => {
     this.name = "Double";
