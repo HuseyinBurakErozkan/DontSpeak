@@ -50,7 +50,6 @@ function Lobby() {
     });
   };
 
-
   /**
    * Add a player to the lobby and assign it to a team
    * @param {object} socket The socket representing the player connection 

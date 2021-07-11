@@ -16,6 +16,10 @@ function Game(team1, team2, lobbyId) {
   this.wordHandler = new Word();
   this.strategyManager = new Strategy(this.wordHandler);
 
+  // This is used for confirming that everyone agrees on the points the speaker has claimed
+  this.playersConfirmed = [];
+
+  
   /**
    * Attach listeners to the socket, so that game-related emitter events can be delegated from
    * the socket handler to the game
@@ -54,6 +58,106 @@ function Game(team1, team2, lobbyId) {
         // console.log(this.speakerSocket);
       }
     });
+
+    // Listen to when a speaker claims how many points they've received. As the
+    // points can't in any way be verified by the system, instead ask every player
+    // and have them confirm it.
+    socket.on("request: earned points amount", (amount) => {
+      console.log("socket: request: earned points");
+      
+      // The speaker may alter the amount of points they believe they earned after they've initially
+      // entered a number. Therefore, empty the array of players who have confirmed, as they must re-confirm.
+      this.playersConfirmed = [];
+
+      if (this.state === "tallying" && socket === this.speakerSocket && /^\d+$/.test(amount)) {
+        console.log("socket claiming earned points is the speaker socket, so continue");
+
+        socket.player.pointsClaimed = amount; // Add the points claimed as a property.
+
+        this.playersConfirmed.push(this.speakerSocket);
+        // Ask everyone to confirm the amount of points the speaker claims they've earned.
+        // Except the speaker themselves of course.
+        for (var i = 0; i < this.team1.length; i++) {
+          if (this.team1[i] === socket) { continue; }
+
+          console.log("emitting to " + this.team1[i].player.name + ". Speaker is: " + this.speakerSocket.player.name + ". Points: " + amount);
+          io.to(this.team1[i].id).emit("request: confirm points claim", this.speakerSocket.player.name, amount);
+        }
+        for (var i = 0; i < this.team2.length; i++) {
+          if (this.team2[i] === socket) { continue; }
+          console.log("emitting to " + this.team2[i].player.name)
+          io.to(this.team2[i].id).emit("request: confirm points claim", this.speakerSocket.player.name, amount);
+        }
+      }
+    });
+
+    // Listen to when the players confirm the speaker's claim
+    socket.on("response: confirm points", () => {
+      console.log("socket: response: confirm points")
+      
+      if (this.state === "tallying" && socket !== this.speakerSocket) {
+
+        // Ignore any players who have already confirmed the current point claim
+        if (this.playersConfirmed.indexOf(socket) != -1) {
+          console.log("Player " + socket.player.name + " has already confirmed the point claim earlier")
+          return;
+        }
+        console.log("Player " + socket.player.name + " confirmed points");
+
+        // Add to array of confirmed players. Once all players have confirmed, the round is
+        // considered over
+        this.playersConfirmed.push(socket);
+
+        if (this.playersConfirmed.length === (this.team1.length + this.team2.length)) {
+          console.log("Everyone has confirmed the points");
+          
+
+          // Handle the team's points
+          var pointsAmount = parseInt(this.speakerSocket.player.pointsClaimed, 10);
+          this.speakerSocket.player.pointsClaimed = undefined; // Remove the property once used.
+
+          if (this.getPlayerTeam(this.speakerSocket) === "team1") {
+            this.team1Points += pointsAmount;
+            if (this.team1Points > this.pointsToWin) {
+              this.state = "gameover";
+
+              // Team 1 wins
+              for (var i = 0; i < this.team1.length; i++) {
+                io.to(this.team1[i].id).emit("update: won");
+              }
+              // Team 2 loses
+              for (var i = 0; i < this.team2.length; i++) {
+                io.to(this.team2[i].id).emit("update: lost");
+              }
+
+              return; // Don't emit anything to clients after this point
+            }
+          } else {
+            this.team2Points += pointsAmount;
+            if (this.team2Points > this.pointsToWin) {
+              this.state = "gameover";
+
+              // Team 2 wins
+              for (var i = 0; i < this.team2.length; i++) {
+                io.to(this.team2[i].id).emit("update: won");
+              }
+              // Team 1 lost
+              for (var i = 0; i < this.team1.length; i++) {
+                io.to(this.team1[i].id).emit("update: lost");
+              }
+
+              return; // Don't emit anything to clients after this point
+            }
+          }
+
+          // Change state to waiting, so that players can begin the new round when they're ready
+          io.to("lobby" + this.id).emit("update: points: ", this.team1Points, this.team2Points, this.pointsToWin);
+          this.state = "waiting";
+
+          console.log("points are: \n \tTeam1: " + this.team1Points + "\n\tTeam2: " + this.team2Points);        
+        }
+      }
+    });
   }
 
   this.removeSocket = (socket) => {
@@ -64,6 +168,11 @@ function Game(team1, team2, lobbyId) {
   // so that the game can iterate through and choose which player takes on the role of speaker
   this.team1 = Array.from(team1.values());
   this.team2 = Array.from(team2.values());
+
+  this.team1Points = 0;
+  this.team2Points = 0;
+
+  this.pointsToWin = 30; // TODO: Allow players to alter this amount while in lobby
 
   // Used to ensure that everyone has a turn where they speak
   this.team1speakerIndex = 0, this.team2speakerIndex = 0;
@@ -85,6 +194,10 @@ function Game(team1, team2, lobbyId) {
 
   this.prepareRound = (socket) => {
     this.state = "prepared";
+    
+    // Clear the array that lists all the players who confirm the points earned at the end
+    // of the previous round.
+    this.playersConfirmed = [];
 
     // First handle iterating through list of players to choose a speaker
     this.setSpeaker();
@@ -114,7 +227,6 @@ function Game(team1, team2, lobbyId) {
     io.to("lobby" + this.id).emit(
       "update: round over", (this.strategyManager.wordsPlayedThisRound));
     this.state = "tallying";
-
   }
 
   this.setSpeaker = () => {

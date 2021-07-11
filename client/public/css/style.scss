@@ -51,3 +51,18 @@ background: linear-gradient(135deg, rgba(255,145,82,1) 0%, rgba(245,87,167,1) 24
 .--display-hidden {
   display: none;
 }
+
+.game-ui-button {
+  background-color: white;
+  position: fixed;
+  bottom: 12px;
+  right: 12px;
+  border: 1px solid purple;
+  border-radius: 6px;
+  padding: 12px;
+}
+
+.confirm-points {
+  right: initial;
+  left: 12px;
+}
