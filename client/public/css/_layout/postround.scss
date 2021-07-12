@@ -1,0 +1,19 @@
+#screen-scores {
+
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 20vh;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+}
+
+  .round-end-score-container {
+
+    margin-top: $spacing-x-large;
+    margin-bottom: $spacing-large;
+
+    p {
+      margin-bottom: $spacing-default;
+    }
+  }

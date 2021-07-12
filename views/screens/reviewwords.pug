@@ -1,10 +1,10 @@
 // This div should not be displayed to the speaker
-div#player-confirm-points.game-ui-button.confirm-points.--display-hidden
-  p#confirm-text 
-  button(id="button-confirm-claim") Confirm
+div.gameui-container
+  div#player-confirm-points.confirm-points.--display-hidden
+    p#confirm-text 
+    button(id="button-confirm-claim").button-primary Confirm
 
-div#speaker-enter-points.--display-hidden.game-ui-button
-  p Enter the amount of points you have earned
-  input(type="number" id="input-points-earned" placeholder="Points earned")
-  button(id="button-confirm-points") Confirm
+div#speaker-enter-points.--display-hidden.game-ui.enter-points
+  input(type="number" id="input-points-earned" placeholder="Points earned").input
+  button(id="button-confirm-points").button-primary Confirm
 div#screen-review.screen.--display-hidden

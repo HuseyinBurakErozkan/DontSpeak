@@ -138,11 +138,12 @@ table {
   margin-bottom: 64px;
 }
 #screen-lobby #display-teams {
+  display: flex;
   flex-grow: 1;
   margin-bottom: 32px;
 }
 #screen-lobby #display-teams .lobby-team-container:not(:last-child) {
-  border-right: 2px solid #B6C867;
+  border-right: 2px solid #2D4059;
 }
 #screen-lobby .team-title {
   margin-bottom: 16px;
@@ -177,7 +178,7 @@ table {
   flex-direction: column;
 }
 #screen-word .word-primary {
-  background-color: #FFC074;
+  background-color: #FFD460;
   margin-bottom: 64px;
   font-size: 1.2em;
   padding: 32px;
@@ -195,7 +196,7 @@ table {
 
 #screen-review {
   overflow-y: scroll;
-  background-color: #FAF1E6;
+  background-color: #f7f7f7;
 }
 #screen-review .word-card {
   box-shadow: -1px 4px 6px 3px rgba(0, 0, 0, 0.03), 0 2px 12px 1px rgba(0, 0, 0, 0.01);
@@ -206,7 +207,7 @@ table {
   background-color: white;
 }
 #screen-review .word-card .word__primary {
-  background-color: #FFC074;
+  background-color: #FFD460;
   padding: 16px;
   margin-bottom: 16px;
 }
@@ -225,12 +226,29 @@ table {
   box-shadow: -1px 4px 6px 3px rgba(0, 0, 0, 0.03), 0 2px 12px 1px rgba(0, 0, 0, 0.01);
   text-align: center;
   background-color: white;
-  border: 6px solid #FFC074;
+  border: 6px solid #FFD460;
   border-radius: 100px;
   padding: 16px 26px;
 }
 .countdown-container #seconds-left {
   margin-top: 8px;
+}
+
+#screen-scores {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 20vh;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+}
+
+.round-end-score-container {
+  margin-top: 64px;
+  margin-bottom: 32px;
+}
+.round-end-score-container p {
+  margin-bottom: 16px;
 }
 
 .button-primary {
@@ -249,12 +267,12 @@ table {
   color: white;
   border: 0;
   border-radius: 6px;
-  background-color: #01937C;
+  background-color: #EA5455;
   padding: 8px 16px;
   font-size: 1.1em;
 }
 .button-primary:active {
-  background-color: #01ac91;
+  background-color: #ed6b6c;
 }
 .button-plain {
   -webkit-touch-callout: none;
@@ -288,7 +306,63 @@ table {
 }
 .input:focus {
   border: 3px solid transparent;
-  outline: 3px solid #FFC074;
+  outline: 3px solid #FFD460;
+}
+
+.game-ui {
+  box-shadow: -1px 4px 6px 3px rgba(0, 0, 0, 0.09), 0 2px 12px 1px rgba(0, 0, 0, 0.03);
+  display: flex;
+  background-color: #2D4059;
+  position: fixed;
+  border-radius: 32px;
+  padding: 12px;
+}
+
+.enter-points {
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.enter-points .input {
+  font-size: 1rem;
+  width: 9em;
+  border-top-left-radius: 24px;
+  border-bottom-left-radius: 24px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border: 3px solid #EA5455;
+}
+.enter-points .button-primary {
+  border-top-right-radius: 24px;
+  border-bottom-right-radius: 24px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  font-size: 1em;
+}
+
+.gameui-container {
+  display: flex;
+  position: fixed;
+  justify-content: center;
+  bottom: 8px;
+  left: 0;
+  width: 100%;
+}
+.gameui-container .confirm-points {
+  color: white;
+  box-shadow: -1px 4px 6px 3px rgba(0, 0, 0, 0.09), 0 2px 12px 1px rgba(0, 0, 0, 0.03);
+  display: flex;
+  align-items: center;
+  background-color: #2D4059;
+  padding: 16px;
+  border-radius: 16px;
+}
+.gameui-container .confirm-points p {
+  font-size: 1.2rem;
+  margin-right: 8px;
+}
+.gameui-container .confirm-points .button-primary {
+  font-size: 1.2rem;
 }
 
 * {
@@ -300,7 +374,7 @@ table {
 
 body {
   font-size: 1.3em;
-  background-color: #FAF1E6;
+  background-color: #f7f7f7;
 }
 
 .app-container {
@@ -323,42 +397,23 @@ body {
   margin-top: 10px;
 }
 .test.color-primary {
-  background-color: #01937C;
+  background-color: #EA5455;
 }
 .test.color-secondary {
-  background-color: #B6C867;
+  background-color: #2D4059;
 }
 .test.color-tertiary {
-  background-color: #FFC074;
+  background-color: #FFD460;
 }
 .test.color-bg {
-  background-color: #FAF1E6;
+  background-color: #f7f7f7;
 }
 .test.color-white {
   background-color: white;
 }
 
-#display-teams {
-  display: flex;
-}
-
 .--display-hidden {
   display: none !important;
-}
-
-.game-ui-button {
-  background-color: white;
-  position: fixed;
-  bottom: 12px;
-  right: 12px;
-  border: 1px solid purple;
-  border-radius: 6px;
-  padding: 12px;
-}
-
-.confirm-points {
-  right: initial;
-  left: 12px;
 }
 
 /*# sourceMappingURL=style.css.map */

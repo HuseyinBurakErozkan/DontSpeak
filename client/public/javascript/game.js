@@ -155,7 +155,7 @@ socket.on("request: confirm points claim", (speaker, amount) => {
 
   // Show the confirm dialog
   $("#player-confirm-points").removeClass("--display-hidden");
-  $("#confirm-text").text(speaker + " claims to have gussed " + amount + ".\nIs this correct?");
+  $("#confirm-text").text(`Did ${speaker} get ${amount} points?`);
 
 
   $("#button-confirm-claim").on("click", (e) => {
@@ -173,9 +173,9 @@ socket.on("update: points: ", (t1Points, t2Points, pointsNeeded) => {
   console.log(`team1 points: ${t1Points} \n team2 points: ${t2Points} \n points needed to win: ${pointsNeeded}`)
 
   changeScreen(null, "screen-scores");
-  $("#t1-scores").text("Team 1 is currently at: " + t1Points);
-  $("#t2-scores").text("Team 2 is currently at: " + t2Points);
-  $("#points-needed").text(pointsNeeded + " needed to win");
+  $("#t1-scores").text(`Team 1 score: ${t1Points}`);
+  $("#t2-scores").text(`Team 2 score: ${t2Points}`);
+  $("#points-needed").text(`Score needed to win: ${pointsNeeded}`);
 });
 
 function nextRound() {
@@ -184,10 +184,20 @@ function nextRound() {
 
 socket.on("update: lost", () => {
   changeScreen(null, "screen-gameover");
+  // Hide the ui elements that were instantiated for the previous round
+  $("#speaker-enter-points").addClass("--display-hidden"); // The speaker's enter point dialog
+  $("#player-confirm-points").addClass("--display-hidden"); // The 'confirm points' dialog
+  $("#speaker-start-button").remove(); // Remove the start button that displays for the speaker
+  
   $("#game-over-text").text("You lost :(.\nBetter luck next time!");
 })
 
 socket.on("update: won", () => {
   changeScreen(null, "screen-gameover");
+  // Hide the ui elements that were instantiated for the previous round
+  $("#speaker-enter-points").addClass("--display-hidden"); // The speaker's enter point dialog
+  $("#player-confirm-points").addClass("--display-hidden"); // The 'confirm points' dialog
+  $("#speaker-start-button").remove(); // Remove the start button that displays for the speaker
+  
   $("#game-over-text").text("Congratulations!\nYou won!");
 })

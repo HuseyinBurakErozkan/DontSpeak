@@ -7,6 +7,10 @@
   box-shadow: -1px 4px 6px 3px rgba(0, 0, 0, .03),0 2px 12px 1px rgba(0, 0, 0, .01);
 }
 
+@mixin border-shadow-ui-element {
+  box-shadow: -1px 4px 6px 3px rgba(0, 0, 0, .09),0 2px 12px 1px rgba(0, 0, 0, .03);
+}
+
 // Used for buttons and other ui elements that have a darker bg 
 // and need the text to stand out
 @mixin white-text-on-dark-bg {

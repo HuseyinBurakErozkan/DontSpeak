@@ -67,6 +67,7 @@
 
   & #display-teams {
 
+    display: flex;
     flex-grow: 1; // Make the team board take up all empty space
     margin-bottom: $spacing-large;
 
