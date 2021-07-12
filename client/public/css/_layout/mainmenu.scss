@@ -1,0 +1,21 @@
+#screen-menu {
+  display: flex;
+  flex-direction: column; // Each element inside the main menu screen should be layed out vertically
+  justify-content: center; // Centre the header and buttons in the middle of the screen
+
+  text-align: center;
+}
+
+  #game-title {
+    margin-bottom: $spacing-large;
+  }
+
+  #menu-button-container {
+    
+    .button-primary {
+      margin: 0 auto;
+      margin-bottom: $spacing-small;
+      display: block;
+      min-width: 10em;
+    }
+  }

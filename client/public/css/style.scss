@@ -12,32 +12,76 @@ background: linear-gradient(135deg, rgba(255,145,82,1) 0%, rgba(245,87,167,1) 24
 
 */
 
-.screen-container {
-  border: 2px solid tomato;
-  height: 400px;
+@import "_base/reset.scss";
+
+@import "_abstracts/variables.scss";
+@import "_abstracts/mixins.scss";
+
+@import "_layout/screen.scss";
+@import "_layout/mainmenu.scss";
+@import "_layout/lobby.scss";
+
+@import "_components/buttons.scss";
+@import "_components/inputs.scss";
+
+* {
+  font-family: 'Open Sans', sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
+
+body {
+  font-size: 1.3em; // Designed to be easily played on mobile, so make all text somewhat larger
+  // padding: $spacing-small;
+  background-color: $color-bg;
+}
+
+.app-container {
+  // Make the app span the screen, minus the margins
+  width: calc(100vw - (#{$spacing-small} * 2));
+  height: calc(100vh - (#{$spacing-small} * 2));
+  margin: $spacing-small;
+  
+  background-color: white;
+  // height: 100%;
+  @include border-shadow-soft-wide;
+  border-radius: 6px;
+}
+
+.test-container {
+  display: flex;
+}
+.test {
+  height: 40px;
+  width: 20%;
+  display: inline-block;
+  margin-top: 10px;
+
+  &.color-primary {
+    background-color: $color-primary;
+  }
+
+  &.color-secondary {
+    background-color: $color-secondary;
+  }
+
+  &.color-tertiary {
+    background-color: $color-tertiary;
+  }
+
+  &.color-bg {
+    background-color: $color-bg;
+  }
+
+  &.color-white {
+    background-color: white;
+  }
+}
+
 
 #display-teams {
   display: flex;
-}
-
-.lobby-team-container {
-  flex-grow: 1;
-}
-
-.__player {
-
-  display: inline-block;
-
-  &.div-team1 {
-    background-color: #bd0000;
-    color: white;
-  }
-
-  &.div-team2 {
-    background-color: #002fff;
-    color: white;
-  }
 }
 
 .word-primary {
@@ -49,7 +93,7 @@ background: linear-gradient(135deg, rgba(255,145,82,1) 0%, rgba(245,87,167,1) 24
 }
 
 .--display-hidden {
-  display: none;
+  display: none !important;
 }
 
 .game-ui-button {

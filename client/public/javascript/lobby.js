@@ -17,13 +17,11 @@ function displayTeams(team1, team2) {
     var playerDiv = $("<div/>", { class: "div-team1 __player"});
     playerDiv.append(document.createTextNode(team1[i].name));
     team1Div.append(playerDiv);
-    team1Div.append("<br />");
   }
   for (var i = 0; i < team2.length; i++) {
     var playerDiv = $("<div/>", { class: "div-team2 __player"});
     playerDiv.append(document.createTextNode(team2[i].name));
     team2Div.append(playerDiv);
-    team2Div.append("<br />");
   }
 }
 

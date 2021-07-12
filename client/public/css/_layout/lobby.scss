@@ -1,0 +1,103 @@
+// Create lobby screen
+#screen-create {
+  display: flex;
+  flex-direction: column; // Each element inside the main menu screen should be layed out vertically
+  justify-content: center; // Centre the header and buttons in the middle of the screen
+
+  text-align: center;
+}
+
+  #form-create {
+
+    display: flex;
+    flex-direction: column; // Each element inside the main menu screen should be layed out vertically
+    justify-content: center; // Centre the header and buttons in the middle of the screen
+  
+    text-align: center;
+
+    & *:not(:last-child) {
+      margin-bottom: $spacing-default;
+    }
+  }
+
+// Join lobby screen
+#screen-join {
+  display: flex;
+  flex-direction: column; // Each element inside the main menu screen should be layed out vertically
+  justify-content: center; // Centre the header and buttons in the middle of the screen
+  text-align: center;
+
+  & .p-instruction {
+    margin-bottom: $spacing-large;
+  }
+}
+
+
+  #form-join {
+
+    display: flex;
+    flex-direction: column; // Each element inside the main menu screen should be layed out vertically
+    justify-content: center; // Centre the header and buttons in the middle of the screen
+    
+    align-items: center; // Use this to make the flex items not expand to the width of the screen
+
+    & * {
+      margin-bottom: $spacing-small;
+      // max-width: 80%;
+    }
+  }
+
+
+// The current lobby screen
+#screen-lobby {
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+
+  text-align: center;
+
+  & .lobby-team-container {
+    flex-grow: 1;
+  }
+  
+  & #h2-lobby-id {
+    margin-bottom: $spacing-x-large;
+  }
+
+  & #display-teams {
+
+    flex-grow: 1; // Make the team board take up all empty space
+    margin-bottom: $spacing-large;
+
+    // Display a vertical split between both teams
+    & .lobby-team-container:not(:last-child) {
+      border-right: 2px solid $color-secondary;
+    }
+  }
+
+  & .team-title {
+    margin-bottom: $spacing-default;
+  }
+
+  & #form-start-game {
+    // Add some space to the bottom, so that the buttons don't hidden behind mobile browser UIs
+    margin-bottom: $spacing-x-large;
+    
+    & *:not(:last-child) {
+      margin-right: $spacing-small;
+    }
+  }
+
+  .team-title {
+    margin-bottom: $spacing-large;
+  }
+
+  // Elements of this class display the player's name on the team board
+  .__player {
+    font-size: 1.1em;
+    margin-bottom: $spacing-default;
+  }
+}
+
+

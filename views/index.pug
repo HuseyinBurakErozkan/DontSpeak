@@ -2,18 +2,26 @@ doctype html
 html
   include includes/head.pug
   body
-    h1#game-title= title
-    div.screen-container
-      include screens/mainscreen.pug
-      include screens/createlobby.pug
-      include screens/joinlobby.pug
-      include screens/lobby.pug
-      include screens/wordscreen.pug
-      include screens/roundready.pug
-      include screens/countdown.pug
-      include screens/reviewwords.pug
-      include screens/scores.pug
-      include screens/gameover.pug
+    div.app-container
+      div.screen-container
+        include screens/mainscreen.pug
+        include screens/createlobby.pug
+        include screens/joinlobby.pug
+        include screens/lobby.pug
+        include screens/wordscreen.pug
+        include screens/roundready.pug
+        include screens/countdown.pug
+        include screens/reviewwords.pug
+        include screens/scores.pug
+        include screens/gameover.pug
+
+    // For testing theme colours only
+    //- div.test-container
+    //-   div.test.color-primary
+    //-   div.test.color-secondary
+    //-   div.test.color-tertiary
+    //-   div.test.color-bg
+    //-   div.test.color-white
 
     script(src='socket.io/socket.io.js')
     script.

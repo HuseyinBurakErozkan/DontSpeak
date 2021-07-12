@@ -35,7 +35,7 @@ $("#form-create").submit((e) => {
   
     // Once the server responds
     socket.on("response: lobby created", (player, lobbyId, team1, team2) => {
-      $("#h2-lobby-id").text("Game id: " + lobbyId);
+      $("#h2-lobby-id").text("Game PIN: " + lobbyId);
       changeScreen($("#form-create"), "screen-lobby");
       joinLobby(team1, team2, player);
     });

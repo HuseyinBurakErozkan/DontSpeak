@@ -1,0 +1,13 @@
+.input {
+  font-size: 1.15em;
+  max-width: 100%;
+  border: 3px solid #d1d1d1;
+  border-radius: 6px;
+  padding: $spacing-small;
+  text-align: center;
+
+  &:focus {
+    border: 3px solid transparent;
+    outline: 3px solid $color-tertiary;
+  }
+}
