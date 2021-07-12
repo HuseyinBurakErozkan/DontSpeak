@@ -11,7 +11,10 @@ socket.on("response: new round", (ruleName, ruleDesc, speaker) => {
   changeScreen(null , "screen-round-ready");
   $("#p-rule-name").text(ruleName);
   $("#p-rule-description").text(ruleDesc);
-  $("#p-speaker").text(`${speaker} is the speaker!`)
+  $("#p-speaker").text(`${speaker} is the speaker!`);
+
+  // Add touch listeners to recognise when speaker swipes for a new card
+  addTouchListeners();
 });
 
 socket.on("update: role: speaking", () => {
@@ -31,14 +34,6 @@ socket.on("update: role: speaking", () => {
   $("#screen-round-ready").append(button);
 });
 
-// socket.on("update: rule:", (rule) => {
-//   // console.log("Rule for this round is: ", rule);
-// });
-
-// socket.on("update: speaker:", (speaker) => {
-//   // console.log("Speaker is: ", speaker);
-// });
-
 
 socket.on("update: role: guesser", (seconds) => {
   changeScreen(null, "screen-countdown");
@@ -57,10 +52,6 @@ socket.on("update: role: guesser", (seconds) => {
   }, 1000);
 });
 
-
-socket.on("test", () => {
-  console.log("TEST RECEIVED");
-})
 
 socket.on("update: word: ", (word) => {
   changeScreen(null, "screen-word");
@@ -90,6 +81,11 @@ socket.on("update: word: ", (word) => {
 // If this player is the speaker, display a button asking them how many points they believed
 // they earned. Once they enter, emit this amount to the server
 socket.on("update: round over", (wordsPlayed) => {
+  
+  // Stop listening to touch-related events, as the user be able to swipe without unnecessary
+  // calls being made
+  removeTouchListeners();
+
   console.log("round over");
   console.log(wordsPlayed);
 

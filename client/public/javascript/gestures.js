@@ -3,9 +3,18 @@
  */
 // var container = document.body.getElementsByClassName("screen-container")[0];
 var container = $(".screen-container")[0];
-container.addEventListener("touchstart", startTouch, false);
-container.addEventListener("touchmove", moveTouch, false);
-container.addEventListener("touchend", endTouch, false);
+
+function addTouchListeners() {
+  container.addEventListener("touchstart", startTouch, false);
+  container.addEventListener("touchmove", moveTouch, false);
+  container.addEventListener("touchend", endTouch, false);  
+}
+
+function removeTouchListeners() {
+  container.removeEventListener("touchstart", startTouch, false);
+  container.removeEventListener("touchmove", moveTouch, false);
+  container.removeEventListener("touchend", endTouch, false);  
+}
 
 var initialX = null;
 var initialY = null;
