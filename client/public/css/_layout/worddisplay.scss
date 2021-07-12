@@ -1,0 +1,30 @@
+// This is the screen that's shown when players are playing the game
+#screen-word {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+
+  .word-primary {
+    background-color: $color-tertiary;
+    margin-bottom: $spacing-x-large;
+    font-size: 1.2em;
+    padding: $spacing-large;
+  }
+
+  .word-secondary {
+
+    flex-grow: 1; // Make the secondary words take up the rest of the unused height
+
+    // Evenly space out the words on the card
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+
+    // Keep the words a little above the centre. Otherwise, they get spread out too much
+    margin-bottom: 30vh;
+
+    & p {
+      margin-bottom: $spacing-default;
+    }
+  }
+}

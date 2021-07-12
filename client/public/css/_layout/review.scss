@@ -1,0 +1,24 @@
+#screen-review {
+
+  overflow-y: scroll;
+  background-color: $color-bg;
+
+  .word-card {
+    @include border-shadow-soft-wide;
+    border: 1px solid #e6e6e6;
+    border-radius: 6px;
+    margin-bottom: $spacing-default;
+    text-align: center;
+    background-color: white;
+
+    .word__primary {
+      background-color: $color-tertiary;
+      padding: $spacing-default;
+      margin-bottom: $spacing-default;
+    }
+    
+    .word__secondary {
+      padding-bottom: $spacing-default;
+    }
+  }
+}

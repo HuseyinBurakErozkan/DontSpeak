@@ -6,7 +6,7 @@
   border: 0;
   border-radius: 6px;
   background-color: $color-primary;
-  padding: $spacing-small;
+  padding: $spacing-small $spacing-default;
   font-size: 1.1em; // Slightly larger, to make clicking on buttons easy
 
   &:active {
@@ -24,7 +24,7 @@
   border: 1px solid darken(#e2e2e2e1, 10%);
   border-radius: 6px;
   background-color: #e2e2e2e1;
-  padding: $spacing-small;
+  padding: $spacing-small $spacing-default;
   font-size: 1.1em; // Slightly larger, to make clicking on buttons easy
 
   &:active {

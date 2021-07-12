@@ -1,0 +1,21 @@
+#screen-countdown {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.countdown-container {
+
+  @include border-shadow-soft-wide;
+
+  text-align: center;
+  background-color: white;
+  border: 6px solid $color-tertiary;
+  border-radius: 100px;
+  padding: 16px 26px;
+
+  #seconds-left {
+    margin-top: $spacing-small;
+  }
+}

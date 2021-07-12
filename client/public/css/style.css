@@ -161,6 +161,78 @@ table {
   margin-bottom: 16px;
 }
 
+#screen-round-ready {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-bottom: 25vh;
+  text-align: center;
+}
+#screen-round-ready * {
+  margin-bottom: 16px;
+}
+#screen-word {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+}
+#screen-word .word-primary {
+  background-color: #FFC074;
+  margin-bottom: 64px;
+  font-size: 1.2em;
+  padding: 32px;
+}
+#screen-word .word-secondary {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  margin-bottom: 30vh;
+}
+#screen-word .word-secondary p {
+  margin-bottom: 16px;
+}
+
+#screen-review {
+  overflow-y: scroll;
+  background-color: #FAF1E6;
+}
+#screen-review .word-card {
+  box-shadow: -1px 4px 6px 3px rgba(0, 0, 0, 0.03), 0 2px 12px 1px rgba(0, 0, 0, 0.01);
+  border: 1px solid #e6e6e6;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  text-align: center;
+  background-color: white;
+}
+#screen-review .word-card .word__primary {
+  background-color: #FFC074;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+#screen-review .word-card .word__secondary {
+  padding-bottom: 16px;
+}
+
+#screen-countdown {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.countdown-container {
+  box-shadow: -1px 4px 6px 3px rgba(0, 0, 0, 0.03), 0 2px 12px 1px rgba(0, 0, 0, 0.01);
+  text-align: center;
+  background-color: white;
+  border: 6px solid #FFC074;
+  border-radius: 100px;
+  padding: 16px 26px;
+}
+.countdown-container #seconds-left {
+  margin-top: 8px;
+}
+
 .button-primary {
   -webkit-touch-callout: none;
   /* iOS Safari */
@@ -178,7 +250,7 @@ table {
   border: 0;
   border-radius: 6px;
   background-color: #01937C;
-  padding: 8px;
+  padding: 8px 16px;
   font-size: 1.1em;
 }
 .button-primary:active {
@@ -200,7 +272,7 @@ table {
   border: 1px solid rgba(201, 201, 201, 0.8823529412);
   border-radius: 6px;
   background-color: #e2e2e2e1;
-  padding: 8px;
+  padding: 8px 16px;
   font-size: 1.1em;
 }
 .button-plain:active {
@@ -268,14 +340,6 @@ body {
 
 #display-teams {
   display: flex;
-}
-
-.word-primary {
-  margin-bottom: 48px;
-}
-
-.word-card {
-  border: 1px solid purple;
 }
 
 .--display-hidden {

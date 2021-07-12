@@ -11,7 +11,7 @@ socket.on("response: new round", (ruleName, ruleDesc, speaker) => {
   changeScreen(null , "screen-round-ready");
   $("#p-rule-name").text(ruleName);
   $("#p-rule-description").text(ruleDesc);
-  $("#p-speaker").text("Speaker is " + speaker)
+  $("#p-speaker").text(`${speaker} is the speaker!`)
 });
 
 socket.on("update: role: speaking", () => {
@@ -22,6 +22,7 @@ socket.on("update: role: speaking", () => {
   // describing the words
   var button = $("<button/>")
     .text("Start!")
+    .addClass("button-primary")
     .click(() => {
       socket.emit("request: start round");
     });

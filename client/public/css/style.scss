@@ -12,15 +12,23 @@ background: linear-gradient(135deg, rgba(255,145,82,1) 0%, rgba(245,87,167,1) 24
 
 */
 
+// Base
 @import "_base/reset.scss";
 
+// Abstracts
 @import "_abstracts/variables.scss";
 @import "_abstracts/mixins.scss";
 
+// Layouts
 @import "_layout/screen.scss";
 @import "_layout/mainmenu.scss";
 @import "_layout/lobby.scss";
+@import "_layout/preparation.scss";
+@import "_layout/worddisplay.scss";
+@import "_layout/review.scss";
+@import "_layout/countdown.scss";
 
+// Components
 @import "_components/buttons.scss";
 @import "_components/inputs.scss";
 
@@ -82,14 +90,6 @@ body {
 
 #display-teams {
   display: flex;
-}
-
-.word-primary {
-  margin-bottom: 48px;
-}
-
-.word-card {
-  border: 1px solid purple;
 }
 
 .--display-hidden {

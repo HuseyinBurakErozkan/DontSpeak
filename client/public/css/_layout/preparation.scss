@@ -1,0 +1,16 @@
+#screen-round-ready {
+  
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-bottom: 25vh; // Push the text closer towards the top
+  text-align: center;
+  
+  & * {
+    margin-bottom: $spacing-default;
+  }
+
+  #p-speaker {
+
+  }
+}
