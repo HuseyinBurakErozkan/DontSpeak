@@ -221,6 +221,7 @@ function Game(team1, team2, lobbyId) {
     });
   }
 
+
   this.handleRoundEnd = () => {
     // Send the array of words that were played, so that the frontend can display
     // them all to the players for review
@@ -228,6 +229,7 @@ function Game(team1, team2, lobbyId) {
       "update: round over", (this.strategyManager.wordsPlayedThisRound));
     this.state = "tallying";
   }
+
 
   this.setSpeaker = () => {
     var speaker;
@@ -289,6 +291,10 @@ function Game(team1, team2, lobbyId) {
   this.getPlayerTeam = (socket) => {
     var player = this.team1.find(s => s.id === socket.id);
 
+    if (socket === undefined) {
+      throw new Error("getPlayerTeam(): sockeet is undefined");
+    }
+
     if (player !== undefined) {
       return "team1";
     } else {
@@ -297,6 +303,9 @@ function Game(team1, team2, lobbyId) {
         return "team2";
       }
     }
+
+    // Throw an exception if somehow the player couldn't be found in either team
+    throw `Socket ${socket.id} could not be found in either team`;
   }
 };
 

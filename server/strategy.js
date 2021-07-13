@@ -23,7 +23,6 @@ function Strategy(wordHandler) {
   }
 
   this.runStrategy = (speaker, game, callback) => {
-    console.log("strategy.runStrategy: called");
     // Reinitialise the array that stores each round's words used
     this.wordsPlayedThisRound = [];
     this.handler(speaker, game, callback);
@@ -51,8 +50,6 @@ function Strategy(wordHandler) {
   this.standardRule = (speaker, game, callback) => {
 
     var secondsAmt = 10;
-
-    console.log("standard rule chosen");
 
     try {
       io.to("lobby" + game.id).emit("update: starting");
