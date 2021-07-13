@@ -10,5 +10,5 @@ socket.on("response: lobby joined", (id, player) => {
 
 
 socket.on("error:", (msg) => {
-  flashError(msg);
+  flash(msg, "error");
 });

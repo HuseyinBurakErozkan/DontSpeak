@@ -120,6 +120,7 @@ table {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  margin-bottom: 64px;
 }
 #form-join * {
   margin-bottom: 8px;
@@ -363,6 +364,38 @@ table {
 }
 .gameui-container .confirm-points .button-primary {
   font-size: 1.2rem;
+}
+
+.flash-dialog {
+  position: fixed;
+  top: 16px;
+  pointer-events: none;
+  font-size: 1.1rem;
+  left: 0;
+  margin: auto 16px;
+  width: calc(100vw - 32px);
+  background-color: white;
+  opacity: 100%;
+  transition: opacity 0.2s ease-out;
+  padding: 8px;
+  border-radius: 3px;
+}
+.flash-dialog.--error {
+  background-color: #ffecec;
+  border: 1px solid #ffb9b9;
+  color: #221111;
+}
+.flash-dialog.--normal {
+  background-color: #fafafa;
+  border: 1px solid #e1e1e1;
+}
+.flash-dialog.--tip {
+  background-color: #f4f7ff;
+  border: 2px solid #c1d2ff;
+  color: #1b294e;
+}
+.flash-dialog.--hide {
+  opacity: 0%;
 }
 
 * {

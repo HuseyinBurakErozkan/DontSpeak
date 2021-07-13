@@ -1,0 +1,41 @@
+.flash-dialog {
+
+  position: fixed;
+  top: $spacing-default;
+
+  // Ignore all clicks to the flash message, so buttons behind it may be clicked
+  pointer-events: none;
+
+  font-size: 1.1rem;
+  // Centre the flash dialog horizontally
+  left: 0;
+  margin: auto $spacing-default;
+  width: calc(100vw - #{$spacing-large});
+
+  background-color: white;
+  opacity: 100%;
+  transition: opacity 0.2s ease-out;
+  padding: $spacing-small;
+  border-radius: 3px;
+
+  &.--error {
+    background-color: #ffecec;
+    border: 1px solid darken(#ffecec, 10%);
+    color: #221111;
+  }
+
+  &.--normal {
+    background-color: #fafafa;
+    border: 1px solid darken(#fafafa, 10%);
+  }
+
+  &.--tip {
+    background-color: #f4f7ff;
+    border: 2px solid darken(#f4f7ff, 10%);
+    color: #1b294e;
+  }
+
+  &.--hide {
+    opacity: 0%;
+  }
+}

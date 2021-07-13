@@ -40,6 +40,7 @@
     justify-content: center; // Centre the header and buttons in the middle of the screen
     
     align-items: center; // Use this to make the flex items not expand to the width of the screen
+    margin-bottom: $spacing-x-large; // Add some whitespace to make clicking easier on mobile
 
     & * {
       margin-bottom: $spacing-small;

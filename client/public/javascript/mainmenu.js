@@ -28,6 +28,7 @@ $("#form-create").submit((e) => {
   if (name.replace(/\s/g, "") == "" || $("#input-name-create").val() == null) {
     // TODO: Display feedback to the user
     console.log("Need a valid username");
+    flash("Need a valid username", "error");
   }
   else {
     console.log("Name is " + name);
@@ -55,9 +56,12 @@ $("#form-join").submit((e) => {
   if (name.replace(/\s/g, "") == "" || $("#input-name-join").val() == null) {
     // TODO: Display feedback
     console.log("Need a valid username");
+    flash("Need a valid username", "error");
+
   } else if (lobbyId < 1000 || lobbyId > 9999) {
     // TODO: Display feedback
     console.log("Need a valid lobby number. 4 digits");
+    flash("Need a valid lobby PIN", "error");
   } else {
     socket.emit("request: join lobby", name, lobbyId);
   }

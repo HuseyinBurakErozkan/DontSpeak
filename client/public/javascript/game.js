@@ -12,12 +12,12 @@ socket.on("response: new round", (ruleName, ruleDesc, speaker) => {
   $("#p-rule-name").text(ruleName);
   $("#p-rule-description").text(ruleDesc);
   $("#p-speaker").text(`${speaker} is the speaker!`);
-
-  // Add touch listeners to recognise when speaker swipes for a new card
-  addTouchListeners();
 });
 
 socket.on("update: role: speaking", () => {
+
+  // Alter the text on the ready screen to address the speaker directly
+  $("#p-speaker").text(`You're the speaker!`);
 
   isSpeaker = true;
 
@@ -32,6 +32,9 @@ socket.on("update: role: speaking", () => {
   button.attr("id", "speaker-start-button");
 
   $("#screen-round-ready").append(button);
+
+  // Add touch listeners to recognise when speaker swipes for a new card
+  addTouchListeners();
 });
 
 
@@ -40,7 +43,7 @@ socket.on("update: role: guesser", (seconds) => {
 
   isSpeaker = false;
 
-  var secondsLeft = seconds;
+  var secondsLeft = seconds - 1;
   
   var countdown = setInterval(() => {
     $("#seconds-left").text(secondsLeft);
