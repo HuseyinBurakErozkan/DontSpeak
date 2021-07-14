@@ -34,7 +34,7 @@ function createServerMock() {
 }
 
 
-describe.only('Game', () => {
+describe('Game', () => {
 
   var lobby;
   var sockets = [];
@@ -65,7 +65,6 @@ describe.only('Game', () => {
       lobby.removePlayer(sockets[i]);
     }
     sockets = []; // Also empty the array of sockets
-
     done();
   });
 
@@ -78,14 +77,6 @@ describe.only('Game', () => {
 
 
   it.skip("Should have set the amount of points needed to win on initialisation", (done) => {
-    assert.fail();
-  });
-
-
-  it.skip("Should begin displaying words once speaker is ready", (done) => {
-
-    // TODO: Implement test
-
     assert.fail();
   });
 
@@ -114,7 +105,102 @@ describe.only('Game', () => {
   });
 
 
+  describe("#prepareRound", () => {
+
+    it("Should set the game's state to prepared", (done) => {
+      game.prepareRound();
+      expect(game.state).to.equal("prepared");
+      done();
+    });
+
+
+    it("Should return false if game is in any state other than 'waiting'", (done) => {
+      expect(game.state).to.equal("waiting");
+      game.prepareRound(); // Game state is set to 'prepared' if this function behaves as expected
+      expect(game.state).to.equal("prepared");
+      expect(game.prepareRound()).to.equal(false);
+      game.state = "playing";
+      expect(game.prepareRound()).to.equal(false);
+      game.state = "gameover";
+      expect(game.prepareRound()).to.equal(false);
+      done();
+    });
+
+
+    it("Should change who the speaker is when called", (done) => {
+      game.prepareRound();
+
+      var originalSpeaker = game.speakerSocket;
+      game.state = "waiting"; // Reset state so prepareRound can be called again
+      expect(game.prepareRound()).to.not.equal(false);
+      game.prepareRound();
+      // Speaker should have changed between rounds
+      expect(game.speakerSocket).to.not.equal(originalSpeaker);
+      done();
+    });
+  });
+
+
+  describe("#startRound", () => {
+
+    it("Should only allow the round to start if game state is set to 'prepared'", (done) => {
+      // State should initially be waiting, and the round should therefore return false indicating
+      // it didn't start.
+      expect(game.state).to.equal("waiting");
+      expect(game.startRound(sockets[0])).to.equal(false);
+
+      game.prepareRound();
+      var speaker = sockets.find(s => s.id === game.speakerSocket.id);
+
+      // Round should now start
+      expect(game.state).to.equal("prepared");
+      expect(game.startRound(speaker)).to.not.equal(false);
+
+      done();
+    });
+
+
+    it("Should only allow the start the round if the speaker had asked for it", (done) => {
+      game.prepareRound();
+      var speaker = sockets.find(s => s.id === game.speakerSocket.id);
+      var speakerIndex = sockets.indexOf(speaker);
+
+      // Iterate through all sockets and have all non-speaker sockets request to start a round
+      for (var i = 0; i < sockets.length; i++) {
+
+        // Make sure that the socket is not the speaker
+        if (i === speakerIndex) {
+          continue;
+        }
+
+        // Round should not start
+        expect(game.startRound(sockets[i])).to.equal(false);
+      }
+
+      // Now test the speaker requesting the round to start
+      expect(game.startRound(sockets[speakerIndex])).to.not.equal(false);
+
+      done();
+    });
+
+
+    it("Should set game state to 'playing'", (done) => {
+      // First ensure the round is able to be prepared
+      game.prepareRound();
+      expect(game.state).to.not.equal("playing");
+
+      // Try start round and see if the state is set to 'playing'
+      var speaker = sockets.find(s => s.id === game.speakerSocket.id);
+      expect(game.startRound(speaker)).to.not.equal(false);
+      expect(game.state).to.equal("playing");
+
+      done();
+    });
+  });
+
+
   describe("#setSpeaker", () => {
+
     it("Should designate a player a speaker", (done) => {
 
       expect(game.speakerSocket).to.equal(undefined);
@@ -132,6 +218,30 @@ describe.only('Game', () => {
       done();
     });
   
+
+    it("Should never choose a player from the same team twice", (done) => {
+      game.setSpeaker();
+      var team = game.getPlayerTeam(game.speakerSocket);
+
+      // Perform the check multiple times, to ensure no issues are caused once every player
+      // has performed the speaker role, and the game loops to the beginning og the original 
+      // array again
+      for (var i = 0; i < 10; i++) {
+        game.setSpeaker();
+
+        // Check if the current speaker is in the same team as the previous round's speaker 
+        if (game.getPlayerTeam(game.speakerSocket) === team) {
+          assert.fail(); // If so, fail
+        }
+
+        // Assign to the team variable, so the next iteration can compare the previously set speaker
+        // with its own.
+        team = game.getPlayerTeam(game.speakerSocket);
+      }
+
+      done(); // Test passed
+    });
+
   
     it("Should allow all players to have a speaker role", (done) => {
       /**
@@ -142,7 +252,7 @@ describe.only('Game', () => {
        */
       for (var i = 0; i < sockets.length; i++) {
         game.prepareRound(ioMock);
-        game.startRound(ioMock);
+        game.state = "waiting"; // Set the game's state, as nothing will happen if in any other state
         game.speakerSocket.hasSpoken = true;
       }
   
@@ -158,21 +268,19 @@ describe.only('Game', () => {
       
       // Get the first speaker, by simulating 1 round
       game.prepareRound(ioMock);
-      game.startRound(ioMock);
       var speaker = game.speakerSocket;
   
       // Loop and see if the original speaker eventually gets another speaking role. If so,
       // test passed. Otherwise, test fails
       for (var i = 0; i < 5; i++) {
+        game.state = "waiting"; // prepareRound does nothing if the game is not in "waiting" state
         game.prepareRound(ioMock);
-        game.startRound(ioMock);
   
         if (game.speakerSocket === speaker) {
           done();
         }
-      }
-      
-      assert.fail();
+      }      
+      assert.fail(); // If test reaches here, it never looped back to the first speaker
     });
   });
   
@@ -207,9 +315,9 @@ describe.only('Game', () => {
     });
   
 
-    it("Should be set to 'prepared' once game has begun", (done) => {
+    it("Should be set to 'prepared' once game has begun and new round is requested", (done) => {
+      game.prepareRound(sockets[0]);
       expect(game.state).to.equal("prepared");
-  
       done();
     });
   
