@@ -246,6 +246,14 @@ function showTimer(startingSeconds) {
     secondsLeft--;
     $("#game-ui-timer-text").text(secondsLeft);
 
+    // Make the seconds flash red when near the end of a round to indicate urgency
+    if (secondsLeft < 6) {
+      timerDiv.addClass("--red-attention-text")
+      setTimeout(() => {
+        timerDiv.removeClass("--red-attention-text");
+      }, 100);
+    }
+
     if (secondsLeft === 0) {
       clearInterval(countdown);
       timerDiv.remove(); // Remove the ui element after the round has concluded

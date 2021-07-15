@@ -81,7 +81,9 @@
   padding: $spacing-default;
 
   background-color: $color-secondary;
+  transition: color 0.2s ease-out;
   color: white;
+
   border-radius: $spacing-x-large;
 
   // Center the text
@@ -90,4 +92,9 @@
   display: flex;
   justify-content: center;
   align-items: center;
+
+  &.--red-attention-text {
+    transition: color 0.01s ease-out;
+    color: #ff3a3a;
+  }
 }
