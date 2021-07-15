@@ -19,15 +19,19 @@ function displayTeams(team1, team2) {
   team1Div.empty();
   team2Div.empty();
 
-  for (var i = 0; i < team1.length; i++) {
-    var playerDiv = $("<div/>", { class: "div-team1 __player"});
-    playerDiv.append(document.createTextNode(team1[i].name));
-    team1Div.append(playerDiv);
+  if (team1 !== undefined) {  
+    for (var i = 0; i < team1.length; i++) {
+      var playerDiv = $("<div/>", { class: "div-team1 __player"});
+      playerDiv.append(document.createTextNode(team1[i].name));
+      team1Div.append(playerDiv);
+    }
   }
-  for (var i = 0; i < team2.length; i++) {
-    var playerDiv = $("<div/>", { class: "div-team2 __player"});
-    playerDiv.append(document.createTextNode(team2[i].name));
-    team2Div.append(playerDiv);
+  if (team2 !== undefined) {
+    for (var i = 0; i < team2.length; i++) {
+      var playerDiv = $("<div/>", { class: "div-team2 __player"});
+      playerDiv.append(document.createTextNode(team2[i].name));
+      team2Div.append(playerDiv);
+    }
   }
 }
 
@@ -51,10 +55,10 @@ socket.on("update: player joined", (player, team1, team2) => {
   displayTeams(team1, team2);
 })
 
-socket.on("update: teams changed", (team1, team2) => {
+socket.on("update: player left", (team1, team2) => {
   displayTeams(team1, team2);
 });
 
-socket.on("update: player left", (team1, team2) => {
+socket.on("update: teams updated", (team1, team2) => {
   displayTeams(team1, team2);
 });

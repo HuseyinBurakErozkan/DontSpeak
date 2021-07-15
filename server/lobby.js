@@ -73,7 +73,39 @@ function Lobby() {
 
 
   this.movePlayerToTeam = (socket, team) => {
-    // TODO: Move player to the requested team
+
+    if (socket === undefined || team === undefined) {
+      throw new Error("Error: movePlayerToTeam(): socket or team is undefined");
+    } else if (this.getPlayerTeam(socket) === undefined) {
+      // Throw an exception, as this should never happen.
+      throw "Error: movePlayerToTeam(): player could not be found in team";
+    }
+
+    // First check if player is already in the team they requested, and if so, ignore it
+    // Return false to indicate that the player wasn't changed.
+    if (this.getPlayerTeam(socket) === team) {
+      // Let the client know that they couldn't change teams
+      io.to(socket.id).emit("error:", `You are already in team ${team}`);
+      return false;
+
+    } else {
+      // Assign the teams to the variables to avoid having to create unnecessary if statements
+      var oldTeam, newTeam;
+      (team === 1) // If player wants to move to team 1
+        ? (newTeam = this.team1, oldTeam = this.team2) // Move player to team 1
+        : (newTeam = this.team2, oldTeam = this.team1); // Move player to team 2
+
+      oldTeam.delete(socket.id);
+      newTeam.set(socket.id, socket);
+
+      // Let all clients know that the 
+      io.to(socket.id).emit("response: move to team");
+      var result = this.getArrayOfPlayersWithoutSockets();
+
+      io.to("lobby" + this.id).emit("update: teams updated", result[0], result[1]);
+
+      return true;
+    }
   }
 
 
@@ -131,43 +163,17 @@ function Lobby() {
     var player = this.team1.get(socket.id); 
 
     if (player !== undefined) {
-      return "team1";
-    }
-    else {
+      return 1;
+    } else {
       player = this.team2.get(socket.id);
 
       if (player !== undefined) {
-        return "team2";
+        return 2;
       }
     }
 
     // Player was not found in any team, so something must have went wrong
-    return false;
-  }
-
-
-  this.changePlayerTeam = (socket) => {
-
-    // First find which team the player belongs to
-    var player = this.team1.get(socket.id); 
-
-    if (player !== undefined) {
-      this.team1.delete(socket.id);
-      this.team2.set(socket.id, player);
-      return true;
-    }
-    else {
-      player = this.team2.get(socket.id);
-
-      if (player !== undefined) {
-        this.team2.delete(socket.id);
-        this.team1.set(socket.id, player);
-        return true;
-      }
-    }
-
-    // Player was not found in any team, so something must have went wrong
-    return false;
+    throw "Player was not found in team";
   }
     
 
@@ -205,7 +211,6 @@ function Lobby() {
     for(let socket of this.team2.values()) {
       team2PlayerData.push(socket.player);
     }
-
 
     return [team1PlayerData, team2PlayerData];
   }

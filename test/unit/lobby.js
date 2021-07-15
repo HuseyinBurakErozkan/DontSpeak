@@ -52,7 +52,6 @@ describe('Lobby instance', () => {
     var player = Player.create(mockSocket, "testPlayer", lobby.id);
     lobby.addSocket(mockSocket);
     expect(lobby.getPlayerCount()).to.equal(1);
-    // TODO: ADD A PLAYER AND EXPECT COUNT TO EQUAL 1
     done();
   });
 });
@@ -76,25 +75,6 @@ describe('Lobby instance with 1 player', () => {
     done();
   });
 
-
-  it("Should correctly change a player's team on request", (done) => {
-    var originalTeam = lobby.getPlayerTeam(socketMock);
-    expect(originalTeam).to.be.oneOf(["team1", "team2"]);
-
-    // Change team and check if the player was moved to the opposite once done
-    lobby.changePlayerTeam(socketMock);
-
-    (originalTeam == "team1") 
-      ? expect(lobby.getPlayerTeam(socketMock)).to.equal("team2") 
-      : expect(lobby.getPlayerTeam(socketMock)).to.equal("team1");
-
-    // Repeat the test by switching the player again and checking that they're back in the
-    // original team.
-    lobby.changePlayerTeam(socketMock);
-    expect(lobby.getPlayerTeam(socketMock)).to.equal(originalTeam);
-
-    done();
-  });
 
   it("Should not allow the game to start when under 4 players", (done) => {
 
@@ -162,15 +142,61 @@ describe('Lobby instance with minimum needed players', () => {
     // Before hook creates 4 players. Therefore, the lobby should automatically distribute them
     // between the teams equally.
     // After changing team, the team the player was in should have 1 player.
-    lobby.changePlayerTeam(sockets[0]);
+    var player = sockets[0];
+    var originalTeam = lobby.getPlayerTeam(player);
+
+    // Move player to the opposite team
+    (originalTeam === 1)
+      ? lobby.movePlayerToTeam(player, 2)
+      : lobby.movePlayerToTeam(player, 1);
+
+    // Now that the player's original team has 1 player, game should not start
     expect(lobby.startGame()).to.equal(false);
     expect(lobby.game).to.not.exist;
 
-    // Now have the switch back to the original team and ensure that the game can start
-    lobby.changePlayerTeam(sockets[0]);
+    // Now move player back to the original team
+    (originalTeam === 1)
+      ? lobby.movePlayerToTeam(player, 1)
+      : lobby.movePlayerToTeam(player, 2);
+
     expect(lobby.startGame()).to.equal(true);
     expect(lobby.game).to.exist;
 
     done();
+  });
+
+
+  describe("#movePlayerToTeam", () => {
+
+    it("Should throw error if socket and team isn't provided as an argument", (done) => {
+      expect(() => { lobby.movePlayerToTeam() }).to.throw();
+      expect(() => { lobby.movePlayerToTeam(socket) }).to.throw();
+      expect(() => { lobby.movePlayerToTeam(1) }).to.throw();
+      done();
+    });
+
+
+    it("Should move player from one team to the other", (done) => {
+      var originalTeam = lobby.getPlayerTeam(sockets[0]);
+
+      (originalTeam === 1)
+        ? expect(lobby.movePlayerToTeam(sockets[0], 2)).to.equal(true)
+        : expect(lobby.movePlayerToTeam(sockets[0], 1)).to.equal(true);
+      
+      var newTeam = lobby.getPlayerTeam(sockets[0]);
+
+      (originalTeam === 1)
+        ? expect(newTeam).to.equal(2)
+        : expect(newTeam).to.equal(1);
+      
+      done();
+    });
+
+    it("Should not do anything if player requested to move to the team it is already in", (done) => {
+      var playersTeam = lobby.getPlayerTeam(sockets[0]);
+      expect(lobby.movePlayerToTeam(sockets[0], playersTeam)).to.equal(false);
+
+      done();
+    });
   });
 });

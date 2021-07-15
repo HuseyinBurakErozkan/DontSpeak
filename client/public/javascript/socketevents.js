@@ -13,7 +13,6 @@ socket.on("response: lobby joined", (id, player) => {
     leftArgs: { team: 1 },
     right: moveToTeam, // Right indicates that player wants to move to team 2
     rightArgs: { team: 2 } });
-  
 });
 
 

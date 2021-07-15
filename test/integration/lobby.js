@@ -4,8 +4,8 @@ const expect = require('chai').expect;
 const server = require('../../app');
 const serverIo = require('../../app');
 const lobbies = require('../../server/lobby');
-let Lobby = lobbies.Lobby;
-var assert = require('assert');
+const Lobby = lobbies.Lobby;
+const assert = require('assert');
 const Player = require('../../server/player').Player;
 
 const io = require('socket.io-client');
@@ -182,7 +182,7 @@ describe('Lobby Events', () => {
 
   //     newPlayer.on('connect', () => {
   //       console.log(newPlayer.id);
-  //       // console.log(newPlayer.id + "------------------------------------------------");
+  //       // console.log(newPlayer.id);
   //     })
   //     // console.log("Before emission");
   //     // console.log(newPlayer.id);
@@ -191,7 +191,6 @@ describe('Lobby Events', () => {
   //     // });
   //     newPlayer.on("response: lobby joined", (lobbyId) => {
 
-  //       // console.log("=========================+++++++++++++++++")
   //       // console.log(newPlayer.id);
   //       addedPlayers.push(newPlayer);
   //       playersLeft--; // Decrement in the callback
@@ -333,7 +332,10 @@ describe('Lobby Events', () => {
 
     var t1length = lobby.team1.length;
 
-    lobby.changePlayerTeam(player);
+    var originalTeam = lobby.getPlayerTeam(player);
+    (originalTeam === 1)
+      ? lobby.movePlayerToTeam(player, 1)
+      : lobby.movePlayerToTeam(player, 2);
 
     // Team count for both should have flipped between 0 and 1, so only need to check if the 
     // current length of team1 is not equal to the previous value
@@ -345,6 +347,7 @@ describe('Lobby Events', () => {
     done();
   });
 
+  
   // it("Should be ready start when there are at least 4 players", (done) => {
 
   //   var players = [];
@@ -376,38 +379,19 @@ describe('Lobby Events', () => {
   // });
 
 
-  // it("Player should not be able to join lobby if game in progress", (done) => {
+  it.skip("Player should not be able to join lobby if game in progress", (done) => {
 
-  //   assert.fail();
-  //   done();
-  // });
+    assert.fail();
+    done();
+  });
 
-  // it ("Lobby should let every player know when game is starting", (done) => {
-  //   assert.fail();
-  //   done();
-  // });
 
-  // it("Game should not continue if player has left and there are less than the minimum required 4 players", (done) => {
-  //   assert.fail();
-  //   done();
-  // });
-
+  it.skip("Game should not continue if player has left and there are less than the minimum required 4 players", (done) => {
+    assert.fail();
+    done();
+  });
 });
 
-// describe("Game start events", () => { 
-
-//   beforeEach((done) => {
-//     player = io("http://localhost:3000/", ioOptions);
-
-//     done();
-//   });
-
-//   afterEach((done) => {
-//     player.disconnect();
-//     done();
-//   })
-
-// });
 
 describe("Lobby destruction events", () => {
 
