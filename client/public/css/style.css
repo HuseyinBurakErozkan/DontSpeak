@@ -366,6 +366,22 @@ table {
   font-size: 1.2rem;
 }
 
+.game-ui-timer-container {
+  box-shadow: -1px 4px 6px 3px rgba(0, 0, 0, 0.09), 0 2px 12px 1px rgba(0, 0, 0, 0.03);
+  position: fixed;
+  bottom: 64px;
+  right: 16px;
+  padding: 16px;
+  background-color: #2D4059;
+  color: white;
+  border-radius: 64px;
+  width: 3em;
+  height: 3em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .flash-dialog {
   position: fixed;
   top: 16px;

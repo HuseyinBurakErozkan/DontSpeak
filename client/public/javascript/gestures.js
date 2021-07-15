@@ -67,8 +67,8 @@ function moveTouch(e, callbacks) {
 
   // Used to determine if the user is trying to swipe, or merely touched the screen
   // Since device screens can be larger than others, set a minimum threshold that can
-  // be either the quarter of the screen's width, or 100px
-  var minSwipeDistance = Math.min(screen.width / 3, 150);
+  // be either a fifth of the screen's width, or 50px
+  var minSwipeDistance = Math.min(screen.width / 5, 50);
 
   var swiped = false;
 

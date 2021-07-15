@@ -69,3 +69,25 @@
     }
   }
 }
+
+
+// The timer displayed for everybody during the round
+.game-ui-timer-container {
+  @include border-shadow-ui-element;
+
+  position: fixed;
+  bottom: $spacing-x-large;
+  right: $spacing-default;
+  padding: $spacing-default;
+
+  background-color: $color-secondary;
+  color: white;
+  border-radius: $spacing-x-large;
+
+  // Center the text
+  width: 3em;
+  height: 3em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

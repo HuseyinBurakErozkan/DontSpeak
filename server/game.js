@@ -102,7 +102,8 @@ function Game(team1, team2, lobbyId) {
       "response: new round", 
       this.strategyManager.name,
       this.strategyManager.description, 
-      this.speakerSocket.player.name);
+      this.speakerSocket.player.name,
+      this.strategyManager.seconds);
 
     io.to(this.speakerSocket.id).emit("update: role: speaking");
   }

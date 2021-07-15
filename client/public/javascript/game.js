@@ -10,11 +10,12 @@ socket.on("response: game started", () => {
   socket.emit("request: new round");
 });
 
-socket.on("response: new round", (ruleName, ruleDesc, speaker) => {
+socket.on("response: new round", (ruleName, ruleDesc, speaker, seconds) => {
   changeScreen(null , "screen-round-ready");
   $("#p-rule-name").text(ruleName);
   $("#p-rule-description").text(ruleDesc);
   $("#p-speaker").text(`${speaker} is the speaker!`);
+  $("#p-seconds").text(`This round is ${seconds} seconds long`);
 });
 
 socket.on("update: role: speaking", () => {
@@ -216,6 +217,41 @@ socket.on("update: won", () => {
   $("#game-over-text").text("Congratulations!\nYou won!");
 });
 
+
+/**
+ * On receiving notification that the round is starting, display the timer on the ui
+ */
+socket.on("update: starting", (seconds) => {
+  console.log("update: starting: seconds = " + seconds);
+  showTimer(seconds);
+});
+
+function showTimer(startingSeconds) {
+  var secondsLeft = startingSeconds - 1;
+  
+  // Create the ui element
+  var timerDiv = $("<div/>", { 
+    id: "div-game-ui-timer",
+    class: "game-ui-timer-container"  
+  });
+
+  var secondsText = $("<p/>", { id: "game-ui-timer-text"})
+
+  // Add the ui elements to the DOM
+  $(".app-container").append(timerDiv);
+  timerDiv.append(secondsText);
+  $("#game-ui-timer-text").text(secondsLeft);
+
+  var countdown = setInterval(() => {
+    secondsLeft--;
+    $("#game-ui-timer-text").text(secondsLeft);
+
+    if (secondsLeft === 0) {
+      clearInterval(countdown);
+      timerDiv.remove(); // Remove the ui element after the round has concluded
+    }
+  }, 1000);
+}
 
 function requestWord() {
   socket.emit("request: word");

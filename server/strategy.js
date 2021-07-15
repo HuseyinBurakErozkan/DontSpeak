@@ -18,6 +18,7 @@ function Strategy(wordHandler) {
       case "standard":
         this.name = "Standard strategy";
         this.description = "Standard rules";
+        this.seconds = 60; // Most rules, including the standard rules, feature 60 second rounds
         this.handler = this.standardRule;
     }
   }
@@ -49,10 +50,8 @@ function Strategy(wordHandler) {
 
   this.standardRule = (speaker, game, callback) => {
 
-    var secondsAmt = 10;
-
     try {
-      io.to("lobby" + game.id).emit("update: starting");
+      io.to("lobby" + game.id).emit("update: starting", this.seconds);
 
       // Select a word and let client know what it is. Originally start with easiest words
       var currentWord = this.wordHandler.getWord(1);
@@ -88,7 +87,7 @@ function Strategy(wordHandler) {
         if (playerTeam[i] === speaker) {
           continue;
         }
-        io.to(playerTeam[i].id).emit("update: role: guesser", secondsAmt);
+        io.to(playerTeam[i].id).emit("update: role: guesser", this.seconds);
       }
 
       var tier = 1; // Start at the easiest tier of words
@@ -117,7 +116,7 @@ function Strategy(wordHandler) {
         }
       });
 
-      this.countdown(secondsAmt, game, () => {
+      this.countdown(this.seconds, game, () => {
         callback();
       });
     } catch(e) {
