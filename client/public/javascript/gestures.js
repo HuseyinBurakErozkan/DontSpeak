@@ -4,16 +4,35 @@
 // var container = document.body.getElementsByClassName("screen-container")[0];
 var container = $(".screen-container")[0];
 
-function addTouchListeners() {
+// Use a handler with binded parameters to allow arguments to be used, and to allow
+// the event listener to be deleted.
+var newTouchHandler;
+var eventHandler = (callbacks, e) => {
+  moveTouch(e, callbacks);
+}
+
+/**
+ * 
+ * @param {Associative array} callbacks Contains optional callback functions for 
+ * swipes in 4 directions. For example: callbacks.left will be called if a left
+ * swipe is detected.
+ */
+function addTouchListeners(callbacks) {
   container.addEventListener("touchstart", startTouch, false);
-  container.addEventListener("touchmove", moveTouch, false);
+  // Bind the callbacks array to the function, rather than using an anonymous
+  // function, as otherwise it can't be removed.
+  newTouchHandler = eventHandler.bind(this, callbacks);
+  container.addEventListener("touchmove", newTouchHandler, false);
   container.addEventListener("touchend", endTouch, false);  
 }
 
+/**
+ * Remove the eventlisteners for touch related events
+ */
 function removeTouchListeners() {
   container.removeEventListener("touchstart", startTouch, false);
-  container.removeEventListener("touchmove", moveTouch, false);
-  container.removeEventListener("touchend", endTouch, false);  
+  container.removeEventListener("touchmove", newTouchHandler, false);
+  container.removeEventListener("touchend", endTouch, false);
 }
 
 var initialX = null;
@@ -24,7 +43,15 @@ function startTouch(e) {
   initialY = e.touches[0].clientY;
 }
 
-function moveTouch(e) {
+/**
+ * Detect swipe events, and call functions depending on the swipe direction
+ * @param {Event} e 
+ * @param {Associative array} callbacks Contains optional callback functions for 
+ * swipes in 4 directions, as well as arguments. For example: callbacks.left will 
+ * be called if a left swipe is detected. If callbacks.leftArgs is defined, it will
+ * also pass those as arguments to the callback
+ */
+function moveTouch(e, callbacks) {
   if (initialX === null) {
     return;
   }
@@ -50,25 +77,57 @@ function moveTouch(e) {
   if (Math.abs(diffX) > Math.abs(diffY)) {
     if (diffX > minSwipeDistance) {
       console.log("Swiped left")
-      console.log("client: requesting word");
 
-      socket.emit("request: word");
+      if (callbacks.left !== undefined) {
 
+        // Check if any arguments are provided, and if so, pass them to the callback
+        if (callbacks.leftArgs !== undefined) {
+          callbacks.left(callbacks.leftArgs);
+        } else {
+          callbacks.left();
+        }
+      }
       swiped = true;
+
     } else if (diffX < -Math.abs(minSwipeDistance)) {
       console.log("Swiped right")
-      console.log("client: requesting word");
-      
-      socket.emit("request: word");
 
+      if (callbacks.right !== undefined) {
+        // Check if any arguments are provided, and if so, pass them to the callback
+        if (callbacks.rightArgs !== undefined) {
+          callbacks.right(callbacks.rightArgs);
+        } else {
+          callbacks.right();
+        }
+      }
       swiped = true;
     }
   } else {
     if (diffY > minSwipeDistance) {
       console.log("Swiped up");
+
+      if (callbacks.up !== undefined) {
+        // Check if any arguments are provided, and if so, pass them to the callback
+        if (callbacks.upArgs !== undefined) {
+          callbacks.up(callbacks.upArgs);
+        } else {
+          callbacks.up();
+        }
+      }
       swiped = true;
+
     } else if (diffY < -Math.abs(minSwipeDistance)) {
       console.log("Swiped down");
+
+      if (callbacks.down !== undefined) {
+        // Check if any arguments are provided, and if so, pass them to the callback
+        if (callbacks.downArgs !== undefined) {
+          callbacks.down(callbacks.downArgs);
+        } else {
+          callbacks.down();
+        }
+      }
+      
       swiped = true;
     }
   }

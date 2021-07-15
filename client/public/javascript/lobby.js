@@ -1,6 +1,12 @@
 function joinLobby(team1, team2, player) {
   displayTeams(team1, team2);
-  // TODO: Remove the lines below later
+
+  // Add touch listeners to recognise when player wansts to swap teams
+  addTouchListeners({ 
+    left: moveToTeam, // Left indicates that player wants to move to team 1
+    leftArgs: { team: 1 },
+    right: moveToTeam, // Right indicates that player wants to move to team 2
+    rightArgs: { team: 2 } });
 }
 
 function displayTeams(team1, team2) {
@@ -25,10 +31,17 @@ function displayTeams(team1, team2) {
   }
 }
 
+function moveToTeam(args) {
+  console.log("requesting to move to team " + args.team);
+  socket.emit("request: move to team", args.team);
+}
+
+
 $("#form-start-game").submit((e) => {
   e.preventDefault();
   socket.emit("request: start game");
 });
+
 
 
 /**

@@ -3,6 +3,9 @@ var isSpeaker = false;
 socket.on("response: game started", () => {
   console.log("Response: Game started");
 
+  // Remove the lobby's touch listeners
+  removeTouchListeners();
+
   // NOTE: TESTING PURPOSES ONLY. REMOVE LATER
   socket.emit("request: new round");
 });
@@ -34,7 +37,9 @@ socket.on("update: role: speaking", () => {
   $("#screen-round-ready").append(button);
 
   // Add touch listeners to recognise when speaker swipes for a new card
-  addTouchListeners();
+  addTouchListeners({ 
+    left: requestWord, 
+    right: requestWord});
 });
 
 
@@ -186,6 +191,9 @@ function nextRound() {
 }
 
 socket.on("update: lost", () => {
+
+  removeTouchListeners();
+
   changeScreen(null, "screen-gameover");
   // Hide the ui elements that were instantiated for the previous round
   $("#speaker-enter-points").addClass("--display-hidden"); // The speaker's enter point dialog
@@ -193,9 +201,12 @@ socket.on("update: lost", () => {
   $("#speaker-start-button").remove(); // Remove the start button that displays for the speaker
   
   $("#game-over-text").text("You lost :(.\nBetter luck next time!");
-})
+});
 
 socket.on("update: won", () => {
+
+  removeTouchListeners();
+  
   changeScreen(null, "screen-gameover");
   // Hide the ui elements that were instantiated for the previous round
   $("#speaker-enter-points").addClass("--display-hidden"); // The speaker's enter point dialog
@@ -203,4 +214,9 @@ socket.on("update: won", () => {
   $("#speaker-start-button").remove(); // Remove the start button that displays for the speaker
   
   $("#game-over-text").text("Congratulations!\nYou won!");
-})
+});
+
+
+function requestWord() {
+  socket.emit("request: word");
+}

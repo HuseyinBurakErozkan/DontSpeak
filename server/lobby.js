@@ -24,8 +24,9 @@ function Lobby() {
   this.addSocket = (socket) => {
     this.addPlayer(socket); // Now add the player to the lobby
 
-    socket.on('request: change team', () => {
-      // TODO: Add code here
+    socket.on('request: move to team', (team) => {
+      console.log(`${socket.player.name} is asking to move to team ${team}`);
+      this.movePlayerToTeam(socket, team);
     });
   
     socket.on('request: start game', () => {
@@ -70,6 +71,10 @@ function Lobby() {
     }
   }
 
+
+  this.movePlayerToTeam = (socket, team) => {
+    // TODO: Move player to the requested team
+  }
 
 
   this.removePlayer = (socket) => {

@@ -5,6 +5,8 @@
  * @param {String} toClassId The Id of the html div element to display
  */
 function changeScreen(from, toClassId) {
+  // TODO: Move changeScreen() to a more appropriate file
+
   // Get the ancestor screen element and hide it, then show the new screen
   $(from).closest(".screen").addClass("--display-hidden");
 
