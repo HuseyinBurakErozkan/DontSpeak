@@ -17,7 +17,8 @@ function Strategy(wordHandler) {
     switch(strategy) {
       case "standard":
         this.name = "Standard strategy";
-        this.description = "Standard rules";
+        this.description = "Standard rules. Each word the guesser gets right provides 1 " +
+          "point, and each disqualified / forfeited word removes 1 point. Can't get below 0 points";
         this.seconds = 60; // Most rules, including the standard rules, feature 60 second rounds
         this.handler = this.standardRule;
     }
@@ -79,15 +80,6 @@ function Strategy(wordHandler) {
       // when the speaker accidently says one of the taboo words
       for (var i = 0; i < opposingTeam.length; i++) {
         io.to(opposingTeam[i].id).emit("update: word: ", currentWord);
-      }
-
-      // Let the player's teammate's clients know that they have the role of guesser
-      for (var i = 0; i < playerTeam.length; i++) {
-        // Don't emit to the speaker
-        if (playerTeam[i] === speaker) {
-          continue;
-        }
-        io.to(playerTeam[i].id).emit("update: role: guesser", this.seconds);
       }
 
       var tier = 1; // Start at the easiest tier of words

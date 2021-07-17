@@ -106,6 +106,26 @@ function Game(team1, team2, lobbyId) {
       this.strategyManager.seconds);
 
     io.to(this.speakerSocket.id).emit("update: role: speaking");
+
+    // Let the player's teammate's clients know that they have the role of guesser
+    var playerTeam = this.getPlayerTeam(this.speakerSocket);
+    var opposingTeam;
+
+      playerTeam === "team1" 
+        ? (opposingTeam = this.team2, playerTeam = this.team1)
+        : (opposingTeam = this.team1, playerTeam = this.team2);
+    
+    for (var i = 0; i < playerTeam.length; i++) {
+      // Don't emit to the speaker
+      if (playerTeam[i] !== this.speakerSocket) {
+        io.to(playerTeam[i].id).emit("update: role: guesser");
+      }
+    }
+
+    // Let the other team know that they're the opposition
+    for (var i = 0; i < opposingTeam.length; i++) {
+      io.to(opposingTeam[i].id).emit("update: role: opposition");
+    }
   }
 
   

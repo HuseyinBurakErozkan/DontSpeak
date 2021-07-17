@@ -1,4 +1,10 @@
-var isSpeaker = false;
+// Initially instruct the user on how to understand and use the UI
+flash(
+  "Hi!\n\nI will guide you throughout the game. If you want to turn off hints, " +
+  "click the red button on the bottom right corner.\n\nYou can click it again to toggle " +
+  "hints on, or to see the tip again.", "information");
+
+var role;
 
 socket.on("response: game started", () => {
   console.log("Response: Game started");
@@ -19,11 +25,21 @@ socket.on("response: new round", (ruleName, ruleDesc, speaker, seconds) => {
 });
 
 socket.on("update: role: speaking", () => {
+  role = "speaker";
+
+  flash("You're the speaker for this round. As the speaker, you have to describe to your " +
+    "teammates what the taboo word is and have them say the taboo word out loud. The taboo " +
+    "word is the word on the top of the card with a yellow background. You can not say any " +
+    "of the other similar words on the card, unless your teammate says it, in which case " +
+    "you can say them.\n\nIf you accidentally say any of the taboo words, you have to forfeit " +
+    "the card and move on the next.\n\nYou can also move on to the next card if you find it " +
+    "too difficult or not worth doing.\n\nSwipe left or right to get a new card.\n\n" +
+    "Once you and your teammates are ready, click start", "information");
 
   // Alter the text on the ready screen to address the speaker directly
   $("#p-speaker").text(`You're the speaker!`);
 
-  isSpeaker = true;
+  role = "speaker";
 
   // Add a start button only the speaker can click, for when they're ready to start
   // describing the words
@@ -45,24 +61,50 @@ socket.on("update: role: speaking", () => {
 
 
 socket.on("update: role: guesser", (seconds) => {
-  changeScreen(null, "screen-countdown");
 
-  isSpeaker = false;
+  role = "guesser";
 
-  var secondsLeft = seconds - 1;
+  flash("Your teammate will be the speaker. They're going to describe the taboo word " +
+    "and you will have to guess what the word is and say it out loud.\n\nEach taboo word " +
+    "also has 4 similar words that can't be said by your teammate, unless you say the word " +
+    "first.\n\nTry help your teammate by saying any words that are similar to what you think " +
+    "your teammate is describing to you, as they will then have an easier time describing the " +
+    "word once they're able to use the other similar taboo words!\n\nGood luck! And stop " +
+    "looking at the screen!", "information");
+
+  // changeScreen(null, "screen-countdown");
+
+  role = "guesser";
+
+  // var secondsLeft = seconds - 1;
   
-  var countdown = setInterval(() => {
-    $("#seconds-left").text(secondsLeft);
-    secondsLeft--;
+  // var countdown = setInterval(() => {
+  //   $("#seconds-left").text(secondsLeft);
+  //   secondsLeft--;
 
-    if (secondsLeft === 0) {
-      clearInterval(countdown);
-    }
-  }, 1000);
+  //   if (secondsLeft === 0) {
+  //     clearInterval(countdown);
+  //   }
+  // }, 1000);
 });
 
+socket.on("update: role: opposition", () => {
+  role = "opposition";
+
+  flash(
+    "Your team is the opposing team for this round.\n\nAs the speaker describes the taboo " +
+    "word, which is at the top of the card, you have to make sure that they don't " +
+    "accidentally say any of the the 5 words listed on the card.\n\nIf the guesser guesses " +
+    "one of the other 4 similar words, the speaker is allowed to use them afterwards.\n\n" +
+    "If the speaker says one of the taboo words before the guesser guesses it, you must " +
+    "call it out and they will have to forfeit the card and move on the next.\n\nThe speaker " +
+    "is allowed to skip as many words as they want if they think the word is too difficult.\n\n" +
+    "Good luck! And make sure to call out the speaker if they say a taboo word, otherwise they " +
+    "may a free point!", "information");
+});
 
 socket.on("update: word: ", (word) => {
+
   changeScreen(null, "screen-word");
   console.log("WORD IS : ", word)
   // Clear the word screen
@@ -84,7 +126,7 @@ socket.on("update: word: ", (word) => {
     var elementSecondaryWord = $("<p></p>").text(secondaryWords[i]);
     $("#div-word-secondary").append(elementSecondaryWord);
   }
-})
+});
 
 
 // If this player is the speaker, display a button asking them how many points they believed
@@ -121,9 +163,8 @@ socket.on("update: round over", (wordsPlayed) => {
     }
   }
 
-  if (isSpeaker) {
+  if (role === "speaker") {
     console.log("this client is the speaker");
-    isSpeaker = false;
 
     // Display the ui input where the user can enter the amount of points they've earned
     $("#speaker-enter-points").removeClass("--display-hidden");   
@@ -224,6 +265,22 @@ socket.on("update: won", () => {
 socket.on("update: starting", (seconds) => {
   console.log("update: starting: seconds = " + seconds);
   showTimer(seconds);
+
+  // Display the countdown screen for the guesser, as they will not be shown 
+  // the word screen
+  if (role === "guesser") {
+    changeScreen(null, "screen-countdown");
+    var secondsLeft = seconds - 1;
+    
+    var countdown = setInterval(() => {
+      $("#seconds-left").text(secondsLeft);
+      secondsLeft--;
+
+      if (secondsLeft === 0) {
+        clearInterval(countdown);
+      }
+    }, 1000);
+  }
 });
 
 function showTimer(startingSeconds) {

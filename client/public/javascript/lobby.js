@@ -1,6 +1,13 @@
 function joinLobby(team1, team2, player) {
   displayTeams(team1, team2);
 
+  flash("This is the lobby. Once everyone joins, click on start to confirm that you're ready\n\n" +
+    "The game will start once everyone confirms that they are ready\n\n" +
+    "To swap teams, swipe left or right\n\n" +
+    "Once start is clicked, one of the teams will be randomly chosen to start\n\n" +
+    "You can click the '?' button below to disable/enable these tips any time", "information");
+
+
   // Add touch listeners to recognise when player wansts to swap teams
   addTouchListeners({ 
     left: moveToTeam, // Left indicates that player wants to move to team 1

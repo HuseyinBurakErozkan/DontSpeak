@@ -173,6 +173,13 @@ table {
 #screen-round-ready * {
   margin-bottom: 16px;
 }
+#screen-round-ready #p-rule-description {
+  width: 80%;
+  margin: 16px auto;
+  font-size: 1.15rem;
+  margin-bottom: 32px;
+}
+
 #screen-word {
   text-align: center;
   display: flex;
