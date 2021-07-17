@@ -76,7 +76,7 @@
   @include border-shadow-ui-element;
 
   position: fixed;
-  bottom: $spacing-x-large;
+  bottom: calc(2em + 48px);
   right: $spacing-default;
   padding: $spacing-default;
 

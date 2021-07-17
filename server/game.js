@@ -242,6 +242,8 @@ function Game(team1, team2, lobbyId) {
   this.handleSpeakerClaimingPoints = (socket, amount) => {
     console.log("socket: request: earned points");
       
+    // TODO: Don't allow the amount to be negative
+
     // The speaker may alter the amount of points they believe they earned after they've initially
     // entered a number. Therefore, empty the array of players who have confirmed, as they must re-confirm.
     this.playersConfirmed = [];

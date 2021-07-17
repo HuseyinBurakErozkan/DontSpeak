@@ -4,7 +4,7 @@ flash(
   "click the red button on the bottom right corner.\n\nYou can click it again to toggle " +
   "hints on, or to see the tip again.", "information");
 
-var role;
+var role; // Used to define what role the current player has in each round
 
 socket.on("response: game started", () => {
   console.log("Response: Game started");
@@ -39,8 +39,6 @@ socket.on("update: role: speaking", () => {
   // Alter the text on the ready screen to address the speaker directly
   $("#p-speaker").text(`You're the speaker!`);
 
-  role = "speaker";
-
   // Add a start button only the speaker can click, for when they're ready to start
   // describing the words
   var button = $("<button/>")
@@ -71,24 +69,10 @@ socket.on("update: role: guesser", (seconds) => {
     "your teammate is describing to you, as they will then have an easier time describing the " +
     "word once they're able to use the other similar taboo words!\n\nGood luck! And stop " +
     "looking at the screen!", "information");
-
-  // changeScreen(null, "screen-countdown");
-
-  role = "guesser";
-
-  // var secondsLeft = seconds - 1;
-  
-  // var countdown = setInterval(() => {
-  //   $("#seconds-left").text(secondsLeft);
-  //   secondsLeft--;
-
-  //   if (secondsLeft === 0) {
-  //     clearInterval(countdown);
-  //   }
-  // }, 1000);
 });
 
 socket.on("update: role: opposition", () => {
+
   role = "opposition";
 
   flash(
@@ -100,8 +84,9 @@ socket.on("update: role: opposition", () => {
     "call it out and they will have to forfeit the card and move on the next.\n\nThe speaker " +
     "is allowed to skip as many words as they want if they think the word is too difficult.\n\n" +
     "Good luck! And make sure to call out the speaker if they say a taboo word, otherwise they " +
-    "may a free point!", "information");
+    "may get a free point!", "information");
 });
+
 
 socket.on("update: word: ", (word) => {
 
@@ -133,6 +118,40 @@ socket.on("update: word: ", (word) => {
 // they earned. Once they enter, emit this amount to the server
 socket.on("update: round over", (wordsPlayed) => {
   
+  // Explain to the speaker what they have to do in this step
+  if (role === "speaker") {
+    flash(
+      "The round is over!\n\nEverybody now needs to review how many taboo words " +
+      "(the primary word in yellow) the guesser or guessers got right and how many you got disqualified for.\n\n" +
+      "Discuss how many words the guesser or guessers got right with everybody, and then enter the amount in the " +
+      "dialog box at the bottom.\n\nEach word your team got right = 1 point.\nEach word you got " +
+      "disqualified for = -1 point.\n\nIf your points for this round are below 0, enter 0 as " +
+      "you can't lose points.\n\nOnce you enter the amount of points you've earned, " +
+      "everybody else needs to confirm it before the game can continue.\n\nYou can always " +
+      "re-enter a new value if you realised you entered the wrong amount.", "information");
+  } else if (role === "guesser") { 
+    flash(
+      "The round is over!\n\nReview the taboo words (the words in yellow) you and the speaker " +
+      "got right and which words the speaker got disqualified for.\n\nEach word your team got " +
+      "right = 1 point.\nEach word your team got disqualified = -1 point.\n\nYou can't score " +
+      "below 0 points, so the speaker will enter 0 in that case.\n\nOnce the speaker enters the " +
+      "amount of points they believe they earned, everybody must confirm it.\n\nClick the button " +
+      "to confirm.", "information");
+  }
+  else {
+    flash(
+      "The round is over!\n\nHave a look at all the words listed and discuss with everbody " +
+      "the amount of taboo words (the words in yellow) that the speaker and guessers got right, as well as how many words " +
+      "the speaker got disqualified for.\n\nEach word the guessers got right = 1 point.\n" +
+      "Each word the speaker got disqualified for = -1 point.\n\nIf the speaker and guessers got " +
+      "below 0 points, they will enter 0, as negative points aren't allowed.\n\n Once everybody " +
+      "agrees, the speaker will enter the amount of points you got and you will then need to " +
+      "confirm.\n\nIf the speaker entered the wrong amount of points, let them know so they can " +
+      "change their answer.", "information"); 
+  }
+
+  // Explain to the other players that they need to confirm the points
+
   // Stop listening to touch-related events, as the user be able to swipe without unnecessary
   // calls being made
   removeTouchListeners();
@@ -266,6 +285,10 @@ socket.on("update: starting", (seconds) => {
   console.log("update: starting: seconds = " + seconds);
   showTimer(seconds);
 
+  // Hide any open flash messages, so they don't cover any of the words as the user
+  // starts the round
+  $(".flash-dialog").addClass("--hide");
+
   // Display the countdown screen for the guesser, as they will not be shown 
   // the word screen
   if (role === "guesser") {
@@ -333,13 +356,13 @@ function toggleHelp() {
     $("#flash-dialog-information").addClass("--toggled-off");
 
     // Add cookie to prevent from help being displayed again after new session
-    document.cookie = "toggleHelpOn=false; Secure";
+    document.cookie = "toggleHelpOn=false; Secure; path=/";
   } else {
     $(".game-ui-help-toggle-container").removeClass("--toggle-off");
     toggleHelpOn = true;
     $("#flash-dialog-information").removeClass("--toggled-off");
 
-    document.cookie = "toggleHelpOn=true; Secure";
+    document.cookie = "toggleHelpOn=true; Secure; path=/";
 
     // Display the previous help message when the user wants to see it again
     if (currentTutorialMsg !== undefined) {

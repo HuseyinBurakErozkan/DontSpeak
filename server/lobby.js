@@ -46,7 +46,7 @@ function Lobby() {
       }
       else {
         io.to("lobby" + this.id).emit("error:", 
-          "Game can not start. Either an error occurred or there are less than 2 players per team");
+          "Game can not start when there are less than 2 players per team");
       }
     });
   };

@@ -398,7 +398,7 @@ table {
 .game-ui-timer-container {
   box-shadow: -1px 4px 6px 3px rgba(0, 0, 0, 0.09), 0 2px 12px 1px rgba(0, 0, 0, 0.03);
   position: fixed;
-  bottom: 64px;
+  bottom: calc(2em + 48px);
   right: 16px;
   padding: 16px;
   background-color: #2D4059;
@@ -514,7 +514,7 @@ table {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  line-height: 130%;
+  line-height: 140%;
 }
 
 body {
