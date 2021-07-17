@@ -1,30 +1,33 @@
 .flash-dialog {
-  white-space: pre-line; 
+  white-space: pre-line; // Used so that '\n' in strings add new line
   position: fixed;
   top: $spacing-default;
-
-  // // Ignore all clicks to the flash message, so buttons behind it may be clicked
-  // pointer-events: none;
-
   font-size: 1.1rem;
+
   // Centre the flash dialog horizontally
-  left: 0;
+  right: 0; // Use this to place the dialog box to the right on larger screens
   margin: auto $spacing-default;
   width: calc(100vw - #{$spacing-large});
-
-  background-color: white;
-  opacity: 100%;
-  transition: opacity 0.3s ease-in, transform 0.1s ease-in;
-
-  transform: scale(1, 1);
-
   padding: $spacing-small;
   border-radius: 3px;
+  background-color: white;
+
+  // Use transitions to make the flash /messages more eye-catching.
+  transition: opacity 0.1s ease-in, transform 0.1s ease-in;
+  transition-delay: 100ms;
+
+  // The styles that are changed in the transition
+  transform: scale(1, 1);
+  opacity: 100%;
 
   &.--error {
     background-color: #ffecec;
     border: 1px solid darken(#ffecec, 10%);
     color: #221111;
+
+    .flash-button-close {
+      float: right;
+    }
   }
 
   &.--normal {
@@ -34,11 +37,16 @@
 
   &.--tip {
     
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; // Place the 'x' button to the right
+
     // Place the flash message so that the arrow is just above the 'help' button
     top: initial;
     bottom: calc(2em + 48px);
     margin: $spacing-default;
     width: calc(100vw - #{$spacing-large});
+    max-width: 600px;
 
     box-shadow: 0 20px 100px -15px rgba(50, 50, 93, 0.35), 0 30px 60px -25px rgba(0, 0, 0, 0.2);
     // Add a light border to make the it stand out from the background, 
@@ -53,11 +61,18 @@
     border-radius: 6px;
     
     padding: $spacing-default;
-    
+    padding-top: $spacing-small;
+
     // Only when larger text is being displayed, should the dialog
     & .flash-text-container {
       overflow-y: scroll;
       height: 100%;
+      width: 100%;
+    }
+
+
+    .flash-button-close {
+      padding-bottom: $spacing-default;
     }
 
     // Display an arrow
@@ -75,6 +90,28 @@
 
   &.--hide {
     opacity: 0%;
-    transform: scale(0.9, 0.8); // Don't scale the width as much as it looks a little strange
+    transform: scale(0.95, 0.8); // Don't scale the width as much as it looks a little strange
+    transform: translateY(3rem);
+    pointer-events: none; // Don't allow the flash message to be clicked after it has been hidden
+  }
+}
+
+// Used to draw the 'x' button
+.flash-button-close {
+
+  height: 30px;
+
+  & .x-line {
+    width: 24px;
+    height: 2px;
+    background-color: #3a3a3a;
+
+    &.top {
+      transform: translateY(13px) rotate(45deg);      
+    }
+
+    &.bottom {
+      transform: translateY(11px) rotate(135deg);
+    }
   }
 }

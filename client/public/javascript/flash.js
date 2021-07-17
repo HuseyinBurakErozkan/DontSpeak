@@ -33,30 +33,52 @@ function flash(msg, type) {
     // therefore the flash be animated.
     flashDialog.addClass("--hide");
 
-    flashTextContainer = $("<div/>", { id: "flash-text-container", class: "flash-text-container" });
+    flashTextContainer = $("<div/>", { 
+      id: "flash-text-container", 
+      class: "flash-text-container" });
+
     flashText = $("<p/>", { id: "flash-text" }).text(msg);
     $(".app-container").append(flashDialog);
+
+    var flashXButton = $("<div/>", { 
+      id: "button-flash-close", 
+      class: "flash-button-close" });
     
+    flashXButton.click(() => {
+      hideFlashMessages()
+    });
+
+    // Add the elements that make up the 'x' in the x button
+    flashXButton.append($("<div/>", { class: "x-line top" }));
+    flashXButton.append($("<div/>", { class: "x-line bottom" }));
+
+    flashDialog.append(flashXButton);
     flashDialog.append(flashTextContainer);
     flashTextContainer.append(flashText);
 
+    // Must add a delay before removing the hide class, otherwise, it will not
+    // intially animate
     setTimeout(() => {
       flashDialog.removeClass("--hide");
-    }, 200);
-
+    }, 50);
   }
 
   if (type === "error") {
     console.log("ERROR: " + msg);
     flashDialog.addClass("--error");
     flashText.text(msg);
+
+    // Hide the error flash message after a few seconds
+    flashTimer = setTimeout(() => {
+      flashDialog.addClass("--hide");
+      clearTimeout(flashTimer);
+    }, 4000);
   } else if (type === "information") {
     flashDialog.addClass("--tip");
     flashText.text(msg);
   }
+}
 
-  flashTimer = setTimeout(() => {
-    flashDialog.addClass("--hide");
-    clearTimeout(flashTimer);
-  }, 400000); // TODO: SET TO 4 SECONDS ONCE TESTING IS DONE
+function hideFlashMessages() {
+  $("#flash-dialog").addClass("--hide");
 }
