@@ -208,10 +208,12 @@ socket.on("update: round over", (wordsPlayed) => {
 function sendClaimPoints(pointsAmt) {
   console.log("sendClaimPoints called");
   console.log(pointsAmt, " typeof: ", typeof(pointsAmt));
-  // Only try emit if the inputted value is an integer
+  // Only try emit if the inputted value is an integer that is above 0.
   if (/^\d+$/.test(pointsAmt)) {
     console.log("emitted");
     socket.emit("request: earned points amount", pointsAmt);  
+  } else {
+    flash("Error: You need to input a positive whole number. Minimum score must be 0 as you can't lose points", "error");
   }
 }
 
@@ -362,7 +364,7 @@ socket.on("update: starting", (seconds) => {
 });
 
 function showTimer(startingSeconds) {
-  var secondsLeft = startingSeconds - 1;
+  var secondsLeft = startingSeconds;
   
   // Create the ui element
   var timerDiv = $("<div/>", { 

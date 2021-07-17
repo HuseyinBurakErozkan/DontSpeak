@@ -16,10 +16,10 @@ function Strategy(wordHandler) {
   this.setStrategy = (strategy) => {
     switch(strategy) {
       case "standard":
-        this.name = "Standard strategy";
+        this.name = "Standard rules";
         this.description = "Standard rules. Each word the guesser gets right provides 1 " +
           "point, and each disqualified / forfeited word removes 1 point. Can't get below 0 points";
-        this.seconds = 7; // Most rules, including the standard rules, feature 60 second rounds
+        this.seconds = 60; // Most rules, including the standard rules, feature 60 second rounds
         this.handler = this.standardRule;
     }
   }
