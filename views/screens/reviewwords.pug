@@ -2,10 +2,9 @@
 div.gameui-container
   div#player-confirm-points.confirm-points.--display-hidden
     p#confirm-text 
-    button(id="button-confirm-claim").button-primary Confirm
+    button(id="button-confirm-claim").button-primary.--confirmable Confirm
 
 div#speaker-enter-points.--display-hidden.game-ui.enter-points
   input(type="number" id="input-points-earned" placeholder="Points earned").input
-  button(id="button-confirm-points").button-primary.--confirmable
-    //- include ../images/toggletick.svg
+  button(id="button-confirm-points").button-primary.--confirmable Confirm
 div#screen-review.screen.--display-hidden

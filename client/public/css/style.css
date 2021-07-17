@@ -217,6 +217,9 @@ table {
   text-align: center;
   background-color: white;
 }
+#screen-review .word-card:first-child {
+  margin-top: 4.5em;
+}
 #screen-review .word-card .word__primary {
   background-color: #FFD460;
   padding: 16px;
@@ -360,9 +363,9 @@ table {
 }
 
 .enter-points {
-  bottom: 16px;
   left: 50%;
   transform: translateX(-50%);
+  top: 16px;
 }
 .enter-points .input {
   font-size: 1rem;
@@ -385,7 +388,7 @@ table {
   display: flex;
   position: fixed;
   justify-content: center;
-  bottom: 8px;
+  top: 16px;
   left: 0;
   width: 100%;
 }
@@ -396,7 +399,7 @@ table {
   align-items: center;
   background-color: #2D4059;
   padding: 16px;
-  border-radius: 16px;
+  border-radius: 36px;
 }
 .gameui-container .confirm-points p {
   font-size: 1.2rem;
@@ -404,6 +407,7 @@ table {
 }
 .gameui-container .confirm-points .button-primary {
   font-size: 1.2rem;
+  border-radius: 24px;
 }
 
 .game-ui-timer-container {

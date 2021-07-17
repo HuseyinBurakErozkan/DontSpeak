@@ -150,8 +150,6 @@ socket.on("update: round over", (wordsPlayed) => {
       "change their answer.", "information"); 
   }
 
-  // Explain to the other players that they need to confirm the points
-
   // Stop listening to touch-related events, as the user be able to swipe without unnecessary
   // calls being made
   removeTouchListeners();
@@ -235,6 +233,14 @@ function sendClaimPoints(pointsAmt) {
 
 socket.on("request: confirm points claim", (speaker, amount) => {
 
+  // Check if the button is in the 'confirmed' state when a new request has come in, 
+  // and if so, change it.
+  var confirmButton = $("#button-confirm-claim");
+  if (confirmButton.text() === "✓") {
+    confirmButton.removeClass("--confirmed");
+    confirmButton.text("Confirm");
+  }
+
   // Remove and reattach the listener each time the server asks to confirm
   $("#button-confirm-claim").off("click", "**");
 
@@ -247,6 +253,10 @@ socket.on("request: confirm points claim", (speaker, amount) => {
 
   $("#button-confirm-claim").on("click", (e) => {
     socket.emit("response: confirm points");
+
+    // Change the button to display a tick - Nice for visual feedback
+    confirmButton.addClass("--confirmed");
+    confirmButton.text("✓");
   });
 });
 

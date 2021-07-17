@@ -19,7 +19,7 @@ function Strategy(wordHandler) {
         this.name = "Standard rules";
         this.description = "Standard rules. Each word the guesser gets right provides 1 " +
           "point, and each disqualified / forfeited word removes 1 point.";
-        this.seconds = 60; // Most rules, including the standard rules, feature 60 second rounds
+        this.seconds = 1; // Most rules, including the standard rules, feature 60 second rounds
         this.handler = this.standardRule;
     }
   }

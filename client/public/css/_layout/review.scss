@@ -3,7 +3,15 @@
   overflow-y: scroll;
   background-color: $color-bg;
 
+
   .word-card {
+
+    &:first-child {
+
+      // Add a margin to the top, to accomodate the dialog boxes
+      margin-top: 4.5em;
+    }
+    
     @include border-shadow-soft-wide;
     border: 1px solid #e6e6e6;
     border-radius: 6px;
