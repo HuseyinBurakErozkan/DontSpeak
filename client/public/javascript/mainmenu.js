@@ -40,6 +40,13 @@ $("#form-create").submit((e) => {
     socket.on("response: lobby created", (player, lobbyId, team1, team2) => {
       $("#h2-lobby-id").text("Game PIN: " + lobbyId);
       changeScreen($("#form-create"), "screen-lobby");
+
+      flash("This is the lobby. Once everyone joins, click on start to confirm that you're ready\n\n" +
+        "The game will start once everyone confirms that they are ready\n\n" +
+        "To swap teams, swipe left or right\n\n" +
+        "Once start is clicked, one of the teams will be randomly chosen to start\n\n" +
+        "You can click the '?' button below to disable/enable these tips any time", "information");
+      
       joinLobby(team1, team2, player);
     });
   }

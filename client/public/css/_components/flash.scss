@@ -1,10 +1,10 @@
 .flash-dialog {
-
+  white-space: pre-line; 
   position: fixed;
   top: $spacing-default;
 
-  // Ignore all clicks to the flash message, so buttons behind it may be clicked
-  pointer-events: none;
+  // // Ignore all clicks to the flash message, so buttons behind it may be clicked
+  // pointer-events: none;
 
   font-size: 1.1rem;
   // Centre the flash dialog horizontally
@@ -14,7 +14,10 @@
 
   background-color: white;
   opacity: 100%;
-  transition: opacity 0.2s ease-out;
+  transition: opacity 0.3s ease-in, transform 0.1s ease-in;
+
+  transform: scale(1, 1);
+
   padding: $spacing-small;
   border-radius: 3px;
 
@@ -30,12 +33,48 @@
   }
 
   &.--tip {
-    background-color: #f4f7ff;
-    border: 2px solid darken(#f4f7ff, 10%);
+    
+    // Place the flash message so that the arrow is just above the 'help' button
+    top: initial;
+    bottom: calc(2em + 48px);
+    margin: $spacing-default;
+    width: calc(100vw - #{$spacing-large});
+
+    box-shadow: 0 20px 100px -15px rgba(50, 50, 93, 0.35), 0 30px 60px -25px rgba(0, 0, 0, 0.2);
+    // Add a light border to make the it stand out from the background, 
+    // and add a bit of contrast
+    border-top: 1px solid #e9e9e9;
+    border-right: 1px solid #e9e9e9;
+    border-left: 1px solid #e9e9e9;
+    height: 60vh !important;
+    background-color: #ffffff;
     color: #1b294e;
+
+    border-radius: 6px;
+    
+    padding: $spacing-default;
+    
+    // Only when larger text is being displayed, should the dialog
+    & .flash-text-container {
+      overflow-y: scroll;
+      height: 100%;
+    }
+
+    // Display an arrow
+    &:after {
+      content: "";
+      position: absolute;
+      top: 99%;
+      right: 10px;
+      border-top: 20px solid black;
+      border-top-color: white; 
+      border-left: 20px solid transparent;
+      border-right: 20px solid transparent; 
+   } 
   }
 
   &.--hide {
     opacity: 0%;
+    transform: scale(0.9, 0.8); // Don't scale the width as much as it looks a little strange
   }
 }

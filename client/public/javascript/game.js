@@ -264,3 +264,33 @@ function showTimer(startingSeconds) {
 function requestWord() {
   socket.emit("request: word");
 }
+
+
+var toggleHelpOn = true;
+
+function toggleHelp() {
+  if (toggleHelpOn) {
+    $(".game-ui-help-toggle-container").addClass("--toggle-off");
+    toggleHelpOn = false;
+  } else {
+    $(".game-ui-help-toggle-container").removeClass("--toggle-off");
+    toggleHelpOn = true;
+  }
+}
+
+
+function displayHelpButton() {
+  // Create the ui element
+  var helpButtonToggle = $("<button/>", { 
+    id: "div-game-ui-help-toggle",
+    class: "game-ui-help-toggle-container",
+    onClick: "toggleHelp()"  
+  });
+  
+  helpButtonToggle.append($("<p>?</p>"));
+  $(".app-container").append(helpButtonToggle);
+}
+
+
+
+displayHelpButton();
