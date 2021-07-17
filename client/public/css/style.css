@@ -316,7 +316,7 @@ table {
   padding: 16px;
 }
 .game-ui-help-toggle-container.--toggle-off {
-  background-color: #c0c0c0;
+  background-color: #f5afaf;
 }
 
 .input {
@@ -456,6 +456,10 @@ table {
   border-radius: 6px;
   padding: 16px;
   padding-top: 8px;
+  /** This is used for the same purpose as '--hide', but is used by the toggle button
+   * to specifically hide the game's tutorial/tips. Easier to use another similar class, 
+   * rather than add additional logic and use the '--hide' class.
+   */
 }
 .flash-dialog.--tip .flash-text-container {
   overflow-y: scroll;
@@ -475,7 +479,7 @@ table {
   border-left: 20px solid transparent;
   border-right: 20px solid transparent;
 }
-.flash-dialog.--hide {
+.flash-dialog.--hide, .flash-dialog.--tip.--toggled-off {
   opacity: 0%;
   transform: scale(0.95, 0.8);
   transform: translateY(3rem);

@@ -1,5 +1,5 @@
 var flashTimer;
-
+var currentTutorialMsg;
 
 function flash(msg, type) {
 
@@ -25,7 +25,6 @@ function flash(msg, type) {
       clearTimeout(flashTimer);
     }
   } else {
-
     // Create the flash element
     flashDialog = $("<div/>", { id: "flash-dialog", class: "flash-dialog" });
 
@@ -74,6 +73,11 @@ function flash(msg, type) {
       clearTimeout(flashTimer);
     }, 4000);
   } else if (type === "information") {
+    
+    // Save the current msg, so that the user can look at it again if they forget
+    // what to do.
+    currentTutorialMsg = msg;
+
     flashDialog.addClass("--tip");
     flashText.text(msg);
   }

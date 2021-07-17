@@ -70,12 +70,19 @@
       width: 100%;
     }
 
-
     .flash-button-close {
       padding-bottom: $spacing-default;
     }
 
-    // Display an arrow
+    /** This is used for the same purpose as '--hide', but is used by the toggle button
+     * to specifically hide the game's tutorial/tips. Easier to use another similar class, 
+     * rather than add additional logic and use the '--hide' class.
+     */
+    &.--toggled-off {
+      @extend .--hide;
+    }
+
+    // Display a downward arrow
     &:after {
       content: "";
       position: absolute;

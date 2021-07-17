@@ -19,3 +19,7 @@ socket.on("response: lobby joined", (id, player) => {
 socket.on("error:", (msg) => {
   flash(msg, "error");
 });
+
+socket.on("disconnect", () => {
+  flash("Lost connection to the server. Please refresh the page to start again", "error");
+});

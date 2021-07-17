@@ -66,6 +66,6 @@
   padding: $spacing-default;
 
   &.--toggle-off {
-  background-color: #c0c0c0;    
+  background-color: lighten($color-primary, 20%);    
   }
 }
