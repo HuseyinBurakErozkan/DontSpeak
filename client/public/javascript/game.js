@@ -268,15 +268,21 @@ function requestWord() {
 
 var toggleHelpOn = true;
 
+
 function toggleHelp() {
   if (toggleHelpOn) {
     $(".game-ui-help-toggle-container").addClass("--toggle-off");
     toggleHelpOn = false;
-    $("#flash-dialog-information").addClass("--toggled-off")
+    $("#flash-dialog-information").addClass("--toggled-off");
+
+    // Add cookie to prevent from help being displayed again after new session
+    document.cookie = "toggleHelpOn=false; Secure";
   } else {
     $(".game-ui-help-toggle-container").removeClass("--toggle-off");
     toggleHelpOn = true;
-    $("#flash-dialog-information").removeClass("--toggled-off")
+    $("#flash-dialog-information").removeClass("--toggled-off");
+
+    document.cookie = "toggleHelpOn=true; Secure";
 
     // Display the previous help message when the user wants to see it again
     if (currentTutorialMsg !== undefined) {
@@ -299,3 +305,20 @@ function displayHelpButton() {
 }
 
 displayHelpButton();
+
+
+// Check whether the user has toggled help off in a previous session, and if so,
+// don't display any helpful flash messages
+var cookie = document.cookie
+  .split("; ")
+  .find(row => row.startsWith("toggleHelpOn="));
+
+if(cookie !== undefined) {
+  cookie = cookie.split("=")[1];
+
+  if (cookie === "false") {
+    // Just call toggleHelp, as the default is set to true and calling it will set
+    // the toggle boolean to false.
+    toggleHelp();
+  }
+}
