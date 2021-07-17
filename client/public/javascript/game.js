@@ -232,6 +232,10 @@ socket.on("request: confirm points claim", (speaker, amount) => {
   });
 });
 
+
+var t1CurrentPoints = 0;
+var t2CurrentPoints = 0;
+
 socket.on("update: points: ", (t1Points, t2Points, pointsNeeded) => {
 
   // Hide the ui elements that were instantiated for the previous round
@@ -242,8 +246,59 @@ socket.on("update: points: ", (t1Points, t2Points, pointsNeeded) => {
   console.log(`team1 points: ${t1Points} \n team2 points: ${t2Points} \n points needed to win: ${pointsNeeded}`)
 
   changeScreen(null, "screen-scores");
-  $("#t1-scores").text(`Team 1 score: ${t1Points}`);
-  $("#t2-scores").text(`Team 2 score: ${t2Points}`);
+
+  // Increment the scores, as players will more easily understand what they're looking at
+  var t1PrevPoints = $("#t1-scores").first().text();
+  var t2PrevPoints = $("#t2-scores").first().text();
+  console.log($("#t1-scores").first().text());
+  console.log(typeof($("#t1-scores").first().text()));
+  console.log(t1PrevPoints == $("#t1-scores").first().text());
+
+  var textElement;
+  var newPoints;
+  var prepText;
+
+  // Set the text of each team's scores to the PREVIOUS point amount
+  $("#t1-scores").text(`Team 1 score: ${t1CurrentPoints}`);
+  $("#t2-scores").text(`Team 2 score: ${t2CurrentPoints}`);
+  
+  var i; // Use to increment the score text from previous to current values
+
+  // Check which team earned points
+  if (t1CurrentPoints != t1Points) {
+    textElement = $("#t1-scores");
+    newPoints = t1Points;
+    prepText = "Team 1 score: ";
+    i = t1CurrentPoints;
+  } else if (t2CurrentPoints != t2Points) {
+    textElement = $("#t2-scores");
+    newPoints = t2Points;
+    prepText = "Team 2 score: ";
+    i = t2CurrentPoints;
+  } else {
+    flash("Error: could not tally points", "error");
+    return;
+  }
+
+  // Update the point values
+  t1CurrentPoints = t1Points;
+  t2CurrentPoints = t2Points;
+
+  // Add a small delay before incrementing, otherwise the user may not notice it
+  var delay = setTimeout(() => {
+    clearTimeout(delay);
+    
+    var incrementer = setInterval(() => {    
+      i++;
+      textElement.text(prepText + i); // Display the incrementing score
+  
+      // The text now displays the team's current score, so stop incrementinh
+      if (i === newPoints) {
+        clearInterval(incrementer);
+      }
+    }, 100);
+  }, 500);
+
   $("#points-needed").text(`Score needed to win: ${pointsNeeded}`);
 });
 
