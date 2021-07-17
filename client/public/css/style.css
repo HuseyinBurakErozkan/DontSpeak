@@ -486,19 +486,20 @@ table {
   pointer-events: none;
 }
 
-.flash-button-close {
-  height: 30px;
-}
 .flash-button-close .x-line {
-  width: 24px;
+  width: 28px;
   height: 2px;
-  background-color: #3a3a3a;
+  background-color: #505050;
 }
 .flash-button-close .x-line.top {
   transform: translateY(13px) rotate(45deg);
 }
 .flash-button-close .x-line.bottom {
   transform: translateY(11px) rotate(135deg);
+}
+
+.flash-dialog.--tip .flash-button-close {
+  height: 40px;
 }
 
 * {

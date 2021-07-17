@@ -106,12 +106,10 @@
 // Used to draw the 'x' button
 .flash-button-close {
 
-  height: 30px;
-
   & .x-line {
-    width: 24px;
+    width: 28px;
     height: 2px;
-    background-color: #3a3a3a;
+    background-color: #505050;
 
     &.top {
       transform: translateY(13px) rotate(45deg);      
@@ -121,4 +119,10 @@
       transform: translateY(11px) rotate(135deg);
     }
   }
+}
+
+// Used specifically to add some space between the 'x' and the flash message text
+// when it comes to the informational flash messages
+.flash-dialog.--tip .flash-button-close {
+  height: 40px;
 }

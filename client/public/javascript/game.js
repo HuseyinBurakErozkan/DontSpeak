@@ -272,11 +272,11 @@ function toggleHelp() {
   if (toggleHelpOn) {
     $(".game-ui-help-toggle-container").addClass("--toggle-off");
     toggleHelpOn = false;
-    $("#flash-dialog").addClass("--toggled-off")
+    $("#flash-dialog-information").addClass("--toggled-off")
   } else {
     $(".game-ui-help-toggle-container").removeClass("--toggle-off");
     toggleHelpOn = true;
-    $("#flash-dialog").removeClass("--toggled-off")
+    $("#flash-dialog-information").removeClass("--toggled-off")
 
     // Display the previous help message when the user wants to see it again
     if (currentTutorialMsg !== undefined) {
@@ -297,7 +297,5 @@ function displayHelpButton() {
   helpButtonToggle.append($("<p>?</p>"));
   $(".app-container").append(helpButtonToggle);
 }
-
-
 
 displayHelpButton();
