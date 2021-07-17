@@ -173,6 +173,9 @@ table {
 #screen-round-ready * {
   margin-bottom: 16px;
 }
+#screen-round-ready #p-rule-name {
+  font-weight: 800;
+}
 #screen-round-ready #p-rule-description {
   width: 80%;
   margin: 16px auto;
@@ -282,6 +285,14 @@ table {
 .button-primary:active {
   background-color: #ed6b6c;
 }
+.button-primary.--confirmable {
+  transition: width 0.2s ease-in-out;
+  width: 6em;
+}
+.button-primary.--confirmable.--confirmed {
+  width: 3em;
+}
+
 .button-plain {
   -webkit-touch-callout: none;
   /* iOS Safari */

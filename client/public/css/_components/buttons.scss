@@ -14,8 +14,21 @@
   }
 
   &:hover {
+
+  }
+
+
+  &.--confirmable {
+    transition: width 0.2s ease-in-out;
+    width: 6em;
+
+    &.--confirmed {
+      width: 3em;
+    }
   }
 }
+
+
 
 
 .button-plain {
@@ -69,3 +82,5 @@
   background-color: lighten($color-primary, 20%);    
   }
 }
+
+

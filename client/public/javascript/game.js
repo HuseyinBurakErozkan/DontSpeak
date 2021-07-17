@@ -191,10 +191,19 @@ socket.on("update: round over", (wordsPlayed) => {
     var inputField = $("#input-points-earned");
     var claimPointsButton = $("#button-confirm-points");
 
-    inputField.on("keypress", (e) => {
+    inputField.on("keydown", (e) => {
       if(e.which == 13) {
         console.log("claiming points ", inputField.val())
         sendClaimPoints(inputField.val());
+      } else {
+        // If the user is reentering a value in the input field, check if the button
+        // is showing the tick, indicating that the previous input was confirmed. If
+        // so, change the button back to a non-confirmed state to indicate that the
+        // the user must confirm again
+        if (claimPointsButton.text() === "✓") {
+          claimPointsButton.text("Confirm");
+          claimPointsButton.removeClass("--confirmed");
+        }
       }
     });
 
@@ -211,7 +220,14 @@ function sendClaimPoints(pointsAmt) {
   // Only try emit if the inputted value is an integer that is above 0.
   if (/^\d+$/.test(pointsAmt)) {
     console.log("emitted");
-    socket.emit("request: earned points amount", pointsAmt);  
+    socket.emit("request: earned points amount", pointsAmt);
+
+    // Since the input is valid the request was emitted to server, toggle the confirm
+    // button so that it displays a tick - Should be useful as visual feedback
+    var claimPointsButton = $("#button-confirm-points");
+    claimPointsButton.text("✓");
+    claimPointsButton.addClass("--confirmed");
+
   } else {
     flash("Error: You need to input a positive whole number. Minimum score must be 0 as you can't lose points", "error");
   }
