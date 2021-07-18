@@ -36,7 +36,7 @@ function Word() {
   // Create a deep copy of each of the original arrays of words
   this.remainingTier1Words = JSON.parse(JSON.stringify(allTier1Words));
   this.remainingTier2Words = JSON.parse(JSON.stringify(allTier2Words));
-  
+  this.remainingTier3Words = JSON.parse(JSON.stringify(allTier3Words));
   
   this.getWord = (tier = 1) => {
      
@@ -48,10 +48,12 @@ function Word() {
         break;
       case 2:
         words = this.remainingTier2Words;
-        // TODO: Add a new, harder, tier of words
+        break;
+      case 3:
+        words = this.remainingTier3Words;
         break;
       default: // Default to the hardest tier, as the strategy handler doesn't stop incrementing
-        words = this.remainingTier2Words;
+        words = this.remainingTier3Words;
         break;
     }
 
@@ -69,6 +71,9 @@ function Word() {
       } else if (words === this.remainingTier2Words) {
         this.remainingTier2Words = JSON.parse(JSON.stringify(allTier2Words));
         words = this.remainingTier2Words;
+      } else if (words === this.remainingTier3Words) {
+        this.remainingTier3Words = JSON.parse(JSON.stringify(allTier3Words));
+        words = this.remainingTier3Words;
       }
     }
 
