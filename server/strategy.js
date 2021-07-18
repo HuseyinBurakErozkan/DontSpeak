@@ -96,21 +96,10 @@ function Strategy(wordHandler) {
     this.handler(speaker, game, callback);
   }
 
-  this.countdown = (seconds, game, callback) => {
-    try {
-      var i = seconds;
-
-      var countdownTimer = setInterval(() => {  
-        i--;
-
-        if (i === 0) {
-          clearInterval(countdownTimer);
-          callback();
-        }
-      }, 1000);
-    } catch(e) {
-      console.log(e);
-    }
+  this.countdown = (seconds, callback) => {
+    var countdownTimer = setTimeout(() => {
+      callback();
+    }, seconds * 1000); // Multiply seconds by 1000 as the second argument is in milliseconds
   }
 
   this.standardRule = (speaker, game, callback) => {
@@ -174,7 +163,7 @@ function Strategy(wordHandler) {
         }
       });
 
-      this.countdown(this.seconds, game, () => {
+      this.countdown(this.seconds, () => {
         callback();
       });
     } catch(e) {
