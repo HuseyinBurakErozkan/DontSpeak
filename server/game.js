@@ -205,16 +205,12 @@ function Game(team1, team2, lobbyId) {
         this.strategyManager.setStrategy("no body language");
         break;
       case 2:
-        this.strategyManager.setStrategy("double time");
+        this.strategyManager.setStrategy("double");
         break;
       case 3:
-        this.strategyManager.setStrategy("everybody");
+        this.strategyManager.setStrategy("high difficulty");
         break;
     }
-
-    // NOTE: For now, test using just the standard strategy
-    // this.strategyManager.runStrategy = this.strategyManager.standardRule;
-    this.strategyManager.setStrategy("standard");
   }
   
 

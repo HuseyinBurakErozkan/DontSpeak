@@ -19,8 +19,54 @@ function Strategy(wordHandler) {
         this.name = "Standard rules";
         this.description = "Standard rules. Each word the guesser gets right provides 1 " +
           "point, and each disqualified / forfeited word removes 1 point.";
-        this.seconds = 60; // Most rules, including the standard rules, feature 60 second rounds
+        this.seconds = 4; // Most rules, including the standard rules, feature 60 second rounds
         this.handler = this.standardRule;
+        break;
+
+      // This rule is almost identical to the standard rules, except for the amount of time.
+      // In that case, the standardRule handler can be used as just the seconds needs to change.
+      case "double":
+        this.name = "Double time";
+        this.description = "Time is doubled! This round last 120 seconds.";
+        this.seconds = 8;
+        this.handler = this.standardRule;
+        break;
+
+      // This rule is identical mechanically to the standard rule, as the 'no body
+      // language' rule must be enforced by the players themselves. Therefore, call
+      // standard rule handler.
+      case "no body language":
+        this.name = "No body language allowed";
+        this.description =
+          "The speaker can not use any body language to describe words. Doing so will forfeit the word";
+        this.seconds = 4;
+        this.handler = this.standardRule;
+        break;
+
+      case "triple point shuffle":
+        this.name = "Triple point shuffle";
+        this.description = 
+          "The primary taboo word is chosen randomly from the 5 words on the card. " +
+          "It takes a few seconds to land on the word, so try to describe every word " +
+          "you can to speed up the process. Points are tripled for this round!";
+        this.seconds = 60;
+        this.handler = this.tripleShuffleRule;
+        break;
+
+      case "high difficulty":
+        this.name = "Ramping difficulty";
+        this.description =
+          "More difficult words will be chosen for this round";
+        this.seconds = 60;
+        this.handler = this.highDifficultyRule;
+
+      case "thief":
+        this.name = "Friendship ruiner";
+        this.description =
+          "Every point the speaker's team earns is also deducted from the other team! "
+          "However, the round is shorted";
+        this.seconds = 45;
+        this.handler = this.thiefRule;
     }
   }
 
@@ -116,39 +162,18 @@ function Strategy(wordHandler) {
     }
   }
 
+  this.tripleShuffleRule = (speaker, game, callback) => {
 
-  this.doubleRule = (speaker, game) => {
-    this.name = "Double";
-    this.description = "Time is doubled!";
-    io.to("lobby" + game.id).emit("update: " + this.description);
-
-    this.countdown(10, game, () => {
-      console.log("DOUBLE ROUND OVER");
-      return;
-    });
   }
 
-  this.noBodyLanguageRule = (speaker, game) => {
-    this.name = "No body language";
-    this.description = "You cannot use body language";
-    io.to("lobby" + game.id).emit("update: " + this.description);
-    
-    this.countdown(5, game, () => {
-      console.log("NO BODY LANGUAGE ROUND OVER");
-      return;
-    });
+  this.highDifficultyRule = (speaker, game, callback) => {
+
   }
 
-  this.everybodyRule = (speaker, game) => {
-    this.name = "Everybody";
-    this.description = "Everybody except the speaker can answer for this round!";
-    io.to("lobby" + game.id).emit("update: " + this.description);
+  this.thiefRule = (speaker, game, callback) => {
 
-    this.countdown(5, game, () => {
-      console.log("EVERYBODY ROUND OVER");
-      return;
-    });
   }
+
 }
 
 module.exports = {

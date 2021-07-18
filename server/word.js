@@ -1,7 +1,7 @@
 const allTier1Words = [
   ['dog', ['cat', 'pet', 'woof', 'puppy']],
   ['cat', ['kitten', 'dog', 'pet', 'meow']],
-  ['moon', ['earh', 'sun', 'satellite', 'sky']],
+  ['moon', ['earth', 'sun', 'satellite', 'sky']],
   ['house', ['home', 'live', 'shelter', 'residence']],
   ['car', ['vehicle', 'automobile', 'drive', 'transport']],
   ['watch', ['time', 'wrist', 'clock', 'time']],
@@ -15,14 +15,19 @@ const allTier1Words = [
 const allTier2Words = [
   ['senior', ['citizen', 'old', 'gramps', 'junior']],
   ['woods', ['tree', 'forest', 'animals', 'timber']],
-  ['oasis', ['desert', 'water', 'drink', '']],
+  ['oasis', ['desert', 'water', 'drink', 'green']],
   ['floodplains', ['flat', 'river', 'flat', 'land']],
   ['wetlands', ['marsh', 'water', 'marsh', 'swamp']],
   ['tundra', ['cold', 'ice', 'snow', 'moss']]
 ];
 
 const allTier3Words = [
-  ['anecdote', ['story', 'account', 'tale', 'experience']]
+  ['anecdote', ['story', 'account', 'tale', 'experience']],
+  ['ace', ['high', 'card', 'tennis', 'fly']],
+  ['intuition', ['sense', 'hunch', 'gut', 'feeling']],
+  ['perception', ['see', 'hear', 'understanding', 'insight']],
+  ['peripheral vision', ['eye', 'see', 'look', 'focus']],
+  ['impulse', ['urge', 'need', 'drive', 'buy']]
 ];
 
 
