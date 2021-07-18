@@ -21,7 +21,7 @@ function Strategy(wordHandler) {
         this.name = "Standard rules";
         this.description = "Standard rules. Each word the guesser gets right provides 1 " +
           "point, and each disqualified / forfeited word removes 1 point.";
-        this.seconds = 4; // Most rules, including the standard rules, feature 60 second rounds
+        this.seconds = 60; // Most rules, including the standard rules, feature 60 second rounds
         this.handler = this.standardRule;
         this.startingTier = 1; // Easiest tier of words first
         this.tierIncrement = 0.25; // Every 4 words, the tier increases
@@ -34,7 +34,7 @@ function Strategy(wordHandler) {
         this.name = "Double time";
         this.description = 
           "Time is doubled! This round last 120 seconds. Words will be a little more difficult.";
-        this.seconds = 8;
+        this.seconds = 120;
         this.handler = this.standardRule;
         this.startingTier = 1;
         this.tierIncrement = 0.34; // Every 3 words, the tier increases
@@ -47,7 +47,7 @@ function Strategy(wordHandler) {
         this.name = "No body language allowed";
         this.description =
           "The speaker can not use any body language to describe words. Doing so will forfeit the word";
-        this.seconds = 4;
+        this.seconds = 60;
         this.handler = this.standardRule;
         this.startingTier = 1;
         this.tierIncrement = 0.25;
@@ -65,7 +65,7 @@ function Strategy(wordHandler) {
         this.tierIncrement = 0.25;
         break;
 
-      // As thie rule only changes the starting tier and incrementation, can use the 
+      // As this rule only changes the starting tier and incrementation, can use the 
       // standard strategy
       case "high difficulty":
         this.name = "Ramping difficulty";
@@ -100,10 +100,8 @@ function Strategy(wordHandler) {
     try {
       var i = seconds;
 
-      var countdownTimer = setInterval(() => {
-        // io.to("lobby" + game.id).emit("update: seconds left: ", i);     
+      var countdownTimer = setInterval(() => {  
         i--;
-        console.log(i + "seconds left");
 
         if (i === 0) {
           clearInterval(countdownTimer);
@@ -160,7 +158,6 @@ function Strategy(wordHandler) {
          */
         tier += this.tierIncrement;
         currentWord = this.wordHandler.getWord(Math.floor(tier));
-        console.log("tier is " + tier + ". Word is: ", currentWord);
 
         // Push the word to the array, so that at the end of the round, players can review
         // the words that were dispalyed
@@ -185,14 +182,58 @@ function Strategy(wordHandler) {
     }
   }
 
+
   this.tripleShuffleRule = (speaker, game, callback) => {
 
   }
 
-  this.thiefRule = (speaker, game, callback) => {
 
+  this.thiefRule = (speaker, game, callback) => {
+    
+    // Wrap and extend the standard strategy by also reducing the opposing team's 
+    // points after the callback. Then call the callback the game itself sent
+    this.standardRule(speaker, game, () => {
+
+      // TODO: Add some logic here
+
+      callback();
+    });
   }
 
+
+  this.handlePoints = (pointsAmt, team1Points, team2Points, speakersTeam, callback) => {
+
+    var currentTeamPoints, opposingTeamPoints;
+
+    (speakersTeam === "team1")
+      ? (currentTeamPoints = team1Points, opposingTeamPoints = team2Points)
+      : (currentTeamPoints = team2Points, opposingTeamPoints = team1Points);
+
+    // Different rules have different point scoring systems. Check which rule was
+    // last played and score points according to that rule
+    switch (this.handler) {
+      case this.standardRule: // Most rules have the same scoring system as the standard rule
+        currentTeamPoints += pointsAmt;
+        break;
+
+      case this.thiefRule:
+        currentTeamPoints += pointsAmt;
+        // This round features 'stealing' the opposing team's points
+        opposingTeamPoints -= pointsAmt;
+
+        // Opponenets can't have below 0 points, so set to 0 in that case.
+        if (opposingTeamPoints < 0) {
+          opposingTeamPoints = 0;
+        }
+        break;
+      
+      case this.tripleShuffleRule:
+          currentTeamPoints += (pointsAmt * 3);
+        break;
+    }
+
+    callback(currentTeamPoints, opposingTeamPoints);
+  }
 }
 
 module.exports = {

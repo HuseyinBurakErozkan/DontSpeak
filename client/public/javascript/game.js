@@ -271,64 +271,76 @@ socket.on("update: points: ", (t1Points, t2Points, pointsNeeded) => {
   $("#player-confirm-points").addClass("--display-hidden"); // The 'confirm points' dialog
   $("#speaker-start-button").remove(); // Remove the start button that displays for the speaker
 
-  console.log(`team1 points: ${t1Points} \n team2 points: ${t2Points} \n points needed to win: ${pointsNeeded}`)
+  // Change state of the 'confirmable' buttons from the review screen, so they're no
+  // longer confirmed.
+  $("#button-confirm-claim").removeClass("--confirmed");
+  $("#button-confirm-points").text("Confirm");
+  $("#button-confirm-points").removeClass("--confirmed");
+  // Clear the input field where the user enters the amount of points they earned
+  $("#input-points-earned").val("");
 
   changeScreen(null, "screen-scores");
 
-  // Increment the scores, as players will more easily understand what they're looking at
+  console.log(`team1 points: ${t1Points} \nteam2 points: ${t2Points} \npoints needed to win: ${pointsNeeded}`)
+
+  // Increment or decrement the scores, as players will more easily understand 
+  // what they're looking at when they see scores actively changing
   var t1PrevPoints = $("#t1-scores").first().text();
   var t2PrevPoints = $("#t2-scores").first().text();
-  console.log($("#t1-scores").first().text());
-  console.log(typeof($("#t1-scores").first().text()));
-  console.log(t1PrevPoints == $("#t1-scores").first().text());
-
-  var textElement;
-  var newPoints;
-  var prepText;
 
   // Set the text of each team's scores to the PREVIOUS point amount
   $("#t1-scores").text(`Team 1 score: ${t1CurrentPoints}`);
   $("#t2-scores").text(`Team 2 score: ${t2CurrentPoints}`);
-  
-  var i; // Use to increment the score text from previous to current values
+  $("#points-needed").text(`Score needed to win: ${pointsNeeded}`);
 
-  // Check which team earned points
-  if (t1CurrentPoints != t1Points) {
-    textElement = $("#t1-scores");
-    newPoints = t1Points;
-    prepText = "Team 1 score: ";
-    i = t1CurrentPoints;
-  } else if (t2CurrentPoints != t2Points) {
-    textElement = $("#t2-scores");
-    newPoints = t2Points;
-    prepText = "Team 2 score: ";
-    i = t2CurrentPoints;
-  } else {
-    flash("Error: could not tally points", "error");
-    return;
-  }
+  // Update the displayed scores for both teams
+  updateScoreDisplay(t1Points, t1CurrentPoints, 1);
+  updateScoreDisplay(t2Points, t2CurrentPoints, 2);
 
   // Update the point values
   t1CurrentPoints = t1Points;
   t2CurrentPoints = t2Points;
+});
 
-  // Add a small delay before incrementing, otherwise the user may not notice it
+
+function updateScoreDisplay(newPoints, prevPoints, teamNumber) {
+
+  var textElement = $("#t" + teamNumber + "-scores");
+  var scoreText = `Team ${teamNumber} score: `;
+  var i = prevPoints;
+
+  // Add a small delay before incrementing or decrementing, otherwise the user 
+  // may not notice it
   var delay = setTimeout(() => {
     clearTimeout(delay);
-    
-    var incrementer = setInterval(() => {    
-      i++;
-      textElement.text(prepText + i); // Display the incrementing score
-  
-      // The text now displays the team's current score, so stop incrementinh
-      if (i === newPoints) {
-        clearInterval(incrementer);
-      }
-    }, 100);
-  }, 500);
 
-  $("#points-needed").text(`Score needed to win: ${pointsNeeded}`);
-});
+    // As some rules may decrease a team's score, must check to see if the team 
+    // has gained or lost points this round
+    if (newPoints > prevPoints) {
+      var scoreUpdater = setInterval(() => {    
+        i++;
+        textElement.text(scoreText + i); // Display the incrementing score
+
+        // The text now displays the team's current score, so stop incrementing
+        if (i === newPoints) {
+          clearInterval(scoreUpdater);
+        }
+      }, 100);
+    } else if (newPoints < prevPoints) {
+      var scoreUpdater = setInterval(() => {    
+        i--;
+        textElement.text(scoreText + i); // Display the decrementing score
+
+        if (i === newPoints) {
+          clearInterval(scoreUpdater);
+        }
+      }, 100);
+    } else { // Handle the edge where a team may get no points
+      // By default, nothing needs to be done, as it will show the previous score
+      // But maybe add some visual feedback to show the players that no points were earned
+    }
+  }, 500);
+}
 
 function nextRound() {
   socket.emit("request: new round");

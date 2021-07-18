@@ -193,10 +193,8 @@ function Game(team1, team2, lobbyId) {
 
 
   this.rollDice = () => {
-    // Roll twice, and use the lower of the 2 values. This is so that the more game-changing
-    // rules/rolls are rolled less often.
-    var rand = Math.min(Math.floor(Math.random() * 4), Math.floor(Math.random() * 4));
-    
+    var rand = Math.floor(Math.random() * 5);
+
     switch(rand) {
       case 0:
         this.strategyManager.setStrategy("standard");
@@ -209,6 +207,12 @@ function Game(team1, team2, lobbyId) {
         break;
       case 3:
         this.strategyManager.setStrategy("high difficulty");
+        break;
+      case 4:
+        this.strategyManager.setStrategy("thief");
+        break;
+      default:
+        this.strategyManager.setStrategy("standard");
         break;
     }
   }
@@ -238,7 +242,10 @@ function Game(team1, team2, lobbyId) {
   this.handleSpeakerClaimingPoints = (socket, amount) => {
     console.log("socket: request: earned points");
       
-    // TODO: Don't allow the amount to be negative
+    // Don't allow the amount to be negative
+    if (amount < 0) {
+      throw "Amount of points earned can't be below 0";
+    }
 
     // The speaker may alter the amount of points they believe they earned after they've initially
     // entered a number. Therefore, empty the array of players who have confirmed, as they must re-confirm.
@@ -272,65 +279,68 @@ function Game(team1, team2, lobbyId) {
 
       // Ignore any players who have already confirmed the current point claim
       if (this.playersConfirmed.indexOf(socket) != -1) {
-        // console.log("Player " + socket.player.name + " has already confirmed the point claim earlier")
         return;
       }
-      // console.log("Player " + socket.player.name + " confirmed points");
 
       // Add to array of confirmed players. Once all players have confirmed, the round is
-      // considered over
+      // considered over. Tally up the points and handle all score-related functionality
       this.playersConfirmed.push(socket);
 
       if (this.playersConfirmed.length === (this.team1.length + this.team2.length)) {
         console.log("Everyone has confirmed the points");
 
-        // Handle the team's points
         var pointsAmount = parseInt(this.speakerSocket.player.pointsClaimed, 10);
         this.speakerSocket.player.pointsClaimed = undefined; // Remove the property once used.
 
-        if (this.getPlayerTeam(this.speakerSocket) === "team1") {
-          this.team1Points += pointsAmount;
-          if (this.team1Points > this.pointsToWin) {
-            this.state = "gameover";
+        // Ask the strategy manager to handle the points. The strategy manager will
+        // modify the points according to the rule chosen for the round.
+        this.strategyManager.handlePoints(
+          pointsAmount, 
+          this.team1Points, 
+          this.team2Points, 
+          this.getPlayerTeam(this.speakerSocket),
+          (currentTeamPoints, opposingTeamPoints) => {
+            // Callback above is called by the strategy after it has tallied each team's points
 
-            // Team 1 wins
-            for (var i = 0; i < this.team1.length; i++) {
-              io.to(this.team1[i].id).emit("update: won");
-            }
-            // Team 2 loses
-            for (var i = 0; i < this.team2.length; i++) {
-              io.to(this.team2[i].id).emit("update: lost");
-            }
+            var currentTeam, opposingTeam;
 
-            return; // Don't emit anything to clients after this point
-          }
-        } else {
-          this.team2Points += pointsAmount;
-          if (this.team2Points > this.pointsToWin) {
-            this.state = "gameover";
-
-            // Team 2 wins
-            for (var i = 0; i < this.team2.length; i++) {
-              io.to(this.team2[i].id).emit("update: won");
-            }
-            // Team 1 lost
-            for (var i = 0; i < this.team1.length; i++) {
-              io.to(this.team1[i].id).emit("update: lost");
+            // Check which team the speaker and guesser were in for this round, so
+            // the game can check if they have won.
+            if (this.getPlayerTeam(this.speakerSocket) === "team1") {
+              currentTeam = this.team1;
+              opposingTeam = this.team2;
+              this.team1Points = currentTeamPoints;
+              this.team2Points = opposingTeamPoints;
+            } else {
+              currentTeam = this.team2;
+              opposingTeam = this.team1;
+              this.team2Points = currentTeamPoints;
+              this.team1Points = opposingTeamPoints;
             }
 
-            return; // Don't emit anything to clients after this point
-          }
-        }
+            // Check if a team has won or not
+            if (currentTeamPoints >= this.pointsToWin) {
+              this.state = "gameover";
 
-        // Change state to waiting, so that players can begin the new round when they're ready
-        io.to("lobby" + this.id).emit("update: points: ", this.team1Points, this.team2Points, this.pointsToWin);
-        this.state = "waiting";
+              for (var i = 0; i < currentTeam.length; i++) {
+                io.to(currentTeam[i].id).emit("update: won");
+              }
+              for (var i = 0; i < opposingTeam.length; i++) {
+                io.to(opposingTeam[i].id).emit("update: lost");
+              }
 
-        console.log("points are: \n \tTeam1: " + this.team1Points + "\n\tTeam2: " + this.team2Points);        
+              return; // Don't emit anything else after this point, as the game is already over
+            }
+
+            // Team hasn't won yet, so continue. Change state to waiting, so that players 
+            // can begin the new round when they're ready
+            io.to("lobby" + this.id).emit(
+              "update: points: ", this.team1Points, this.team2Points, this.pointsToWin);
+            this.state = "waiting";
+          });
       }
     }
   }
-
 
   this.removeSocket = (socket) => {
 

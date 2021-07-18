@@ -81,15 +81,15 @@ describe('Game', () => {
   });
 
 
-  it.skip("should be able to roll all dice rolls/rules", (done) => {
+  it("should be able to roll all dice rolls/rules", (done) => {
 
-    // TODO: Implement other rules
+    // TODO: Think of a better way to test this, rather than just looping and
+    // hoping the high probability of hitting all rolls succeeds
 
     var rolledPossibilities = [];
-    // Loop 200 times, as that gives a > 99.99% chance to hit all rolls 
-    for (var i = 0; i < 200; i++) {
+    // Loop 250 times, as that gives a > 99.99% chance to hit all rolls 
+    for (var i = 0; i < 250; i++) {
       game.rollDice();
-      game.strategyManager.runStrategy(ioMock, createMock(), game);
       if (!rolledPossibilities.includes(game.strategyManager.name)) {
         rolledPossibilities.push(game.strategyManager.name);
 
