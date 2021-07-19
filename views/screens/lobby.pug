@@ -1,12 +1,13 @@
 div#screen-lobby.screen.--display-hidden
   div.content-container
-    h2#h2-lobby-id Lobby pin
-    div#display-teams
-      div.lobby-team-container
-        p.team-title <strong>Team 1</strong>
-        div#div-team1
-      div.lobby-team-container
-        p.team-title <strong>Team 2</strong>
-        div#div-team2
-    form#form-start-game
-      input(type="submit" value="Start").button-primary
+    div.lobby-container
+      h2#h2-lobby-id Lobby pin
+      div#display-teams
+        div.lobby-team-container
+          p.team-title <strong>Team 1</strong>
+          div#div-team1.team-list-of-players
+        div.lobby-team-container
+          p.team-title <strong>Team 2</strong>
+          div#div-team2.team-list-of-players
+      form#form-start-game
+        input(type="submit" value="Start").button-primary

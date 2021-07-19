@@ -53,10 +53,16 @@ table {
 
 .screen {
   width: 100%;
-  height: 80vh;
-  padding: 32px;
+  height: 100vh;
+  padding: 16px;
   position: relative;
   z-index: 10;
+}
+@media only screen and (min-width: 800px) {
+  .screen {
+    max-width: 900px;
+    margin: 0 auto;
+  }
 }
 
 .content-container {
@@ -66,7 +72,7 @@ table {
   background-color: white;
   border-radius: 6px;
   align-self: center;
-  padding: 32px;
+  padding: 16px;
 }
 
 #screen-menu {
@@ -74,6 +80,9 @@ table {
   flex-direction: column;
   justify-content: center;
   text-align: center;
+}
+#screen-menu .content-container {
+  padding: 32px;
 }
 
 #game-title {
@@ -97,6 +106,9 @@ table {
   justify-content: center;
   text-align: center;
 }
+#screen-create .content-container {
+  padding: 32px;
+}
 
 #form-create {
   display: flex;
@@ -117,6 +129,9 @@ table {
 #screen-join .p-instruction {
   margin-bottom: 32px;
 }
+#screen-join .content-container {
+  padding: 32px;
+}
 
 #form-join {
   display: flex;
@@ -133,37 +148,76 @@ table {
   display: flex;
   flex-direction: column;
   justify-content: space-around;
+}
+#screen-lobby .content-container {
+  min-width: 100%;
+  min-height: 80%;
+  padding: 0;
+  background-color: #fbfdff;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+}
+@media only screen and (min-width: 450px) {
+  #screen-lobby .content-container {
+    min-width: calc(450px - 16px);
+    min-height: 70%;
+  }
+}
+@media only screen and (min-width: 800px) {
+  #screen-lobby .content-container {
+    min-width: 70%;
+  }
+}
+
+.lobby-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   text-align: center;
 }
-#screen-lobby .lobby-team-container {
-  flex-grow: 1;
+
+#h2-lobby-id {
+  margin: 16px 0;
 }
-#screen-lobby #h2-lobby-id {
-  margin-bottom: 64px;
-}
-#screen-lobby #display-teams {
+
+#display-teams {
   display: flex;
   flex-grow: 1;
-  margin-bottom: 32px;
+  margin: 0 8px 16px 8px;
 }
-#screen-lobby #display-teams .lobby-team-container:not(:last-child) {
-  border-right: 2px solid #2D4059;
+#display-teams .lobby-team-container:not(:last-child) {
+  margin-right: 8px;
 }
-#screen-lobby .team-title {
+
+.lobby-team-container {
+  flex-grow: 1;
+  max-width: 50%;
+  overflow: hidden;
+  background-color: white;
+  padding: 8px;
+  border-radius: 6px;
+  box-shadow: 1px 1px 14px 3px rgba(140, 143, 171, 0.18);
+}
+
+.team-title {
   margin-bottom: 16px;
 }
-#screen-lobby #form-start-game {
-  margin-bottom: 64px;
-}
-#screen-lobby #form-start-game .button-primary {
-  width: 8em;
-}
-#screen-lobby .team-title {
-  margin-bottom: 32px;
-}
-#screen-lobby .__player {
+
+.__player {
   font-size: 1.1em;
   margin-bottom: 16px;
+}
+
+#form-start-game {
+  background: #fbfdff;
+  border-bottom-right-radius: 6px;
+  border-bottom-left-radius: 6px;
+  padding: 16px;
+  padding-top: 0;
+}
+#form-start-game .button-primary {
+  width: 8em;
 }
 
 #screen-round-ready {
@@ -546,12 +600,17 @@ p {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  color: #292929;
+  color: #5f5f5f;
 }
 
 body {
-  font-size: 1.3em;
+  font-size: 1.2em;
   background-color: white;
+}
+@media only screen and (min-width: 800px) {
+  body {
+    font-size: 1.3em;
+  }
 }
 
 .app-container {

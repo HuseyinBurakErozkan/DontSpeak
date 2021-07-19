@@ -14,13 +14,20 @@ $color-bg: rgb(247, 247, 247);
 $color-tertiary: #FFD460;
 
 $color-text-black: #1d1d1d;
-$color-header-black: #292929;
+$color-header-black: #5f5f5f;
+// $color-white-offset: #f6fafd;
+// $color-white-offset: #ebf4fb;
+// $color-white-offset: #f0f7ff;
+$color-white-offset: #fbfdff;
+
 
 $spacing-small: 8px;
 $spacing-default: 16px;
 $spacing-large: 32px;
 $spacing-x-large: 64px;
 
+$breakpoint-tablet: 450px;
+$breakpoint-desktop: 800px;
 
 // Sunset theme
 // #2D4059 - blueish black

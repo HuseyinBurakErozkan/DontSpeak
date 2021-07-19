@@ -4,6 +4,12 @@
   justify-content: center; // Centre the header and buttons in the middle of the screen
 
   text-align: center;
+
+  .content-container {
+    // Make the container a little larger, since this is the main screen and should
+    // draw more attention
+    padding: $spacing-large;
+  }
 }
 
   #game-title {

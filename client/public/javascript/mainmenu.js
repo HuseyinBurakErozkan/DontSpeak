@@ -16,6 +16,9 @@ function changeScreen(from, toClassId) {
     $(".screen").addClass("--display-hidden");
   }
   $("#"+toClassId).removeClass("--display-hidden");
+
+  // Scroll to the bottom - useful on Android browsers
+  window.scrollTo(0,document.body.scrollHeight);
 }
 
 

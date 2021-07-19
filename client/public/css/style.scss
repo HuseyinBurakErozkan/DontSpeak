@@ -39,8 +39,12 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 body {
-  font-size: 1.3em; // Designed to be easily played on mobile, so make all text somewhat larger
+  font-size: 1.2em; // Designed to be easily played on mobile, so make all text somewhat larger
   background-color: white;
+
+  @include breakpoint-screen-larger-than($breakpoint-desktop) {
+    font-size: 1.3em;
+  }
 }
 
 .app-container {
