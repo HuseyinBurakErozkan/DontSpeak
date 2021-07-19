@@ -79,6 +79,8 @@
 .game-ui-timer-container {
   @include border-shadow-ui-element;
 
+  z-index: 100;
+  
   position: fixed;
   bottom: calc(2em + 48px);
   right: $spacing-default;
@@ -86,7 +88,6 @@
 
   background-color: $color-secondary;
   transition: color 0.2s ease-out;
-  color: white;
 
   border-radius: $spacing-x-large;
 
@@ -100,5 +101,9 @@
   &.--red-attention-text {
     transition: color 0.01s ease-out;
     color: #ff3a3a;
+  }
+
+  p {
+    color: white;
   }
 }

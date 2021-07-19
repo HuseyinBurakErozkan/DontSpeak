@@ -3,28 +3,38 @@
   text-align: center;
   display: flex;
   flex-direction: column;
+  justify-content: center;
 
-  .word-primary {
-    background-color: $color-tertiary;
-    margin-bottom: $spacing-x-large;
-    font-size: 1.2em;
-    padding: $spacing-large;
-  }
+}
 
-  .word-secondary {
+  .div-card {
 
-    flex-grow: 1; // Make the secondary words take up the rest of the unused height
+    width: 100%;
+    margin-bottom: 10vh; // Push the card a little more towards the top on mobile
 
-    // Evenly space out the words on the card
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
+    @include breakpoint-screen-larger-than($breakpoint-tablet) {
+      max-width: 400px;
+      margin: 0 auto;
+    }
 
-    // Keep the words a little above the centre. Otherwise, they get spread out too much
-    margin-bottom: 30vh;
-
-    & p {
-      margin-bottom: $spacing-default;
+    .word-primary {
+      background-color: $color-tertiary;
+      margin-bottom: $spacing-x-large;
+      font-size: 1.2em;
+      padding: $spacing-large;
+    }
+  
+    .word-secondary {
+  
+      flex-grow: 1; // Make the secondary words take up the rest of the unused height
+  
+      // Evenly space out the words on the card
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+  
+      & p {
+        margin-bottom: $spacing-default;
+      }
     }
   }
-}

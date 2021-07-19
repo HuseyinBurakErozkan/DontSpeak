@@ -95,14 +95,14 @@ socket.on("update: word: ", (word) => {
 
   changeScreen(null, "screen-word");
   console.log("WORD IS : ", word)
-  // Clear the word screen
-  var wordScreen = $("#screen-word");
-  wordScreen.empty();
+  // Clear the card of words
+  var card = $("#div-word-card-container");
+  card.empty();
   // wordScreen.addClass("screen")
   var primaryDiv = $("<div/>", { id: "div-word-primary", class: "word-primary" });
   var secondaryDiv = $("<div/>", { id: "div-word-secondary", class: "word-secondary" });
-  wordScreen.append(primaryDiv);
-  wordScreen.append(secondaryDiv);
+  card.append(primaryDiv);
+  card.append(secondaryDiv);
 
   // Display the word to be said
   var element = $("<p></p>").text(word[0]);

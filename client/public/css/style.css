@@ -96,7 +96,7 @@ table {
   font-family: "caveat";
   transform: skewY(-3deg);
   letter-spacing: 1px;
-  color: #2D4059;
+  color: #5f5f5f;
 }
 
 #menu-button-container .button-primary {
@@ -287,21 +287,32 @@ table {
   text-align: center;
   display: flex;
   flex-direction: column;
+  justify-content: center;
 }
-#screen-word .word-primary {
-  background-color: #FFD460;
+
+.div-card {
+  width: 100%;
+  margin-bottom: 10vh;
+}
+@media only screen and (min-width: 450px) {
+  .div-card {
+    max-width: 400px;
+    margin: 0 auto;
+  }
+}
+.div-card .word-primary {
+  background-color: #7be73c;
   margin-bottom: 64px;
   font-size: 1.2em;
   padding: 32px;
 }
-#screen-word .word-secondary {
+.div-card .word-secondary {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
-  margin-bottom: 30vh;
 }
-#screen-word .word-secondary p {
+.div-card .word-secondary p {
   margin-bottom: 16px;
 }
 
@@ -321,7 +332,7 @@ table {
   margin-top: 4.5em;
 }
 #screen-review .word-card .word__primary {
-  background-color: #FFD460;
+  background-color: #7be73c;
   padding: 16px;
   margin-bottom: 16px;
 }
@@ -340,7 +351,7 @@ table {
   box-shadow: -1px 4px 6px 3px rgba(0, 0, 0, 0.03), 0 2px 12px 1px rgba(0, 0, 0, 0.01);
   text-align: center;
   background-color: white;
-  border: 6px solid #FFD460;
+  border: 6px solid #7be73c;
   border-radius: 100px;
   padding: 16px 26px;
 }
@@ -381,12 +392,12 @@ table {
   color: white;
   border: 0;
   border-radius: 6px;
-  background-color: #EA5455;
+  background-color: #7700ff;
   padding: 8px 16px;
   font-size: 1.1em;
 }
 .button-primary:active {
-  background-color: #ed6b6c;
+  background-color: #851aff;
 }
 .button-primary.--confirmable {
   transition: width 0.2s ease-in-out;
@@ -423,7 +434,7 @@ table {
   box-shadow: -1px 4px 6px 3px rgba(0, 0, 0, 0.09), 0 2px 12px 1px rgba(0, 0, 0, 0.03);
   height: 2em;
   width: 2em;
-  background-color: #EA5455;
+  background-color: #7700ff;
   transition: background-color 0.1s ease-out;
   border: 0;
   border-radius: 64px;
@@ -440,7 +451,7 @@ table {
   color: white;
 }
 .game-ui-help-toggle-container.--toggle-off {
-  background-color: #f5afaf;
+  background-color: #d6b3ff;
 }
 
 .input {
@@ -453,13 +464,13 @@ table {
 }
 .input:focus {
   border: 3px solid transparent;
-  outline: 3px solid #FFD460;
+  outline: 3px solid #7be73c;
 }
 
 .game-ui {
   box-shadow: -1px 4px 6px 3px rgba(0, 0, 0, 0.09), 0 2px 12px 1px rgba(0, 0, 0, 0.03);
   display: flex;
-  background-color: #2D4059;
+  background-color: #23aac2;
   position: fixed;
   border-radius: 32px;
   padding: 12px;
@@ -502,7 +513,7 @@ table {
   box-shadow: -1px 4px 6px 3px rgba(0, 0, 0, 0.09), 0 2px 12px 1px rgba(0, 0, 0, 0.03);
   display: flex;
   align-items: center;
-  background-color: #2D4059;
+  background-color: #23aac2;
   padding: 16px;
   border-radius: 36px;
 }
@@ -517,13 +528,13 @@ table {
 
 .game-ui-timer-container {
   box-shadow: -1px 4px 6px 3px rgba(0, 0, 0, 0.09), 0 2px 12px 1px rgba(0, 0, 0, 0.03);
+  z-index: 100;
   position: fixed;
   bottom: calc(2em + 48px);
   right: 16px;
   padding: 16px;
-  background-color: #2D4059;
+  background-color: #23aac2;
   transition: color 0.2s ease-out;
-  color: white;
   border-radius: 64px;
   width: 3em;
   height: 3em;
@@ -534,6 +545,9 @@ table {
 .game-ui-timer-container.--red-attention-text {
   transition: color 0.01s ease-out;
   color: #ff3a3a;
+}
+.game-ui-timer-container p {
+  color: white;
 }
 
 .flash-dialog {
@@ -696,13 +710,13 @@ body {
   margin-top: 10px;
 }
 .test.color-primary {
-  background-color: #EA5455;
+  background-color: #7700ff;
 }
 .test.color-secondary {
-  background-color: #2D4059;
+  background-color: #23aac2;
 }
 .test.color-tertiary {
-  background-color: #FFD460;
+  background-color: #7be73c;
 }
 .test.color-bg {
   background-color: #f7f7f7;

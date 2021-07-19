@@ -17,8 +17,15 @@ function changeScreen(from, toClassId) {
   }
   $("#"+toClassId).removeClass("--display-hidden");
 
-  // Scroll to the bottom - useful on Android browsers
-  window.scrollTo(0,document.body.scrollHeight);
+  // Scroll to the bottom - useful on Android browsers. When displaying cards however,
+  // the screen should scroll to the top, otherwise, the player may have a hard time
+  // seeing the word at first
+  if (toClassId !== "screen-word") {
+    window.scrollTo(0,document.body.scrollHeight);
+  } else {
+    window.scrollTo(0, 0);
+  }
+
 }
 
 /**
