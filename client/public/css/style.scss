@@ -1,16 +1,3 @@
-/*
-
-Nice gradient
-
-background: rgb(255,162,0);
-background: linear-gradient(135deg, rgba(255,162,0,1) 0%, rgba(226,52,55,1) 28%, rgba(172,0,113,1) 63%, rgba(106,13,192,1) 100%); 
-
-Another nice gradient to check out
-
-background: rgb(255,145,82);
-background: linear-gradient(135deg, rgba(255,145,82,1) 0%, rgba(245,87,167,1) 24%, rgba(173,23,252,1) 47%, rgba(50,137,255,1) 79%, rgba(33,232,163,1) 100%); 
-
-*/
 
 // Base
 @import "_base/reset.scss";
@@ -43,26 +30,46 @@ background: linear-gradient(135deg, rgba(255,145,82,1) 0%, rgba(245,87,167,1) 24
   line-height: 140%;
 }
 
+p {
+  color: $color-text-black;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: $color-header-black;
+}
+
 body {
   font-size: 1.3em; // Designed to be easily played on mobile, so make all text somewhat larger
-  background-color: $color-bg;
+  background-color: white;
 }
 
 .app-container {
   // Make the app span the screen, minus the margins
-  width: calc(100vw - (#{$spacing-small} * 2));
-  height: calc(100vh - (#{$spacing-small} * 2));
-  margin: $spacing-small;
-  
+  width: 100vw;
+  height: 100vh;
   background-color: white;
-  // height: 100%;
-  @include border-shadow-soft-wide;
-  border-radius: 6px;
 }
+
+.gradient-bg {
+  background: #44ffcd;
+  background: linear-gradient(180deg, #44ffcd 0%, #af42f8 100%);
+  width: 100%;
+  position: fixed;
+  top: 0;
+  height: 55vh;
+}
+
+.wavy-bg {
+  position: fixed;
+  bottom: calc(25vh - 8px);
+  width: 100%;
+}
+
 
 .test-container {
   display: flex;
 }
+
 .test {
   height: 40px;
   width: 20%;

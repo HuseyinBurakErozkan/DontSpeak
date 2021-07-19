@@ -6,6 +6,7 @@ html
       include includes/flash.pug
       
       div.screen-container
+        div.gradient-bg
         include screens/mainscreen.pug
         include screens/createlobby.pug
         include screens/joinlobby.pug
@@ -16,6 +17,8 @@ html
         include screens/reviewwords.pug
         include screens/scores.pug
         include screens/gameover.pug
+
+      include ./images/wavybg.svg
 
     // For testing theme colours only
     //- div.test-container

@@ -1,7 +1,7 @@
 div#screen-menu.screen
   
-  h1#game-title= title
-
-  div#menu-button-container
-    button(type="button" onClick="changeScreen(this, 'screen-create')").button.button-primary Create game
-    button(type="button" onClick="changeScreen(this, 'screen-join')").button.button-primary Join game
+  div.content-container
+    h1#game-title= title
+    div#menu-button-container
+      button(type="button" onClick="changeScreen(this, 'screen-create')").button.button-primary Create game
+      button(type="button" onClick="changeScreen(this, 'screen-join')").button.button-primary Join game

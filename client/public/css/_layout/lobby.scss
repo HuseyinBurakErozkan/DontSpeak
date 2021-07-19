@@ -86,8 +86,12 @@
     // Add some space to the bottom, so that the buttons don't hidden behind mobile browser UIs
     margin-bottom: $spacing-x-large;
     
-    & *:not(:last-child) {
-      margin-right: $spacing-small;
+    // & *:not(:last-child) {
+    //   margin-right: $spacing-small;
+    // }
+
+    & .button-primary {
+      width: 8em;
     }
   }
 

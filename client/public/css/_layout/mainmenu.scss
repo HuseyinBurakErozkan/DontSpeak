@@ -8,6 +8,10 @@
 
   #game-title {
     margin-bottom: $spacing-large;
+    font-family: 'caveat';
+    transform: skewY(-3deg);
+    letter-spacing: 1px;
+    color: $color-secondary;
   }
 
   #menu-button-container {

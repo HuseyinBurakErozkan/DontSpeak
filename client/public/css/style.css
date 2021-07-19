@@ -1,16 +1,3 @@
-/*
-
-Nice gradient
-
-background: rgb(255,162,0);
-background: linear-gradient(135deg, rgba(255,162,0,1) 0%, rgba(226,52,55,1) 28%, rgba(172,0,113,1) 63%, rgba(106,13,192,1) 100%); 
-
-Another nice gradient to check out
-
-background: rgb(255,145,82);
-background: linear-gradient(135deg, rgba(255,145,82,1) 0%, rgba(245,87,167,1) 24%, rgba(173,23,252,1) 47%, rgba(50,137,255,1) 79%, rgba(33,232,163,1) 100%); 
-
-*/
 html, body, div, span, applet, object, iframe, p,
 blockquote, pre, a, abbr, acronym, address, big, cite, code,
 del, dfn, em, img, ins, kbd, q, s, samp,
@@ -66,7 +53,19 @@ table {
 
 .screen {
   width: 100%;
-  height: 100%;
+  height: 80vh;
+  padding: 32px;
+  position: relative;
+  z-index: 10;
+}
+
+.content-container {
+  position: relative;
+  z-index: 10;
+  box-shadow: 0 20px 40px -15px rgba(50, 50, 93, 0.3), 0 30px 60px -25px rgba(0, 0, 0, 0.2);
+  background-color: white;
+  border-radius: 6px;
+  align-self: center;
   padding: 32px;
 }
 
@@ -79,6 +78,10 @@ table {
 
 #game-title {
   margin-bottom: 32px;
+  font-family: "caveat";
+  transform: skewY(-3deg);
+  letter-spacing: 1px;
+  color: #2D4059;
 }
 
 #menu-button-container .button-primary {
@@ -152,8 +155,8 @@ table {
 #screen-lobby #form-start-game {
   margin-bottom: 64px;
 }
-#screen-lobby #form-start-game *:not(:last-child) {
-  margin-right: 8px;
+#screen-lobby #form-start-game .button-primary {
+  width: 8em;
 }
 #screen-lobby .team-title {
   margin-bottom: 32px;
@@ -319,7 +322,7 @@ table {
   background-color: rgba(239, 239, 239, 0.8823529412);
 }
 .game-ui-help-toggle-container {
-  color: white;
+  z-index: 100;
   box-shadow: -1px 4px 6px 3px rgba(0, 0, 0, 0.09), 0 2px 12px 1px rgba(0, 0, 0, 0.03);
   height: 2em;
   width: 2em;
@@ -335,6 +338,9 @@ table {
   bottom: 16px;
   right: 16px;
   padding: 16px;
+}
+.game-ui-help-toggle-container p {
+  color: white;
 }
 .game-ui-help-toggle-container.--toggle-off {
   background-color: #f5afaf;
@@ -360,6 +366,7 @@ table {
   position: fixed;
   border-radius: 32px;
   padding: 12px;
+  z-index: 100;
 }
 
 .enter-points {
@@ -391,6 +398,7 @@ table {
   top: 16px;
   left: 0;
   width: 100%;
+  z-index: 100;
 }
 .gameui-container .confirm-points {
   color: white;
@@ -432,6 +440,7 @@ table {
 }
 
 .flash-dialog {
+  z-index: 100;
   white-space: pre-line;
   position: fixed;
   top: 16px;
@@ -532,18 +541,38 @@ table {
   line-height: 140%;
 }
 
+p {
+  color: #1d1d1d;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #292929;
+}
+
 body {
   font-size: 1.3em;
-  background-color: #f7f7f7;
+  background-color: white;
 }
 
 .app-container {
-  width: calc(100vw - (8px * 2));
-  height: calc(100vh - (8px * 2));
-  margin: 8px;
+  width: 100vw;
+  height: 100vh;
   background-color: white;
-  box-shadow: -1px 4px 6px 3px rgba(0, 0, 0, 0.03), 0 2px 12px 1px rgba(0, 0, 0, 0.01);
-  border-radius: 6px;
+}
+
+.gradient-bg {
+  background: #44ffcd;
+  background: linear-gradient(180deg, #44ffcd 0%, #af42f8 100%);
+  width: 100%;
+  position: fixed;
+  top: 0;
+  height: 55vh;
+}
+
+.wavy-bg {
+  position: fixed;
+  bottom: calc(25vh - 8px);
+  width: 100%;
 }
 
 .test-container {

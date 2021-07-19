@@ -27,6 +27,7 @@ function Strategy(wordHandler) {
   this.runStrategy = (speaker, game, callback) => {
     // Reinitialise the array that stores each round's words used
     this.wordsPlayedThisRound = [];
+    this.seconds = 2; // TODO: REMOVE THIS - TESTING ONLY
     this.handler(speaker, game, callback);
   }
 
