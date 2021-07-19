@@ -1,1 +1,6 @@
-<div class="wavy-bg"><svg viewBox="0 0 500 150" preserveAspectRatio="none" style="height: 100%; width: 100%;"><path d="M0.00,49.99 C150.00,150.00 350.86,-49.99 500.00,49.99 L500.00,150.00 L0.00,150.00 Z" style="stroke: none;fill: #fff;height: 50vh;"></path></svg></div>
+<div class="wavy-bg">
+  <svg viewBox="0 0 500 150" preserveAspectRatio="none" style="height: 100%; width: 100%;"><path d="M0.00,49.99 C150.00,150.00 350.86,-49.99 500.00,49.99 L500.00,150.00 L0.00,150.00 Z" style="stroke: none;fill: #fff;height: 50vh;"></path></svg>
+<!-- <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#fff" fill-opacity="1" d="M0,128L40,112C80,96,160,64,240,69.3C320,75,400,117,480,128C560,139,640,117,720,101.3C800,85,880,75,960,106.7C1040,139,1120,213,1200,224C1280,235,1360,181,1400,154.7L1440,128L1440,320L1400,320C1360,320,1280,320,1200,320C1120,320,1040,320,960,320C880,320,800,320,720,320C640,320,560,320,480,320C400,320,320,320,240,320C160,320,80,320,40,320L0,320Z"></path></svg> -->
+  <div class="white-bg"></div>
+</div>
+

@@ -556,7 +556,7 @@ body {
 
 .app-container {
   width: 100vw;
-  height: 100vh;
+  height: 80vh;
   background-color: white;
 }
 
@@ -566,13 +566,21 @@ body {
   width: 100%;
   position: fixed;
   top: 0;
-  height: 55vh;
+  height: 100vh;
 }
 
 .wavy-bg {
   position: fixed;
-  bottom: calc(25vh - 8px);
+  top: 65vh;
   width: 100%;
+}
+
+.white-bg {
+  height: 1000px;
+  width: 100%;
+  position: relative;
+  top: -8px;
+  background-color: white;
 }
 
 .test-container {
