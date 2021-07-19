@@ -126,6 +126,9 @@ table {
   justify-content: center;
   text-align: center;
 }
+#screen-join .div-join-container {
+  max-width: 100%;
+}
 #screen-join .p-instruction {
   margin-bottom: 32px;
 }
@@ -138,10 +141,10 @@ table {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-bottom: 64px;
 }
-#form-join * {
+#form-join .input {
   margin-bottom: 8px;
+  width: 100%;
 }
 
 #screen-lobby {
