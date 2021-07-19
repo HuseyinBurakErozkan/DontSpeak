@@ -60,12 +60,12 @@ body {
   width: 100%;
   position: fixed;
   top: 0;
-  height: 100vh; // Lower the viewheight a little, otherwise the gradient's full colours can't be seen
+  height: 85vh; // Lower the viewheight a little, otherwise the gradient's full colours can't be seen
 }
 
 .wavy-bg {
   position: fixed;
-  top: 65vh;
+  top: 50vh;
   width: 100%;
 }
 

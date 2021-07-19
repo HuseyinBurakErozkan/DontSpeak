@@ -16,12 +16,15 @@ socket.on("response: game started", () => {
   socket.emit("request: new round");
 });
 
-socket.on("response: new round", (ruleName, ruleDesc, speaker, seconds) => {
+socket.on("response: new round", (ruleName, ruleDesc, speaker, speakerTeam, seconds) => {
+
+  // var teamNumber = speakerTeam.slice(-1); // Get the last char, which is the number 1 or 2
+
   changeScreen(null , "screen-round-ready");
   $("#p-rule-name").text(ruleName);
   $("#p-rule-description").text(ruleDesc);
-  $("#p-speaker").text(`${speaker} is the speaker!`);
-  $("#p-seconds").text(`This round is ${seconds} seconds long`);
+  $("#p-speaker").text(`${speaker} from team ${speakerTeam} is the speaker!`);
+  $("#p-seconds").html(`<b>${seconds}</b> seconds`);
 });
 
 socket.on("update: role: speaking", () => {
@@ -49,7 +52,7 @@ socket.on("update: role: speaking", () => {
     });
   button.attr("id", "speaker-start-button");
 
-  $("#screen-round-ready").append(button);
+  $("#div-ready-container").append(button);
 
   // Add touch listeners to recognise when speaker swipes for a new card
   addTouchListeners({ 

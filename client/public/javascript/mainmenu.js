@@ -21,7 +21,6 @@ function changeScreen(from, toClassId) {
   window.scrollTo(0,document.body.scrollHeight);
 }
 
-
 /**
  * Handle user requesting to create a new game
  */

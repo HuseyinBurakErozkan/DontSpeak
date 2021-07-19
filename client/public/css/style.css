@@ -81,8 +81,14 @@ table {
   justify-content: center;
   text-align: center;
 }
-#screen-menu .content-container {
+
+#div-menu-container {
   padding: 32px;
+}
+@media only screen and (min-width: 450px) {
+  #div-menu-container {
+    width: 18em;
+  }
 }
 
 #game-title {
@@ -98,6 +104,7 @@ table {
   margin-bottom: 8px;
   display: block;
   min-width: 10em;
+  width: 100%;
 }
 
 #screen-create {
@@ -227,22 +234,55 @@ table {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding-bottom: 25vh;
   text-align: center;
+}
+#screen-round-ready .content-container {
+  padding: 0;
+}
+@media only screen and (min-width: 450px) {
+  #screen-round-ready .content-container {
+    max-width: 450px;
+  }
+}
+@media only screen and (min-width: 800px) {
+  #screen-round-ready .content-container {
+    max-width: 700px;
+  }
 }
 #screen-round-ready * {
   margin-bottom: 16px;
 }
 #screen-round-ready #p-rule-name {
   font-weight: 800;
+  background: #177ff9;
+  background: linear-gradient(126deg, #177ff9 0%, #a45aff 100%);
+  color: white;
+  padding: 16px;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
 }
 #screen-round-ready #p-rule-description {
-  width: 80%;
+  padding: 0 16px;
+  width: 100%;
   margin: 16px auto;
   font-size: 1.15rem;
   margin-bottom: 32px;
 }
-
+@media only screen and (min-width: 450px) {
+  #screen-round-ready #p-rule-description {
+    width: 80%;
+  }
+}
+#screen-round-ready .seconds-desc {
+  text-align: center;
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  padding: 8px;
+}
+#screen-round-ready .seconds-desc #p-seconds {
+  margin-left: 8px;
+}
 #screen-word {
   text-align: center;
   display: flex;
@@ -628,12 +668,12 @@ body {
   width: 100%;
   position: fixed;
   top: 0;
-  height: 100vh;
+  height: 85vh;
 }
 
 .wavy-bg {
   position: fixed;
-  top: 65vh;
+  top: 50vh;
   width: 100%;
 }
 
