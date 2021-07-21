@@ -86,6 +86,13 @@ $(".flash-button-close").click((e) => {
   }
 });
 
+// Allow user to close any flash messages with the esc key
+document.addEventListener("keyup", (e) => {
+  if (e.keyCode === 27) {
+    $(".flash-dialog").addClass("--hide");
+  }
+}, false);
+
 /**
  * Flash a message, using the type to determine how the flash would look and behave
  * @param {String} msg The message to flash 

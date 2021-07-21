@@ -635,7 +635,6 @@ table {
   border-top: 1px solid #e9e9e9;
   border-right: 1px solid #e9e9e9;
   border-left: 1px solid #e9e9e9;
-  height: 60vh !important;
   background-color: #ffffff;
   color: #1b294e;
   border-radius: 6px;
@@ -650,6 +649,7 @@ table {
   overflow-y: scroll;
   height: 100%;
   width: 100%;
+  margin-bottom: 32px;
 }
 .flash-dialog.--tip .flash-button-close {
   padding-bottom: 16px;

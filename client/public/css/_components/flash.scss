@@ -56,7 +56,7 @@
     border-top: 1px solid #e9e9e9;
     border-right: 1px solid #e9e9e9;
     border-left: 1px solid #e9e9e9;
-    height: 60vh !important;
+
     background-color: #ffffff;
     color: #1b294e;
 
@@ -70,6 +70,7 @@
       overflow-y: scroll;
       height: 100%;
       width: 100%;
+      margin-bottom: $spacing-large;
     }
 
     .flash-button-close {

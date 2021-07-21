@@ -96,6 +96,8 @@ $("#form-start-game").submit((e) => {
   socket.on("response: lobby created", (player, lobbyId, team1, team2) => {
   $("#h2-lobby-id").text("Game PIN: " + lobbyId);
   changeScreen("screen-lobby");
+  
+  flash(tutorialMsgs.lobbyInstruction, "information");
 
   joinLobby(team1, team2, player);
 });
