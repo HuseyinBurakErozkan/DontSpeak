@@ -121,6 +121,10 @@ function flash(msg, type) {
     // Animate the help button to indicate to the user that they can click on that
     // to disable/enable the flash message
     animateHelpButton();
+
+    // Place focus back on the first input or button. Otherwise, the focus is
+    // always placed on the help toggle button every time its animated
+    $(".screen").not(".--display-hidden").filter(":input:button");
   }
 
   flashElement.find(".flash-text").text(msg);
