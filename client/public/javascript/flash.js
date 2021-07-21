@@ -4,7 +4,7 @@ var currentTutorialMsg;
 var tutorialMsgs = {
   intro: 
     "Hi!\n\nI will guide you throughout the game. If you want to turn off hints, " +
-    "click the red button on the bottom right corner.\n\nYou can click it again to toggle " +
+    "click the purple button on the bottom right corner.\n\nYou can click it again to toggle " +
     "hints on, or to see the tip again.",
 
   lobbyInstruction:

@@ -22,6 +22,12 @@
     transform: skewY(-3deg);
     letter-spacing: 1px;
     color: $color-header-black;
+
+    // Make the header text not selectable
+    -webkit-user-select: none; /* Safari */        
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+/Edge */
+    user-select: none; /* Standard */
   }
 
   #menu-button-container {
@@ -32,5 +38,17 @@
       display: block;
       min-width: 10em;
       width: 100%;
+    }
+  }
+
+  #author-text {
+    position: fixed;
+    bottom: 8px;
+    left: 8px;
+    font-size: 1rem;
+
+    & a {
+      color: rgb(30, 122, 184);
+
     }
   }
