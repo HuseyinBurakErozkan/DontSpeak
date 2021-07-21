@@ -3,10 +3,12 @@
   @include border-shadow-ui-element;
 
   display: flex;
-  background-color: $color-secondary;
+  background-color: white;
   position: fixed;
   border-radius: 32px;
   padding: 12px;
+
+  z-index: 100;
 }
 
 .enter-points {
@@ -25,7 +27,7 @@
     border-bottom-left-radius: 24px;
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
-    border: 3px solid #EA5455;
+    border: 3px solid $color-primary;
   }
 
   .button-primary {
@@ -47,15 +49,15 @@
   top: $spacing-default;
   left: 0;
   width: 100%;
+  z-index: 100;
 
   .confirm-points {
 
-    @include white-text-on-dark-bg;
     @include border-shadow-ui-element;
 
     display: flex;
     align-items: center;
-    background-color: $color-secondary;
+    background-color: white;
     padding: $spacing-default;
     border-radius: 36px;
 
@@ -76,6 +78,8 @@
 .game-ui-timer-container {
   @include border-shadow-ui-element;
 
+  z-index: 100;
+  
   position: fixed;
   bottom: calc(2em + 48px);
   right: $spacing-default;
@@ -83,7 +87,6 @@
 
   background-color: $color-secondary;
   transition: color 0.2s ease-out;
-  color: white;
 
   border-radius: $spacing-x-large;
 
@@ -97,5 +100,9 @@
   &.--red-attention-text {
     transition: color 0.01s ease-out;
     color: #ff3a3a;
+  }
+
+  p {
+    color: white;
   }
 }

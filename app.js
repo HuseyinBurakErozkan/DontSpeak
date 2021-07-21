@@ -22,7 +22,7 @@ io.on('connection', (socket) => {
 
 
 app.get('/', (req, res) => {
-  res.render('index', { title: "Don't speak" })
+  res.render('index', { title: "Don't speak!" })
 });
 
 // Export the express app io so it can be used when testing route-related functions, as well

@@ -8,10 +8,23 @@
 // $color-bg: #E84545;
 // $color-tertiary: #903749;
 
-$color-primary: #EA5455;
-$color-secondary: #2D4059;
-$color-bg: rgb(247, 247, 247);
-$color-tertiary: #FFD460;
+// The previous theme colours
+// $color-primary: #EA5455;
+// $color-secondary: #2D4059;
+$color-bg: #f7f7f7;
+// $color-tertiary: #FFD460;
+
+
+$color-primary: #7700ff;
+$color-secondary: #23aac2;
+$color-tertiary: #7be73c;
+
+$color-text-black: #1d1d1d;
+$color-header-black: #5f5f5f;
+// $color-white-offset: #f6fafd;
+// $color-white-offset: #ebf4fb;
+// $color-white-offset: #f0f7ff;
+$color-white-offset: #efefef;
 
 
 $spacing-small: 8px;
@@ -19,6 +32,8 @@ $spacing-default: 16px;
 $spacing-large: 32px;
 $spacing-x-large: 64px;
 
+$breakpoint-tablet: 450px;
+$breakpoint-desktop: 800px;
 
 // Sunset theme
 // #2D4059 - blueish black

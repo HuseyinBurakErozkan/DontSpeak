@@ -6,8 +6,22 @@
   text-align: center;
 }
 
+  #div-menu-container {
+    // Make the container a little larger, since this is the main screen and should
+    // draw more attention
+    padding: $spacing-large;
+
+    @include breakpoint-screen-larger-than($breakpoint-tablet) {
+      width: 18em;
+    }
+  }
+
   #game-title {
     margin-bottom: $spacing-large;
+    font-family: 'caveat';
+    transform: skewY(-3deg);
+    letter-spacing: 1px;
+    color: $color-header-black;
   }
 
   #menu-button-container {
@@ -17,5 +31,6 @@
       margin-bottom: $spacing-small;
       display: block;
       min-width: 10em;
+      width: 100%;
     }
   }

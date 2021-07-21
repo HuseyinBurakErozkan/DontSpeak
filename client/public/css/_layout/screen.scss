@@ -4,6 +4,27 @@
 
   .screen {
     width: 100%;
-    height: 100%;
-    padding: $spacing-large;
+    height: 100vh;
+    padding: $spacing-default;
+    position: relative;
+    z-index: 10;
+
+    // Limit how large the screen is, otherwise everything becomes stretched out
+    // on larger screens
+    @include breakpoint-screen-larger-than($breakpoint-desktop) {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+  }
+
+  .content-container {
+    // Place the content container in front of the wavy svg
+    position: relative;
+    z-index: 10;
+
+    box-shadow: 0 20px 40px -15px rgba(50, 50, 93, 0.30), 0 30px 60px -25px rgba(0, 0, 0, 0.2);
+    background-color: white;
+    border-radius: 6px;
+    align-self: center; // Stop the container taking up the entire width
+    padding: $spacing-default;
   }

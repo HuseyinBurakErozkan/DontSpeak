@@ -1,23 +1,47 @@
 #screen-review {
 
   overflow-y: scroll;
-  background-color: $color-bg;
+  
+  // Gradient background is too-eye catching
+  // background: #44ffcd;
+  // background: linear-gradient(180deg, #44ffcd 0%, #af42f8 100%);
+  // background-color: $color-bg;
 
+  // Use a muted gradient bg with similar colours, to reduce the contrast - otherwise,
+  // too much visual focus on the bg, when the user should be looking at the cards
+  background: linear-gradient(180deg, #76aed6 0%, #c889e2);
+
+  // The review word section should be sized to 100% width, as not doing so means
+  // that the scrollable area is only in the center of the page. Instead, resize
+  // the screen to be 100% width, and the card divs be resized so they don't take
+  // up the entire width
+  @include breakpoint-screen-larger-than($breakpoint-desktop) {
+    &.screen {
+      max-width: 100%;
+    }
+  }
 
   .word-card {
+
+    @include border-shadow-soft-wide;
+    border-radius: 6px;
+    margin-bottom: $spacing-default;
+    text-align: center;
+    background-color: white;
+    padding: $spacing-default;
+
+    @include breakpoint-screen-larger-than($breakpoint-desktop) {
+      // Don't make up the card take up the entire width of the screen. Instead
+      // resize it to about 25 letters length, and centre it.
+      max-width: 25em;
+      margin: $spacing-default auto;
+    }
 
     &:first-child {
 
       // Add a margin to the top, to accomodate the dialog boxes
       margin-top: 4.5em;
-    }
-    
-    @include border-shadow-soft-wide;
-    border: 1px solid #e6e6e6;
-    border-radius: 6px;
-    margin-bottom: $spacing-default;
-    text-align: center;
-    background-color: white;
+    }    
 
     .word__primary {
       background-color: $color-tertiary;
@@ -26,7 +50,13 @@
     }
     
     .word__secondary {
-      padding-bottom: $spacing-default;
+      padding: $spacing-small;
+      border-bottom: 1px dashed #e7e7e7;
+      
+      // Remove the dashed border on the last word
+      &:last-child {
+        border-bottom: 0;
+      }
     }
   }
 }

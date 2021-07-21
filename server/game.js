@@ -96,6 +96,14 @@ function Game(team1, team2, lobbyId) {
     // strategy/implementation for that rule
     this.rollDice();
 
+    var playerTeam = this.getPlayerTeam(this.speakerSocket);
+    var opposingTeam;
+    var strNum;
+
+    playerTeam === "team1" 
+      ? (opposingTeam = this.team2, playerTeam = this.team1, strNum = "1")
+      : (opposingTeam = this.team1, playerTeam = this.team2, strNum = "2");
+    
     // Let all players know that they are ready to begin playing the round. Also provide
     // them with information about this particular round
     io.to("lobby" + this.id).emit(
@@ -103,18 +111,13 @@ function Game(team1, team2, lobbyId) {
       this.strategyManager.name,
       this.strategyManager.description, 
       this.speakerSocket.player.name,
+      strNum,
       this.strategyManager.seconds);
 
     io.to(this.speakerSocket.id).emit("update: role: speaking");
 
-    // Let the player's teammate's clients know that they have the role of guesser
-    var playerTeam = this.getPlayerTeam(this.speakerSocket);
-    var opposingTeam;
 
-      playerTeam === "team1" 
-        ? (opposingTeam = this.team2, playerTeam = this.team1)
-        : (opposingTeam = this.team1, playerTeam = this.team2);
-    
+    // Let the player's teammate's clients know that they have the role of guesser
     for (var i = 0; i < playerTeam.length; i++) {
       // Don't emit to the speaker
       if (playerTeam[i] !== this.speakerSocket) {

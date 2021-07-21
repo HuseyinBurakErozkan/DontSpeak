@@ -5,6 +5,10 @@
   justify-content: center; // Centre the header and buttons in the middle of the screen
 
   text-align: center;
+
+  .content-container {
+    padding: $spacing-large;
+  }
 }
 
   #form-create {
@@ -27,8 +31,16 @@
   justify-content: center; // Centre the header and buttons in the middle of the screen
   text-align: center;
 
+  .div-join-container {
+    max-width: 100%;
+  }
+
   & .p-instruction {
     margin-bottom: $spacing-large;
+  }
+
+  .content-container {
+    padding: $spacing-large;
   }
 }
 
@@ -40,11 +52,10 @@
     justify-content: center; // Centre the header and buttons in the middle of the screen
     
     align-items: center; // Use this to make the flex items not expand to the width of the screen
-    margin-bottom: $spacing-x-large; // Add some whitespace to make clicking easier on mobile
 
-    & * {
+    .input {
       margin-bottom: $spacing-small;
-      // max-width: 80%;
+      width: 100%;
     }
   }
 
@@ -52,52 +63,95 @@
 // The current lobby screen
 #screen-lobby {
 
+  .content-container {
+    // Make the lobby ui a reasonable size, as otherwise its too small when empty 
+    min-width: 100%;
+    min-height: 80%;
+
+    @include breakpoint-screen-larger-than($breakpoint-tablet) {
+      min-width: calc(#{$breakpoint-tablet} - #{$spacing-default});
+      min-height: 70%;
+    }
+
+    @include breakpoint-screen-larger-than($breakpoint-desktop) {
+      // Lower the size a little on larger screens
+      min-width: 70%;
+    }
+
+    // Remove the padding, so background colour takes up the entire container
+    padding: 0;
+
+    background-color: $color-white-offset;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+  }
+
+  // Centre the content container div
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-
-  text-align: center;
-
-  & .lobby-team-container {
-    flex-grow: 1;
-  }
-  
-  & #h2-lobby-id {
-    margin-bottom: $spacing-x-large;
-  }
-
-  & #display-teams {
-
-    display: flex;
-    flex-grow: 1; // Make the team board take up all empty space
-    margin-bottom: $spacing-large;
-
-    // Display a vertical split between both teams
-    & .lobby-team-container:not(:last-child) {
-      border-right: 2px solid $color-secondary;
-    }
-  }
-
-  & .team-title {
-    margin-bottom: $spacing-default;
-  }
-
-  & #form-start-game {
-    // Add some space to the bottom, so that the buttons don't hidden behind mobile browser UIs
-    margin-bottom: $spacing-x-large;
-    
-    & *:not(:last-child) {
-      margin-right: $spacing-small;
-    }
-  }
-
-  .team-title {
-    margin-bottom: $spacing-large;
-  }
-
-  // Elements of this class display the player's name on the team board
-  .__player {
-    font-size: 1.1em;
-    margin-bottom: $spacing-default;
-  }
 }
+
+  .lobby-container {
+    // Use flex to push the heading to the top, button to the bottom, and have the
+    // team chart take up the rest of the space
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: center;
+  }
+
+    #h2-lobby-id {
+      margin: $spacing-default 0;
+    }
+
+    #display-teams {
+
+      display: flex;
+      flex-grow: 1; // Make the team board take up all empty space
+      margin: 0 $spacing-small $spacing-default $spacing-small;
+
+      // Display a vertical split between both teams
+      & .lobby-team-container:not(:last-child) {
+        // border-right: 2px solid $color-secondary;
+        margin-right: $spacing-small;
+      }
+    }
+
+      .lobby-team-container {
+        flex-grow: 1;
+        max-width: 50%; // Don't allow overly-long names to stretch the div out
+        overflow: hidden;
+
+        // background-color: $color-white-offset;
+        background-color: white;
+        padding: $spacing-small;
+        border-radius: 6px;
+
+        box-shadow: 1px 1px 14px 3px rgb(140 143 171 / 18%);
+      }
+
+        .team-title {
+          margin-bottom: $spacing-default;
+        }
+
+        // Elements of this class display the player's name on the team board
+        .__player {
+          font-size: 1.1em;
+          margin-bottom: $spacing-default;
+        }
+
+    #form-start-game {
+
+      background: $color-white-offset;
+      border-bottom-right-radius: 6px;
+      border-bottom-left-radius: 6px;
+      padding: $spacing-default;
+      padding-top: 0;
+
+      & .button-primary {
+        width: 8em;
+      }
+    }
+

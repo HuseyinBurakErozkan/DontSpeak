@@ -1,9 +1,11 @@
 .flash-dialog {
+  z-index: 1000;
+  
   white-space: pre-line; // Used so that '\n' in strings add new line
   position: fixed;
   top: $spacing-default;
   font-size: 1.1rem;
-
+  
   // Centre the flash dialog horizontally
   right: 0; // Use this to place the dialog box to the right on larger screens
   margin: auto $spacing-default;

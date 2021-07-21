@@ -52,7 +52,12 @@
 
 .game-ui-help-toggle-container {
 
-  @include white-text-on-dark-bg;
+  z-index: 100;
+  
+  p {
+    @include white-text-on-dark-bg;
+  }
+
   @include border-shadow-ui-element;
 
   height: 2em;
@@ -79,7 +84,7 @@
   padding: $spacing-default;
 
   &.--toggle-off {
-  background-color: lighten($color-primary, 20%);    
+  background-color: lighten($color-primary, 35%);    
   }
 }
 
