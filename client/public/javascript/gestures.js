@@ -18,6 +18,10 @@ var eventHandler = (callbacks, e) => {
  * swipe is detected.
  */
 function addTouchListeners(callbacks) {
+
+  // First remove any listeners that may have been used for another screen
+  removeTouchListeners();
+
   container.addEventListener("touchstart", startTouch, false);
   // Bind the callbacks array to the function, rather than using an anonymous
   // function, as otherwise it can't be removed.

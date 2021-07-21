@@ -1,31 +1,31 @@
 /**
  * Handles switching between the logically separated 'screens' in the menu section
- * of the app
- * @param {HTMLElement} from The button element that called this function  
- * @param {String} toClassId The Id of the html div element to display
+ * of the app  
+ * @param {String} toScreenId The Id of the html div element to display
  */
-function changeScreen(from, toClassId) {
+function changeScreen(toScreenId) {
   // TODO: Move changeScreen() to a more appropriate file
 
-  // Get the ancestor screen element and hide it, then show the new screen
-  $(from).closest(".screen").addClass("--display-hidden");
+  // Use Jquery's implicit iteration to just hide every screen, then display the 
+  // correct screen
+  $(".screen").addClass("--display-hidden");
+  $("#"+toScreenId).removeClass("--display-hidden");
 
-  // If no previous screen child element isn't provided, use Jquery's implicit iteration
-  // to just hide every screen, then display the correct screen
-  if (from === null) {
-    $(".screen").addClass("--display-hidden");
-  }
-  $("#"+toClassId).removeClass("--display-hidden");
 
+  // TODO: Remove all touch listeners each time a screen is changed
+
+  // TODO: Remove any screen-specific ui elements. All these ui elements should have
+  // a common class, to make removal easy
+
+  
   // Scroll to the bottom - useful on Android browsers. When displaying cards however,
   // the screen should scroll to the top, otherwise, the player may have a hard time
   // seeing the word at first
-  if (toClassId !== "screen-word") {
+  if (toScreenId !== "screen-word") {
     window.scrollTo(0,document.body.scrollHeight);
   } else {
     window.scrollTo(0, 0);
   }
-
 }
 
 /**
@@ -48,7 +48,7 @@ $("#form-create").submit((e) => {
     // Once the server responds
     socket.on("response: lobby created", (player, lobbyId, team1, team2) => {
       $("#h2-lobby-id").text("Game PIN: " + lobbyId);
-      changeScreen($("#form-create"), "screen-lobby");
+      changeScreen("screen-lobby");
 
       joinLobby(team1, team2, player);
     });

@@ -3,74 +3,81 @@ flash(tutorialMsgs.intro, "information");
 
 var role; // Used to define what role the current player has in each round
 
+/**
+ * Called once players have asked to start a game and the server has responded
+ */
 socket.on("response: game started", () => {
-  console.log("Response: Game started");
-
   // Remove the lobby's touch listeners
-  removeTouchListeners();
-
-  // NOTE: TESTING PURPOSES ONLY. REMOVE LATER
+  // removeTouchListeners();
   socket.emit("request: new round");
 });
 
+/**
+ * Called when a server starts a new round.
+ */
 socket.on("response: new round", (ruleName, ruleDesc, speaker, speakerTeam, seconds) => {
-
-  // var teamNumber = speakerTeam.slice(-1); // Get the last char, which is the number 1 or 2
-
-  changeScreen(null , "screen-round-ready");
+  changeScreen("screen-round-ready");
   $("#p-rule-name").text(ruleName);
   $("#p-rule-description").text(ruleDesc);
   $("#p-speaker").text(`${speaker} from team ${speakerTeam} is the speaker!`);
   $("#p-seconds").html(`<b>${seconds}</b> seconds`);
 });
 
-socket.on("update: role: speaking", () => {
-  role = "speaker";
+/**
+ * Called after the server has started a new round and assigned roles to players 
+ */
+socket.on("update: role:", (role) => {
 
-  // Instruct the speaker on what they need to do for the round
-  flash(tutorialMsgs.speakerInstruction, "information");
+  switch (role) {
+    /**
+     * Only the speaker is allowed to start the game. Therefore, add a button specifically
+     * for when the player is a speaker, which sends a request to the server.
+     */
+    case "speaker":
+      role = "speaker";
+      // Instruct the speaker on what they need to do for the round
+      flash(tutorialMsgs.speakerInstruction, "information");
+    
+      // Alter the text on the ready screen to address the speaker directly
+      $("#p-speaker").text(`You're the speaker!`);
+    
+      // Add a start button only the speaker can click, for when they're ready to start
+      // describing the words
+      var button = $("<button/>")
+        .text("Start!")
+        .addClass("button-primary")
+        .click(() => {
+          socket.emit("request: start round");
+        });
+      button.attr("id", "speaker-start-button");
+    
+      $("#div-ready-container").append(button);
+    
+      // Add touch listeners to recognise when speaker swipes for a new card
+      addTouchListeners({ left: requestWord, right: requestWord});
+      break;
 
-  // Alter the text on the ready screen to address the speaker directly
-  $("#p-speaker").text(`You're the speaker!`);
+    case "guesser":
+      role = "guesser";
+      // Instruct the guessers on what they need to do
+      flash(tutorialMsgs.guesserInstruction, "information");  
+      break;
 
-  // Add a start button only the speaker can click, for when they're ready to start
-  // describing the words
-  var button = $("<button/>")
-    .text("Start!")
-    .addClass("button-primary")
-    .click(() => {
-      socket.emit("request: start round");
-    });
-  button.attr("id", "speaker-start-button");
-
-  $("#div-ready-container").append(button);
-
-  // Add touch listeners to recognise when speaker swipes for a new card
-  addTouchListeners({ 
-    left: requestWord, 
-    right: requestWord});
-});
-
-
-socket.on("update: role: guesser", (seconds) => {
-
-  role = "guesser";
-
-  // Instruct the guessers on what they need to do
-  flash(tutorialMsgs.guesserInstruction, "information");  
-});
-
-socket.on("update: role: opposition", () => {
-
-  role = "opposition";
-  // Instruct the opposition on what they need to do
-  flash(tutorialMsgs.oppositionInstruction, "information");
+    case "opposition":
+      role = "opposition";
+      // Instruct the opposition on what they need to do
+      flash(tutorialMsgs.oppositionInstruction, "information");
+      break;
+    
+    default:
+      flash("Error: There was an issue with the server");
+  }
 });
 
 
 socket.on("update: word: ", (word) => {
 
-  changeScreen(null, "screen-word");
+  changeScreen("screen-word");
   console.log("WORD IS : ", word)
   // Clear the card of words
   var card = $("#div-word-card-container");
@@ -117,7 +124,7 @@ socket.on("update: round over", (wordsPlayed) => {
   var reviewScreen = $("#screen-review");
   reviewScreen.empty(); // Empty the review screen of previous words that may have been displayed
 
-  changeScreen(null, "screen-review");
+  changeScreen("screen-review");
 
   for (var i = 0; i < wordsPlayed.length; i++) {
     var wordCard = $("<div/>")
@@ -241,7 +248,7 @@ function handlePointUpdate(t1Points, t2Points, pointsNeeded) {
   // Clear the input field where the user enters the amount of points they earned
   $("#input-points-earned").val("");
 
-  changeScreen(null, "screen-scores");
+  changeScreen("screen-scores");
 
   console.log(`team1 points: ${t1Points} \nteam2 points: ${t2Points} \npoints needed to win: ${pointsNeeded}`)
 
@@ -343,7 +350,7 @@ socket.on("update: starting", (seconds) => {
   // Display the countdown screen for the guesser, as they will not be shown 
   // the word screen
   if (role === "guesser") {
-    changeScreen(null, "screen-countdown");
+    changeScreen("screen-countdown");
     var secondsLeft = seconds - 1;
     
     var countdown = setInterval(() => {

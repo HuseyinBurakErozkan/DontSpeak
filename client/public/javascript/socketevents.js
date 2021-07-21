@@ -12,7 +12,7 @@ socket.on("response: lobby joined", (id, player) => {
     "You can click the '?' button below to disable/enable these tips any time", "information");
 
   $("#h2-lobby-id").text("Game PIN: " + id);
-  changeScreen($("#form-join"), 'screen-lobby');
+  changeScreen("screen-lobby");
 
   // Add touch listeners to recognise when player wants to swap teams
   addTouchListeners({ 
