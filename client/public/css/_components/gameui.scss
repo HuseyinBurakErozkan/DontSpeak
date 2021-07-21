@@ -3,7 +3,7 @@
   @include border-shadow-ui-element;
 
   display: flex;
-  background-color: $color-secondary;
+  background-color: white;
   position: fixed;
   border-radius: 32px;
   padding: 12px;
@@ -27,7 +27,7 @@
     border-bottom-left-radius: 24px;
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
-    border: 3px solid #EA5455;
+    border: 3px solid $color-primary;
   }
 
   .button-primary {
@@ -53,12 +53,11 @@
 
   .confirm-points {
 
-    @include white-text-on-dark-bg;
     @include border-shadow-ui-element;
 
     display: flex;
     align-items: center;
-    background-color: $color-secondary;
+    background-color: white;
     padding: $spacing-default;
     border-radius: 36px;
 

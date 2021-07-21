@@ -34,7 +34,13 @@
       justify-content: space-evenly;
   
       & p {
-        margin-bottom: $spacing-default;
+        margin: $spacing-small;
+        border-bottom: 1px dashed #e7e7e7;
+
+        // Remove the dashed border on the bottom word
+        &:last-child {
+          border-bottom: 0;
+        }
       }
     }
   }

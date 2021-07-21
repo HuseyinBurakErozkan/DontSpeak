@@ -32,7 +32,7 @@ socket.on("update: role: speaking", () => {
 
   flash("You're the speaker for this round. As the speaker, you have to describe to your " +
     "teammates what the taboo word is and have them say the taboo word out loud. The taboo " +
-    "word is the word on the top of the card with a yellow background. You can not say any " +
+    "word is the word on the top of the card with a green background. You can not say any " +
     "of the other similar words on the card, unless your teammate says it, in which case " +
     "you can say them.\n\nIf you accidentally say any of the taboo words, you have to forfeit " +
     "the card and move on the next.\n\nYou can also move on to the next card if you find it " +
@@ -125,7 +125,7 @@ socket.on("update: round over", (wordsPlayed) => {
   if (role === "speaker") {
     flash(
       "The round is over!\n\nEverybody now needs to review how many taboo words " +
-      "(the primary word in yellow) the guesser or guessers got right and how many you got disqualified for.\n\n" +
+      "(the primary word in green) the guesser or guessers got right and how many you got disqualified for.\n\n" +
       "Discuss how many words the guesser or guessers got right with everybody, and then enter the amount in the " +
       "dialog box at the bottom.\n\nEach word your team got right = 1 point.\nEach word you got " +
       "disqualified for = -1 point.\n\nIf your points for this round are below 0, enter 0 as " +
@@ -134,7 +134,7 @@ socket.on("update: round over", (wordsPlayed) => {
       "re-enter a new value if you realised you entered the wrong amount.", "information");
   } else if (role === "guesser") { 
     flash(
-      "The round is over!\n\nReview the taboo words (the words in yellow) you and the speaker " +
+      "The round is over!\n\nReview the taboo words (the words in green) you and the speaker " +
       "got right and which words the speaker got disqualified for.\n\nEach word your team got " +
       "right = 1 point.\nEach word your team got disqualified = -1 point.\n\nYou can't score " +
       "below 0 points, so the speaker will enter 0 in that case.\n\nOnce the speaker enters the " +
@@ -144,7 +144,7 @@ socket.on("update: round over", (wordsPlayed) => {
   else {
     flash(
       "The round is over!\n\nHave a look at all the words listed and discuss with everbody " +
-      "the amount of taboo words (the words in yellow) that the speaker and guessers got right, as well as how many words " +
+      "the amount of taboo words (the words in green) that the speaker and guessers got right, as well as how many words " +
       "the speaker got disqualified for.\n\nEach word the guessers got right = 1 point.\n" +
       "Each word the speaker got disqualified for = -1 point.\n\nIf the speaker and guessers got " +
       "below 0 points, they will enter 0, as negative points aren't allowed.\n\n Once everybody " +
@@ -290,8 +290,8 @@ socket.on("update: points: ", (t1Points, t2Points, pointsNeeded) => {
   var prepText;
 
   // Set the text of each team's scores to the PREVIOUS point amount
-  $("#t1-scores").text(`Team 1 score: ${t1CurrentPoints}`);
-  $("#t2-scores").text(`Team 2 score: ${t2CurrentPoints}`);
+  $("#t1-scores").html(`Team 1 score: <b>${t1CurrentPoints}</b>`);
+  $("#t2-scores").html(`Team 2 score: <b>${t2CurrentPoints}</b>`);
   
   var i; // Use to increment the score text from previous to current values
 
@@ -321,7 +321,7 @@ socket.on("update: points: ", (t1Points, t2Points, pointsNeeded) => {
     
     var incrementer = setInterval(() => {    
       i++;
-      textElement.text(prepText + i); // Display the incrementing score
+      textElement.html(`${prepText}<b>${i}</b>`); // Display the incrementing score
   
       // The text now displays the team's current score, so stop incrementinh
       if (i === newPoints) {
@@ -330,7 +330,7 @@ socket.on("update: points: ", (t1Points, t2Points, pointsNeeded) => {
     }, 100);
   }, 500);
 
-  $("#points-needed").text(`Score needed to win: ${pointsNeeded}`);
+  $("#points-needed").html(`Score needed to win: <b>${pointsNeeded}</b>`);
 });
 
 function nextRound() {
