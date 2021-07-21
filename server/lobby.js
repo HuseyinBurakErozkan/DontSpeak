@@ -7,14 +7,21 @@ const Game = require('./game').Game;
 
 var lobbies = new Map();
 
+for (var i = 0; i < 8000; i++) {
+  lobbies.set(i, "a");
+}
+
 function Lobby() {
 
   // Only 2 teams for now
   this.team1 = new Map();
   this.team2 = new Map();
   
-  // TODO: Ensure that there aren't any existing lobbies with the same id
+  // Ensure that there aren't any existing lobbies with the same id
   this.id = Math.floor(Math.random() * 9000) + 1000;
+  while (lobbies.has(this.id)) {
+    this.id = Math.floor(Math.random() * 9000) + 1000;
+  }
 
   /**
    * This function is for adding lobby-related event listeners for the socket after it 
