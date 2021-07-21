@@ -7,6 +7,13 @@ var tutorialMsgs = {
     "click the red button on the bottom right corner.\n\nYou can click it again to toggle " +
     "hints on, or to see the tip again.",
 
+  lobbyInstruction:
+    "This is the lobby. Once everyone joins, click on start to confirm that you're ready\n\n" +
+    "The game will start once everyone confirms that they are ready\n\n" +
+    "To swap teams, swipe left or right\n\n" +
+    "Once start is clicked, one of the teams will be randomly chosen to start\n\n" +
+    "You can click the '?' button below to disable/enable these tips any time",
+    
   speakerInstruction: 
     "You're the speaker for this round. As the speaker, you have to describe to your " +
     "teammates what the taboo word is and have them say the taboo word out loud. The taboo " +

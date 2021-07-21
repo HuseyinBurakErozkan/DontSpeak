@@ -9,14 +9,37 @@ var role; // Used to define what role the current player has in each round
 var t1CurrentPoints = 0; // Team 1's current points
 var t2CurrentPoints = 0; // Team 2's current points
 
-var toggleHelpOn = true; // Whether to display helpful hints or not. On by default
+var toggleHelpOn = true; // Whether to display helpful hints or not. On by default.
+
+
+/**
+ * Handles switching between the logically separated 'screens' throughout the app
+ * of the app  
+ * @param {String} toScreenId The Id of the html div element to display
+ */
+function changeScreen(toScreenId) {
+  // Use Jquery's implicit iteration to just hide every screen, then display the 
+  // correct screen
+  $(".screen").addClass("--display-hidden");
+  $("#"+toScreenId).removeClass("--display-hidden");
+
+  removeTouchListeners();
+
+  // Scroll to the bottom - useful on Android browsers. When displaying cards however,
+  // the screen should scroll to the top, otherwise, the player may have a hard time
+  // seeing the word at first
+  if (toScreenId !== "screen-word") {
+    window.scrollTo(0,document.body.scrollHeight);
+  } else {
+    window.scrollTo(0, 0);
+  }
+}
+
 
 /**
  * Called once players have asked to start a game and the server has responded
  */
 socket.on("response: game started", () => {
-  // Remove the lobby's touch listeners
-  // removeTouchListeners();
   socket.emit("request: new round");
 });
 
