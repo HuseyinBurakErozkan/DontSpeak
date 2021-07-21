@@ -70,6 +70,13 @@ var tutorialMsgs = {
 // flash message
 $(".flash-button-close").click((e) => {
   $(e.target).closest(".flash-dialog").addClass("--hide");
+
+  // If the flash message the user is clicking 'x' on is a informational flash message,
+  // add a little animation to help them understand the button's function/relevance
+  if ($(e.target).closest(".--tip")) {
+    // Animate the help button to help the player understand
+    animateHelpButton();
+  }
 });
 
 /**
@@ -103,6 +110,10 @@ function flash(msg, type) {
 
     // Save the msg so that the user can view it again if they need to
     currentTutorialMsg = msg;
+
+    // Animate the help button to indicate to the user that they can click on that
+    // to disable/enable the flash message
+    animateHelpButton();
   }
 
   flashElement.find(".flash-text").text(msg);

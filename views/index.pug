@@ -4,7 +4,8 @@ html
   body
     div.app-container
       include includes/flash.pug
-      
+      button(id="div-game-ui-help-toggle" onClick="toggleHelp()").game-ui-help-toggle-container ?
+
       div.screen-container
         div.gradient-bg
         include screens/mainscreen.pug

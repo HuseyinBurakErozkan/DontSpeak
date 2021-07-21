@@ -459,11 +459,12 @@ table {
 }
 .game-ui-help-toggle-container {
   z-index: 100;
+  color: white;
   box-shadow: -1px 4px 6px 3px rgba(0, 0, 0, 0.09), 0 2px 12px 1px rgba(0, 0, 0, 0.03);
   height: 2em;
   width: 2em;
   background-color: #7700ff;
-  transition: background-color 0.1s ease-out;
+  transition: background-color 0.1s ease-out, transform 0.1s ease-in-out;
   border: 0;
   border-radius: 64px;
   font-size: 1.5em;
@@ -474,9 +475,6 @@ table {
   bottom: 16px;
   right: 16px;
   padding: 16px;
-}
-.game-ui-help-toggle-container p {
-  color: white;
 }
 .game-ui-help-toggle-container.--toggle-off {
   background-color: #d6b3ff;

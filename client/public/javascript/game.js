@@ -477,22 +477,32 @@ function toggleHelp() {
       flash(currentTutorialMsg, "information");
     }
   }
+
+  // Add a small animation to the button show so the user clearly understands where
+  // to click to enable/disable help
+  animateHelpButton();
 }
 
+/**
+ * Animate the help toggle button whenever an event related to it is performed. This
+ * should help make it easier for a player to notice the button and relate it to what
+ * is going on in the ui.
+ */
+function animateHelpButton() {
+  // Add a small animation to the button show so the user clearly understands where
+  // to click to enable/disable help
+  setTimeout(() => {
+    $(".game-ui-help-toggle-container").css({ "transform" : "rotate(30deg)" });
 
-function displayHelpButton() {
-  // Create the ui element
-  var helpButtonToggle = $("<button/>", { 
-    id: "div-game-ui-help-toggle",
-    class: "game-ui-help-toggle-container",
-    onClick: "toggleHelp()"  
-  });
-  
-  helpButtonToggle.append($("<p>?</p>"));
-  $(".app-container").append(helpButtonToggle);
+    setTimeout(() => {
+      $(".game-ui-help-toggle-container").css({ "transform" : "rotate(-30deg)" });
+
+      setTimeout(() => {
+        $(".game-ui-help-toggle-container").css({ "transform" : "rotate(0deg)" });
+      }, 100);
+    }, 100);
+  }, 100);
 }
-
-displayHelpButton();
 
 
 // Check whether the user has toggled help off in a previous session, and if so,
