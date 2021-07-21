@@ -26,9 +26,9 @@ socket.on("response: new round", (ruleName, ruleDesc, speaker, speakerTeam, seco
 /**
  * Called after the server has started a new round and assigned roles to players 
  */
-socket.on("update: role:", (role) => {
+socket.on("update: role:", (playerRole) => {
 
-  switch (role) {
+  switch (playerRole) {
     /**
      * Only the speaker is allowed to start the game. Therefore, add a button specifically
      * for when the player is a speaker, which sends a request to the server.
@@ -52,9 +52,6 @@ socket.on("update: role:", (role) => {
       button.attr("id", "speaker-start-button");
     
       $("#div-ready-container").append(button);
-    
-      // Add touch listeners to recognise when speaker swipes for a new card
-      addTouchListeners({ left: requestWord, right: requestWord});
       break;
 
     case "guesser":
@@ -77,18 +74,33 @@ socket.on("update: role:", (role) => {
 
 socket.on("update: word: ", (word) => {
 
-  changeScreen("screen-word");
-  console.log("WORD IS : ", word)
+  /**
+   * Check if the round has just started. If so, add the touch listeners to allow
+   * the player to swipe left or right for a new card.
+   */
+
+   // The screen is not being displayed, meaning the round has just started
+  if ($("#screen-word").hasClass("--display-hidden")) {
+    changeScreen("screen-word");
+
+    if (role === "speaker") {
+      // Add touch listeners to recognise when speaker swipes for a new card
+      addTouchListeners({ 
+        left: () => { socket.emit("request: word"); }, 
+        right: () => { socket.emit("request: word"); }
+      });
+    }
+  }
+  
   // Clear the card of words
   var card = $("#div-word-card-container");
   card.empty();
-  // wordScreen.addClass("screen")
   var primaryDiv = $("<div/>", { id: "div-word-primary", class: "word-primary" });
   var secondaryDiv = $("<div/>", { id: "div-word-secondary", class: "word-secondary" });
   card.append(primaryDiv);
   card.append(secondaryDiv);
 
-  // Display the word to be said
+  // Display the primary taboo word to be said
   var element = $("<p></p>").text(word[0]);
   $("#div-word-primary").append(element);
 
@@ -399,9 +411,6 @@ function showTimer(startingSeconds) {
   }, 1000);
 }
 
-function requestWord() {
-  socket.emit("request: word");
-}
 
 
 var toggleHelpOn = true;

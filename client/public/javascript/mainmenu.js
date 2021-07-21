@@ -13,11 +13,12 @@ function changeScreen(toScreenId) {
 
 
   // TODO: Remove all touch listeners each time a screen is changed
-
+  removeTouchListeners();
+  
   // TODO: Remove any screen-specific ui elements. All these ui elements should have
   // a common class, to make removal easy
 
-  
+
   // Scroll to the bottom - useful on Android browsers. When displaying cards however,
   // the screen should scroll to the top, otherwise, the player may have a hard time
   // seeing the word at first
