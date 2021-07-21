@@ -1,14 +1,61 @@
 /**
  * Handle gestures and swipes for when the speaker swipes for the next card
  */
-// var container = document.body.getElementsByClassName("screen-container")[0];
 var container = $(".screen-container")[0];
 
 // Use a handler with binded parameters to allow arguments to be used, and to allow
 // the event listener to be deleted.
 var newTouchHandler;
+
 var eventHandler = (callbacks, e) => {
   moveTouch(e, callbacks);
+  handleKeys(e, callbacks);
+}
+
+// Handle key events, to allow desktop players to play via keys
+var keyHandler;
+
+/**
+ * Handle user key inputs, specifically for playing the game.
+ * @param {Event} e The event that fired this function 
+ * @param {Associative array} callbacks Callbacks provided for specific keys
+ */
+function handleKeys(e, callbacks) {
+  
+  // Handle different functionalities for certain keys by checking if a callback
+  // was provided for them. If a callback was provided, also check if an argument
+  // was provided
+  switch (e.keyCode) {
+    case 32: // Space key
+      if (callbacks.spaceKey !== undefined) {
+        if (callbacks.spaceKeyArgs !== undefined) {
+          callbacks.spaceKey(callbacks.spaceKeyArgs);
+        } else {
+          callbacks.spaceKey(); 
+        }
+      }
+      break;
+
+    case 37: // Left key
+      if (callbacks.leftKey !== undefined) { 
+        if (callbacks.leftKeyArgs !== undefined) {
+          callbacks.leftKey(callbacks.leftKeyArgs);
+        } else {
+          callbacks.leftKey(); 
+        }
+      }
+      break;
+
+    case 39: // Right key
+      if (callbacks.rightKey !== undefined) { 
+        if (callbacks.rightKeyArgs !== undefined) {
+          callbacks.rightKey(callbacks.rightKeyArgs);
+        } else {
+          callbacks.rightKey(); 
+        }
+      }
+      break;
+  }
 }
 
 /**
@@ -17,26 +64,32 @@ var eventHandler = (callbacks, e) => {
  * swipes in 4 directions. For example: callbacks.left will be called if a left
  * swipe is detected.
  */
-function addTouchListeners(callbacks) {
+function addEventListeners(callbacks) {
 
   // First remove any listeners that may have been used for another screen
-  removeTouchListeners();
+  removeEventListeners();
 
   container.addEventListener("touchstart", startTouch, false);
   // Bind the callbacks array to the function, rather than using an anonymous
   // function, as otherwise it can't be removed.
   newTouchHandler = eventHandler.bind(this, callbacks);
   container.addEventListener("touchmove", newTouchHandler, false);
-  container.addEventListener("touchend", endTouch, false);  
+  container.addEventListener("touchend", endTouch, false);
+
+  // Since touch-related event don't work for every browser, allow the user
+  // to perform some actions with specific keys
+  keyHandler = eventHandler.bind(this, callbacks);
+  document.addEventListener("keyup", keyHandler, false);
 }
 
 /**
  * Remove the eventlisteners for touch related events
  */
-function removeTouchListeners() {
+function removeEventListeners() {
   container.removeEventListener("touchstart", startTouch, false);
   container.removeEventListener("touchmove", newTouchHandler, false);
   container.removeEventListener("touchend", endTouch, false);
+  document.removeEventListener("keyup", keyHandler, false);
 }
 
 var initialX = null;
@@ -76,8 +129,6 @@ function moveTouch(e, callbacks) {
 
   var swiped = false;
 
-  // If the user swipes left or right, that indicates that they're done with the current
-  // card/word
   if (Math.abs(diffX) > Math.abs(diffY)) {
     if (diffX > minSwipeDistance) {
       console.log("Swiped left")

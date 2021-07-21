@@ -23,7 +23,7 @@ function changeScreen(toScreenId) {
   $(".screen").addClass("--display-hidden");
   $("#"+toScreenId).removeClass("--display-hidden");
 
-  removeTouchListeners();
+  removeEventListeners();
 
   // Scroll to the bottom - useful on Android browsers. When displaying cards however,
   // the screen should scroll to the top, otherwise, the player may have a hard time
@@ -118,10 +118,13 @@ socket.on("update: word: ", (word) => {
 
     if (role === "speaker") {
       // Add touch listeners to recognise when speaker swipes for a new card
-      addTouchListeners({ 
+      // Also listen for when a user hits space bar - the default key for requesting a card
+      addEventListeners({ 
         left: () => { socket.emit("request: word"); }, 
-        right: () => { socket.emit("request: word"); }
+        right: () => { socket.emit("request: word"); },
+        spaceKey: () => { socket.emit("request: word"); }
       });
+
     }
   }
   
@@ -145,9 +148,6 @@ socket.on("update: word: ", (word) => {
   }
 });
 
-
-// If this player is the speaker, display a button asking them how many points they believed
-// they earned. Once they enter, emit this amount to the server
 
 /**
  * Emitted by the sever once the round is finished. 

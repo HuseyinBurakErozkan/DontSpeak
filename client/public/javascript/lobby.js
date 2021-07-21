@@ -38,11 +38,18 @@ function joinLobby(team1, team2, player) {
   displayTeams(team1, team2);
 
   // Add touch listeners to recognise when player wants to swap teams
-  addTouchListeners({ 
+  addEventListeners({ 
     left: moveToTeam, // Left indicates that player wants to move to team 1
     leftArgs: { team: 1 },
     right: moveToTeam, // Right indicates that player wants to move to team 2
-    rightArgs: { team: 2 } });
+    rightArgs: { team: 2 },
+    
+    // Also allow desktop users to use arrow keys to move between teams
+    leftKey: moveToTeam,
+    leftKeyArgs: { team: 1 },
+    rightKey: moveToTeam,
+    rightKeyArgs: { team: 2}
+  });
 }
 
 function displayTeams(team1, team2) {
@@ -102,11 +109,18 @@ socket.on("response: lobby joined", (id, player) => {
   changeScreen("screen-lobby");
 
   // Add touch listeners to recognise when player wants to swap teams
-  addTouchListeners({ 
+  addEventListeners({ 
     left: moveToTeam, // Left indicates that player wants to move to team 1
     leftArgs: { team: 1 },
     right: moveToTeam, // Right indicates that player wants to move to team 2
-    rightArgs: { team: 2 } });
+    rightArgs: { team: 2 },
+  
+    // Also allow desktop users to use arrow keys to move between teams
+    leftKey: moveToTeam,
+    leftKeyArgs: { team: 1 },
+    rightKey: moveToTeam,
+    rightKeyArgs: { team: 2}
+  });
 });
 
 //Server has let this client know that another player has joined the lobby 

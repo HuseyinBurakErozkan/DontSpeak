@@ -10,7 +10,7 @@ var tutorialMsgs = {
   lobbyInstruction:
     "This is the lobby. Once everyone joins, click on start to confirm that you're ready\n\n" +
     "The game will start once everyone confirms that they are ready\n\n" +
-    "To swap teams, swipe left or right\n\n" +
+    "To swap teams, swipe left or right, or use the left and right arrow keys\n\n" +
     "Once start is clicked, one of the teams will be randomly chosen to start\n\n" +
     "You can click the '?' button below to disable/enable these tips any time",
     
@@ -21,7 +21,7 @@ var tutorialMsgs = {
     "of the other similar words on the card, unless your teammate says it, in which case " +
     "you can say them.\n\nIf you accidentally say any of the taboo words, you have to forfeit " +
     "the card and move on the next.\n\nYou can also move on to the next card if you find it " +
-    "too difficult or not worth doing.\n\nSwipe left or right to get a new card.\n\n" +
+    "too difficult or not worth doing.\n\nSwipe left or right, or press space bar, to get a new card.\n\n" +
     "Once you and your teammates are ready, click start",
 
   guesserInstruction: 
