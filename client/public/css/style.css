@@ -605,6 +605,7 @@ table {
   padding: 8px;
   border-radius: 3px;
   background-color: white;
+  max-height: 60vh;
   transition: opacity 0.1s ease-in, transform 0.1s ease-in;
   transition-delay: 100ms;
   transform: scale(1, 1);
