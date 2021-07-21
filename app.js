@@ -1,4 +1,5 @@
 const express = require('express');
+const favicon = require('serve-favicon')
 const app = express();
 const http = require('http');
 const server = http.createServer(app);
@@ -13,7 +14,7 @@ app.set('views','./views');
 
 // Allow client-side JS and CSS files to be served
 app.use(express.static('client/public'));
-
+app.use(favicon(path.join(__dirname, 'client', 'public', 'favicon.ico')));
 
 // Handle the initial client connection to server
 io.on('connection', (socket) => {
