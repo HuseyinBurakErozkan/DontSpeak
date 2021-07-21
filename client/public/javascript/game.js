@@ -268,7 +268,12 @@ var t1CurrentPoints = 0;
 var t2CurrentPoints = 0;
 
 socket.on("update: points: ", (t1Points, t2Points, pointsNeeded) => {
+  handlePointUpdate(t1Points, t2Points, pointsNeeded);
+});
 
+
+function handlePointUpdate(t1Points, t2Points, pointsNeeded) {
+  
   // Hide the ui elements that were instantiated for the previous round
   $("#speaker-enter-points").addClass("--display-hidden"); // The speaker's enter point dialog
   $("#player-confirm-points").addClass("--display-hidden"); // The 'confirm points' dialog
@@ -294,7 +299,7 @@ socket.on("update: points: ", (t1Points, t2Points, pointsNeeded) => {
   // Set the text of each team's scores to the PREVIOUS point amount
   $("#t1-scores").text(`Team 1 score: ${t1CurrentPoints}`);
   $("#t2-scores").text(`Team 2 score: ${t2CurrentPoints}`);
-  $("#points-needed").text(`Score needed to win: ${pointsNeeded}`);
+  $("#points-needed").html(`Score needed to win: <b>${pointsNeeded}</b>`);
 
   
   // Update the displayed scores for both teams
@@ -304,7 +309,7 @@ socket.on("update: points: ", (t1Points, t2Points, pointsNeeded) => {
   // Update the point values
   t1CurrentPoints = t1Points;
   t2CurrentPoints = t2Points;
-});
+}
 
 
 function updateScoreDisplay(newPoints, prevPoints, teamNumber) {
@@ -350,30 +355,23 @@ function nextRound() {
   socket.emit("request: new round");
 }
 
-socket.on("update: lost", () => {
-
+socket.on("update: lost", (t1Points, t2Points, pointsNeeded) => {
   removeTouchListeners();
 
-  changeScreen(null, "screen-gameover");
-  // Hide the ui elements that were instantiated for the previous round
-  $("#speaker-enter-points").addClass("--display-hidden"); // The speaker's enter point dialog
-  $("#player-confirm-points").addClass("--display-hidden"); // The 'confirm points' dialog
-  $("#speaker-start-button").remove(); // Remove the start button that displays for the speaker
-  
-  $("#game-over-text").text("You lost :(.\nBetter luck next time!");
+  handlePointUpdate(t1Points, t2Points, pointsNeeded);
+
+  // Hide the next round button, as the game is over
+  $("#button-next-round").addClass("--display-hidden");
+  $("#gameover-text").html("<b>You lost :(</b>");
 });
 
-socket.on("update: won", () => {
-
+socket.on("update: won", (t1Points, t2Points, pointsNeeded) => {
   removeTouchListeners();
-  
-  changeScreen(null, "screen-gameover");
-  // Hide the ui elements that were instantiated for the previous round
-  $("#speaker-enter-points").addClass("--display-hidden"); // The speaker's enter point dialog
-  $("#player-confirm-points").addClass("--display-hidden"); // The 'confirm points' dialog
-  $("#speaker-start-button").remove(); // Remove the start button that displays for the speaker
-  
-  $("#game-over-text").text("Congratulations!\nYou won!");
+
+  handlePointUpdate(t1Points, t2Points, pointsNeeded);
+
+  $("#button-next-round").addClass("--display-hidden");
+  $("#gameover-text").html("<b>Congratulations! You won!</b>");
 });
 
 

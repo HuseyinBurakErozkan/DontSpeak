@@ -326,10 +326,12 @@ function Game(team1, team2, lobbyId) {
               this.state = "gameover";
 
               for (var i = 0; i < currentTeam.length; i++) {
-                io.to(currentTeam[i].id).emit("update: won");
+                io.to(currentTeam[i].id).emit(
+                  "update: won", this.team1Points, this.team2Points, this.pointsToWin);
               }
               for (var i = 0; i < opposingTeam.length; i++) {
-                io.to(opposingTeam[i].id).emit("update: lost");
+                io.to(opposingTeam[i].id).emit(
+                  "update: lost", this.team1Points, this.team2Points, this.pointsToWin);
               }
 
               return; // Don't emit anything else after this point, as the game is already over
