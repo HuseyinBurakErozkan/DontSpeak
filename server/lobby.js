@@ -7,10 +7,6 @@ const Game = require('./game').Game;
 
 var lobbies = new Map();
 
-for (var i = 0; i < 8000; i++) {
-  lobbies.set(i, "a");
-}
-
 function Lobby() {
 
   // Only 2 teams for now

@@ -1,3 +1,5 @@
+$(":input").attr("autocomplete", "off");
+
 // Initially instruct the user on how to understand and use the UI. Display the flash
 // message after a short delay so the user clearly see's that it's a flash message
 setTimeout(() => {
