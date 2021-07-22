@@ -5,6 +5,7 @@ const http = require('http');
 const server = http.createServer(app);
 const { Server } = require('socket.io');
 const io = new Server(server);
+const port = process.env.port || 3000;
 
 const path = require('path');
 const client_dir = path.join(__dirname, './client');
@@ -31,7 +32,7 @@ app.get('/', (req, res) => {
 module.exports.io = io;
 
 // Export the server so it can be used for testing
-module.exports.server = server.listen(3000, () => {
+module.exports.server = server.listen(port, () => {
   console.log("listening on *:3000");
 });
 
