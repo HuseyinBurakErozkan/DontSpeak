@@ -39,11 +39,9 @@ function Lobby() {
         // Attach game-related eventListeners for all sockets in the lobby by calling
         // the game's addSocket function.
         for (let s of this.team1.values()) {
-          console.log(s.id);
           this.game.addSocket(s)
         }
         for (let s of this.team2.values()) {
-          console.log(s.id)
           this.game.addSocket(s);
         }
       }

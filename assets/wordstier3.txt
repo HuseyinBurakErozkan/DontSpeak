@@ -1,0 +1,35 @@
+anecdote,story,account,tale,experience,personal
+ace,high,card,tennis,fly,hole in one
+intuition,sense,hunch,gut,feeling,woman
+perception,see,hear,understanding,insight,perceive
+impulse,urge,need,drive,buy,whim
+peripheral vision,eye,see,look,focus,outer
+tearjerker,movie,book,cry,sad,tissue
+mothball,small,white,wardrobe,protects,clothes
+heat wave,weather,hot,hazy,humid,summer
+recall,dangerous,goods,company,total,remember
+swing,back,forth,push,dance,slide
+reserver,table,restuarant,keep,available,nature
+bloom,blossom,flower,youth,spring,orlando
+window-shop,look,display,browse,not,buy
+gram,weight,measurement,metric,ounce,kilo
+guide-dog,blind,canine,trained,lead,labrador
+dictator,ruler,absolute,power,tyrant,leader
+seasick,travel,boat,water,rocking,motion
+negotiator,make,deal,higher,lower,price
+2012,year,calendar,olympics,when,movie
+ray,sun,beam,sting,x,death
+pedigree,ancestry,breeding,dog,pureblood,chum
+trigger,pull,shoot,fire,gun,happy
+quaker,religion,society,pacifist,oats,porridge
+fiddle,muscial,instrument,violin,play,second
+easy,hard,peasy,simple,difficult,jet
+formula,chemistry,elements,baby,food,one
+haunted,house,ghost,paranormal,sightings,most
+secret santa,father,Christmas,presents,anonymous,gifts
+trademark,name,protect,company,own,copyright
+mace,aerosol,pepper,spray,self-defence,club
+knockout,boxing,punch,win,hot,stunning
+fib,little,white,lie,fingers,crossed
+stitches,cut,doctor,sews,laughter,hospital
+RSVP,party,wedding,invitation,reply,attend

@@ -1,0 +1,44 @@
+dog,cat,pet,woof,puppy,friend
+cat,kitten,dog,pet,meow,pet
+moon,earth,sun,satellite,sky,full
+house,home,live,shelter,residence,habitat
+watch,time,wrist,clock,time,wrist
+glacier,ice,water,snow,mountain,melt
+summer,season,winter,spring,autumn,hot
+beach,water,shore,sand,ocean,volley ball
+umbrella,shade,rain,parasol,sun,protect
+idea,plan,thought,design,think,mind
+altitude,height,everest,plane,sickness,mountain
+interview,ask,celebrity,questions,expose,job
+uniform,school,work,clothes,same,type
+mask,cover,face,halloween,fancy dress,Jim Carey
+collar,dog,vicar,shirt,catch,bone
+microphone,hear,voice,loud,sing,stage
+jack,jill,car,lift,beanstalk,card
+whip,leather,strap,Indiana Jones,crack,walnut
+chain,daisy,necklace,reaction,letter,gang
+tick,tock,clock,watch,bomb,nervous
+bat,cricket,baseball,vampire,fangs,eyelid
+roller skates,four,wheels,boot,derby,rink
+marbles,glass,balls,roll,playground,lost
+dish,plate,spoon,food,satellite,dirt
+grass,lawn,mow,green,blade,skirt
+hatch,chick,lay,egg,hen,plan
+afternoon,day,time,morning,sunset,tea
+bronze,medal,olympics,gold,silver,tan
+cart,go,blanche,put,before,horse
+teddy,bear,picnic,soft,boy,roosevelt
+vulture,bird,prey,eat,dead,culture
+starfise,five,arms,shape,sea,creature
+corssiant,french,pastry,breakfast,almond,chocolate
+handcuffs,under,arrest,police,lock,key
+pigeon,bird,city,statue,homing,carrier
+chipmunk,alvin,theodore,simon,dale,stripe
+bazaar,middle east,market,weird,Harper's,magazine
+vinegar,salt,fish,chips,balsamic,salad
+groom,brie,wedding,man,horse,brush
+iron,metal,creases,clothes,man,mask
+barrel,cask,liquid,container,monkeys,gun
+accountant,bookkeeper,taxes,money,number,company
+net,hair,tennis,ball,butterfly,inter
+garden,eden,grass,grow,vegetable,flower

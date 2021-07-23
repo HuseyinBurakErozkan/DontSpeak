@@ -1,34 +1,49 @@
-const allTier1Words = [
-  ['dog', ['cat', 'pet', 'woof', 'puppy']],
-  ['cat', ['kitten', 'dog', 'pet', 'meow']],
-  ['moon', ['earth', 'sun', 'satellite', 'sky']],
-  ['house', ['home', 'live', 'shelter', 'residence']],
-  ['car', ['vehicle', 'automobile', 'drive', 'transport']],
-  ['watch', ['time', 'wrist', 'clock', 'time']],
-  ['glacier', ['ice', 'water', 'snow', 'mountain']],
-  ['summer', ['season', 'winter', 'spring', 'autumn']],
-  ['beach', ['water', 'shore', 'sand', 'ocean']],
-  ['umbrella', ['shade', 'rain', 'parasol', 'sun']],
-  ['idea', ['plan', 'thought', 'design', 'think']]
-];
+const fs = require('fs');
+const readline = require('readline');
 
-const allTier2Words = [
-  ['senior', ['citizen', 'old', 'gramps', 'junior']],
-  ['woods', ['tree', 'forest', 'animals', 'timber']],
-  ['oasis', ['desert', 'water', 'drink', 'green']],
-  ['floodplains', ['flat', 'river', 'flat', 'land']],
-  ['wetlands', ['marsh', 'water', 'marsh', 'swamp']],
-  ['tundra', ['cold', 'ice', 'snow', 'moss']]
-];
+async function addWordToArray(array, file) {
+  const fileStream = fs.createReadStream("./assets/" + file);
 
-const allTier3Words = [
-  ['anecdote', ['story', 'account', 'tale', 'experience']],
-  ['ace', ['high', 'card', 'tennis', 'fly']],
-  ['intuition', ['sense', 'hunch', 'gut', 'feeling']],
-  ['perception', ['see', 'hear', 'understanding', 'insight']],
-  ['peripheral vision', ['eye', 'see', 'look', 'focus']],
-  ['impulse', ['urge', 'need', 'drive', 'buy']]
-];
+  const rl = readline.createInterface({
+    input: fileStream,
+    crlfDelay: Infinity
+  });
+  // Note: we use the crlfDelay option to recognize all instances of CR LF
+  // ('\r\n') in input.txt as a single line break.
+
+  for await (const line of rl) {
+    
+    // Line must have text
+    if (line === "") {
+      continue;
+    }
+
+    // Must split each word using ',' as the delimiter, as each line
+    // in the file looks like so: dog,cat,puppy,pet,woof
+    var words = line.split(",");
+
+    // Ensure that each line has 5 words - 1 Taboo word and 4 secondary words
+    if (words.length !== 6) {
+      continue;
+    }
+
+    var tabooWord = words[0]; // The primary word the speaker can't say
+    words.shift(); // Remove the primary word from the array
+    var formattedWord = [tabooWord, words];
+    array.push(formattedWord);
+  }
+}
+
+function initialiseWordArray(array, file) {
+  addWordToArray(array, file);
+}
+
+var allTier1Words = [];
+initialiseWordArray(allTier1Words, "wordstier1.txt");
+var allTier2Words = [];
+initialiseWordArray(allTier2Words, "wordstier2.txt");
+var allTier3Words = [];
+initialiseWordArray(allTier3Words, "wordstier3.txt");
 
 
 function Word() {

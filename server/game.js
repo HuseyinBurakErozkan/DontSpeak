@@ -148,7 +148,6 @@ function Game(team1, team2, lobbyId) {
         this.endRound();
       });
     } else {
-      console.log("Game: Request: start round: The socket requesting is not the speaker");
       return false;
     }
   }
